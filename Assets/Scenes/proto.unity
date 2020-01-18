@@ -781,6 +781,8 @@ MonoBehaviour:
   dashHeight: 2
   fireball: {fileID: 4829775223747024804, guid: cac83329c40f499408a5e417be8d3c31,
     type: 3}
+  windslash: {fileID: 8799331950200331671, guid: ca8f02b92a31a6c4b85ef248d78e0023,
+    type: 3}
 --- !u!1 &1638002049
 GameObject:
   m_ObjectHideFlags: 0

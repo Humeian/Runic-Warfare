@@ -10,6 +10,7 @@ public class PlayerBehaviour : MonoBehaviour
     private float playerHeight = 1f;
 
     public GameObject fireball;
+    public GameObject windslash;
 
     // Start is called before the first frame update
     void Start()
@@ -48,5 +49,26 @@ public class PlayerBehaviour : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         
+    }
+
+    
+    IEnumerator DashForward() {
+        float duration = 0.125f;
+        float startTime = Time.time;
+        float currentTime = (Time.time - startTime) / duration;
+        while (currentTime < 1f) {
+            transform.position += transform.forward * dashSpeed * 4f * Time.deltaTime;
+            
+            currentTime = (Time.time - startTime) / duration;
+            print(currentTime);
+
+            yield return new WaitForEndOfFrame();
+        }
+        
+    }
+
+    public void CastWindForward() {
+        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation, transform);
+        StartCoroutine(DashForward());
     }
 }
