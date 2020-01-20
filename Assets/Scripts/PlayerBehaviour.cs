@@ -23,6 +23,10 @@ public class PlayerBehaviour : MonoBehaviour
         transform.LookAt(otherPlayer.transform);
     }
 
+    void Update() {
+        
+    }
+
     public void CastFireballRight() {
         GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
         StartCoroutine(DashRight());
@@ -38,7 +42,7 @@ public class PlayerBehaviour : MonoBehaviour
         float currentTime = (Time.time - startTime) / duration;
         while (currentTime < 1f) {
             transform.position += transform.right * dashSpeed * Time.deltaTime;
-            
+
             currentTime = (Time.time - startTime) / duration;
             print(currentTime);
             float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
@@ -47,6 +51,5 @@ public class PlayerBehaviour : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
         }
-        
     }
 }

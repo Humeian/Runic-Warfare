@@ -103,7 +103,8 @@ namespace AdVd.GlyphRecognition
 				matchingMethod=value;
 			}
 		}
-		MatchingMethod method;
+		// This is bad, fix this
+		public MatchingMethod method;
 
 		public enum Series_Generator{ None=-1, LegendreSeries, LegendreSobolevSeries }
 		[HideInInspector][SerializeField]
