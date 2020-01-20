@@ -369,3 +369,4 @@ MonoBehaviour:
   castedGlyphGraphic: {fileID: 11423472}
   currentGlyphGraphic: {fileID: 11423470}
   currentStrokeGraphic: {fileID: 11423468}
+  player: {fileID: 0}
