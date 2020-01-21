@@ -22,13 +22,8 @@ public class Fireball : MonoBehaviour
         startTime = Time.time;
         startHeight = transform.position.y;
         endPosition = GameObject.Find("Player2").transform.position;
-        StartCoroutine(TravelToDestination());
-    }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        
+        StartCoroutine(TravelToDestination());
     }
 
     IEnumerator TravelToDestination() {
@@ -39,11 +34,21 @@ public class Fireball : MonoBehaviour
 
             transform.position = new Vector3(horizontal.x, vertical, horizontal.z);
 
+            /*
             if (currentTime > 1f) {
                 Instantiate(fireballExplosion, transform.position, Quaternion.identity);
                 Destroy(gameObject);
             }
+            */
+
             yield return new WaitForEndOfFrame();
         }
     }
+
+    void OnTriggerEnter(Collider other) {
+        Instantiate(fireballExplosion, transform.position, Quaternion.identity);
+        Destroy(gameObject);
+    }
+
+
 }
