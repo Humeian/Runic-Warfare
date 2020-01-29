@@ -21,7 +21,9 @@ public class FireballExplosion : MonoBehaviour
 
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Player") {
-            //other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
+            other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
+        } else if (other.tag == "Shield") {
+            other.GetComponent<Shield>().Break();
         }
     }
 }

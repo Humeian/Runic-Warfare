@@ -22,7 +22,7 @@ public class GlyphRecognition : MonoBehaviour {
 		if (glyphInput.OnStrokeDraw!=this.OnStrokeDraw) glyphInput.OnStrokeDraw+=this.OnStrokeDraw;
 		if (glyphInput.OnPointDraw!=this.OnPointDraw) glyphInput.OnPointDraw+=this.OnPointDraw;
 
-		player = GameObject.Find("Player1").GetComponent<PlayerBehaviour>();
+		player = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>();
 	}
 
 	// void Update () {
@@ -133,8 +133,8 @@ public class GlyphRecognition : MonoBehaviour {
 		Stroke[] latestStroke = new Stroke[1];
 		latestStroke[0] = Clone(strokes[strokes.Length - 1]);
 		GlyphMatch castGlyph = Match(latestStroke);
-		Debug.Log(castGlyph.target.ToString());
-		Debug.Log(castGlyph.Cost);
+		// Debug.Log(castGlyph.target.ToString());
+		// Debug.Log(castGlyph.Cost);
 		if (castGlyph.target.ToString() == "UpStroke" && castGlyph.Cost < 0.06) {
 			Glyph newGlyph=Glyph.CreateGlyph(new List<Stroke>(strokes).GetRange(0, strokes.Length - 1).ToArray(), glyphInput.sampleDistance);
 			newGlyph.name="NewGlyph ["+this.name+"]";
@@ -149,6 +149,10 @@ public class GlyphRecognition : MonoBehaviour {
 		Clear(castedGlyphGraphic);
 		if (points!=null) Set(currentStrokeGraphic,new Stroke[]{ new Stroke(points) });
 		else Clear(currentStrokeGraphic);
+	}
+
+	public void ChangePlayer(GameObject p) {
+		player = p.GetComponent<PlayerBehaviour>();
 	}
 }
 

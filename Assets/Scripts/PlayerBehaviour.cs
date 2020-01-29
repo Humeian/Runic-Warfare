@@ -9,6 +9,7 @@ public class PlayerBehaviour : MonoBehaviour
     public float dashHeight;
     private float playerHeight = 1f;
 
+    public int health = 2;
     public GameObject fireball;
     public GameObject shield;
     public GameObject windslash;
@@ -16,17 +17,26 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        otherPlayer = GameObject.Find("Player2");
+        otherPlayer = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().otherPlayer;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         transform.LookAt(otherPlayer.transform);
+        if( health <= 0){
+            // set a global death flag to enter finished screen
+            Debug.Log(this.gameObject.name +" is dead");
+        }
     }
 
     void Update() {
         
+    }
+
+    public void TakeDamage(int dmg=1) {
+        health -= dmg;
+        Debug.Log(this.gameObject.name+" takes "+dmg+" damage!" );
     }
 
     public void CastFireballRight() {
@@ -51,7 +61,7 @@ public class PlayerBehaviour : MonoBehaviour
             transform.position += transform.right * dashSpeed * Time.deltaTime;
 
             currentTime = (Time.time - startTime) / duration;
-            print(currentTime);
+            // print(currentTime);
             float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
 
             transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
@@ -68,7 +78,7 @@ public class PlayerBehaviour : MonoBehaviour
             transform.position -= transform.forward * dashSpeed * 0.8f * Time.deltaTime;
             
             currentTime = (Time.time - startTime) / duration;
-            print(currentTime);
+            // print(currentTime);
             float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight * 0.5f) + playerHeight;
 
             transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
@@ -86,7 +96,7 @@ public class PlayerBehaviour : MonoBehaviour
             transform.position += transform.forward * dashSpeed * 4f * Time.deltaTime;
 
             currentTime = (Time.time - startTime) / duration;
-            print(currentTime);
+            //print(currentTime);
 
             yield return new WaitForEndOfFrame();
         }

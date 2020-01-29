@@ -133,9 +133,10 @@ GameObject:
   - component: {fileID: 391738469}
   - component: {fileID: 391738468}
   - component: {fileID: 391738467}
+  - component: {fileID: 391738471}
   m_Layer: 0
   m_Name: Player2
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -216,6 +217,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &391738471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 391738466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43b833662169bb94dbff5a07b41551c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashSpeed: 0
+  dashHeight: 0
+  health: 2
+  fireball: {fileID: 0}
+  shield: {fileID: 0}
+  windslash: {fileID: 0}
 --- !u!1001 &400491160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -226,6 +245,10 @@ PrefabInstance:
     - target: {fileID: 171112, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: m_Name
       value: Basic Glyph Input
+      objectReference: {fileID: 0}
+    - target: {fileID: 171112, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
+      propertyPath: m_TagString
+      value: GlyphRecognition
       objectReference: {fileID: 0}
     - target: {fileID: 11423468, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: m_Material
@@ -907,7 +930,7 @@ GameObject:
   - component: {fileID: 1503494796}
   m_Layer: 0
   m_Name: Player1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1001,6 +1024,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dashSpeed: 12
   dashHeight: 2
+  health: 2
   fireball: {fileID: 4829775223747024804, guid: cac83329c40f499408a5e417be8d3c31,
     type: 3}
   shield: {fileID: 2091421368820422775, guid: c2fc1aa6e76c5f34ab2eed3af16a091c, type: 3}
@@ -1163,6 +1187,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8603e118d2584b6429239d9e61ccc024, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  otherPlayer: {fileID: 0}
+  currentPlayer: {fileID: 0}
   playerHeight: 0.8
 --- !u!1 &1666162072
 GameObject:

@@ -21,7 +21,7 @@ public class Fireball : MonoBehaviour
         startPosition = transform.position;
         startTime = Time.time;
         startHeight = transform.position.y;
-        endPosition = GameObject.Find("Player2").transform.position;
+        endPosition = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().otherPlayer.transform.position;
 
         StartCoroutine(TravelToDestination());
     }
@@ -46,8 +46,11 @@ public class Fireball : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
-        Instantiate(fireballExplosion, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        // Should not hit the caster
+        if (GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<Collider>() != other ){
+            Instantiate(fireballExplosion, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 
 

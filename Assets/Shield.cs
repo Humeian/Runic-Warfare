@@ -55,4 +55,21 @@ public class Shield : MonoBehaviour
         }
         
     }
+
+    IEnumerator FadeOut() {
+        float duration = 0.3f;
+        float currentTime = 0f;
+        while (currentTime < duration) {
+            Color newColor = new Color(0.75f, 0.5f, 0.75f, (duration / currentTime) * 3f);
+            mpb.SetColor("_Color", newColor);
+            renderer.SetPropertyBlock(mpb, 0);
+            currentTime += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        
+    }
+
+    public void Break() {
+        StartCoroutine(FadeOut());
+    }
 }
