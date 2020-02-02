@@ -17,7 +17,11 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        otherPlayer = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().otherPlayer;
+        if (this.gameObject.name == "Player1"){
+            otherPlayer = GameObject.Find("Player2");
+        } else {
+            otherPlayer = GameObject.Find("Player1");
+        }
     }
 
     // Update is called once per frame
