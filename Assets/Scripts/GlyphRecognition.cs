@@ -7,11 +7,12 @@ using AdVd.GlyphRecognition;
 /// Utility monobehaviour to draw glyphs and strokes. The user may re-implement this class
 /// in order to draw the strokes in a custom way.
 /// </summary>
-public class GlyphDrawer : MonoBehaviour {
+public class GlyphRecognition : MonoBehaviour {
 
     public GlyphDrawInput glyphInput;
 
 	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic;
+
 
 	public PlayerBehaviour player;
 
@@ -21,9 +22,33 @@ public class GlyphDrawer : MonoBehaviour {
 		if (glyphInput.OnStrokeDraw!=this.OnStrokeDraw) glyphInput.OnStrokeDraw+=this.OnStrokeDraw;
 		if (glyphInput.OnPointDraw!=this.OnPointDraw) glyphInput.OnPointDraw+=this.OnPointDraw;
 
-		player = GameObject.Find("Player1").GetComponent<PlayerBehaviour>();
+		player = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>();
 	}
-	
+
+	// void Update () {
+	// 	if(glyphInput.)
+	// }
+
+	GlyphMatch Match(Stroke[] strokes) {
+		Glyph drawnGlyph = Glyph.CreateGlyph(strokes, glyphInput.sampleDistance);
+		if (glyphInput.Method!=null && glyphInput.targetGlyphSet!=null){
+			GlyphMatch match;
+			int index = glyphInput.method.MultiMatch(drawnGlyph, glyphInput.targetGlyphSet, out match);
+			return match;
+		}
+		return null;
+
+	}
+
+	Stroke Clone(Stroke stroke) {
+		Vector2[] points = new Vector2[stroke.Length];
+		for(int i = 0; i < stroke.Length; i ++) {
+			points[i] = stroke[i];
+		}
+		Stroke clone = new Stroke(points);
+		return clone;
+	}
+
 	void Set(StrokeGraphic strokeGraphic, Glyph glyph)
     {
 		if (strokeGraphic != null) strokeGraphic.SetStrokes(glyph);
@@ -43,23 +68,33 @@ public class GlyphDrawer : MonoBehaviour {
 
 
 	void OnGlyphCast(int index, GlyphMatch match){
-		if (match!=null){
-			StartCoroutine(Morph (match));
-		}
-		else{
+		Clear(currentGlyphGraphic);
+		if (match == null) {
 			Clear(targetGlyphGraphic);
 			Clear(castedGlyphGraphic);
+			return;
 		}
-		Clear(currentGlyphGraphic);
 
-		if (match.target.ToString() == "FireGlyph") {
-			player.CastFireballRight();
-		}
-		else if (match.target.ToString() == "Pi") {
-			player.CastShieldBack();
-		}
-		else if (match.target.ToString() == "AirGlyph") {
-			player.CastWindForward();
+		// Debug.Log(match.target.ToString());
+		// Debug.Log(match.Cost);
+		switch (match.target.ToString()) {
+			case "FireGlyph":
+				StartCoroutine(Morph (match));
+				player.CastFireballRight();
+				break;
+			case "WaterGlyph":
+				StartCoroutine(Morph (match));
+				player.CastShieldBack();
+				break;
+			case "AirGlyph":
+				StartCoroutine(Morph (match));
+				player.CastWindForward();
+				break;
+			default:
+				Clear(targetGlyphGraphic);
+				Clear(castedGlyphGraphic);
+				break;
+
 		}
 	}
 
@@ -88,17 +123,36 @@ public class GlyphDrawer : MonoBehaviour {
 			Set(castedGlyphGraphic,match.source);
 		}
 	}
-	
+
 	void OnStrokeDraw(Stroke[] strokes){
 		Clear(currentStrokeGraphic);
-		if (strokes!=null) Set(currentGlyphGraphic,strokes);
-		else Clear(currentGlyphGraphic);
+		if (strokes == null) {
+			Clear(currentGlyphGraphic);
+			return;
+		}
+		Stroke[] latestStroke = new Stroke[1];
+		latestStroke[0] = Clone(strokes[strokes.Length - 1]);
+		GlyphMatch castGlyph = Match(latestStroke);
+		// Debug.Log(castGlyph.target.ToString());
+		// Debug.Log(castGlyph.Cost);
+		if (castGlyph.target.ToString() == "UpStroke" && castGlyph.Cost < 0.06) {
+			Glyph newGlyph=Glyph.CreateGlyph(new List<Stroke>(strokes).GetRange(0, strokes.Length - 1).ToArray(), glyphInput.sampleDistance);
+			newGlyph.name="NewGlyph ["+this.name+"]";
+			glyphInput.Cast(newGlyph);
+			glyphInput.ClearInput();
+		} else {
+			 Set(currentGlyphGraphic,strokes);
+		}
 	}
-	
+
 	void OnPointDraw(Vector2[] points){
 		Clear(castedGlyphGraphic);
 		if (points!=null) Set(currentStrokeGraphic,new Stroke[]{ new Stroke(points) });
 		else Clear(currentStrokeGraphic);
+	}
+
+	public void ChangePlayer(GameObject p) {
+		player = p.GetComponent<PlayerBehaviour>();
 	}
 }
 
