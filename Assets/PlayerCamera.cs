@@ -21,7 +21,7 @@ public class PlayerCamera : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         transform.position = currentPlayer.transform.position + new Vector3(0f, playerHeight, 0f);
         transform.LookAt(otherPlayer.transform);
