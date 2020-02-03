@@ -28,6 +28,8 @@ public class PlayerBehaviour : MonoBehaviour
     void FixedUpdate()
     {
         transform.LookAt(otherPlayer.transform);
+        transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+
         if( health <= 0){
             // set a global death flag to enter finished screen
             Debug.Log(this.gameObject.name +" is dead");
