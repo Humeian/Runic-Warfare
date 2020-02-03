@@ -682,10 +682,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 5582684e-c9e4-4b0b-ac43-65e0adba2dad
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: spellcast-proto
+  organizationId: mickbimmy
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

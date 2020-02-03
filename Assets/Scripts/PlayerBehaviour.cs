@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class PlayerBehaviour : MonoBehaviour
+public class PlayerBehaviour : NetworkBehaviour
 {
     private GameObject otherPlayer;
     public float dashSpeed;
@@ -27,11 +28,23 @@ public class PlayerBehaviour : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.LookAt(otherPlayer.transform);
-        if( health <= 0){
-            // set a global death flag to enter finished screen
-            Debug.Log(this.gameObject.name +" is dead");
+        if (!otherPlayer) {
+			GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+			for (int i = 0; i < players.Length; i++) {
+				PlayerBehaviour behaviour = players[i].GetComponent<PlayerBehaviour>();
+				if (!behaviour.isLocalPlayer) {
+                    otherPlayer = players[i];
+                }
+			}
+		} 
+        else {
+            transform.LookAt(otherPlayer.transform);
+            if( health <= 0){
+                // set a global death flag to enter finished screen
+                Debug.Log(this.gameObject.name +" is dead");
+            }
         }
+        
     }
 
     void Update() {

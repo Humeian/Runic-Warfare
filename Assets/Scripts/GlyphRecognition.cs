@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using AdVd.GlyphRecognition;
@@ -7,14 +8,13 @@ using AdVd.GlyphRecognition;
 /// Utility monobehaviour to draw glyphs and strokes. The user may re-implement this class
 /// in order to draw the strokes in a custom way.
 /// </summary>
-public class GlyphRecognition : MonoBehaviour {
+public class GlyphRecognition : NetworkBehaviour {
 
     public GlyphDrawInput glyphInput;
 
 	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic;
 
-
-	public PlayerBehaviour player;
+	private PlayerBehaviour player;
 
 	void Start () {
         glyphInput.OnGlyphCast.AddListener(this.OnGlyphCast);
@@ -22,12 +22,20 @@ public class GlyphRecognition : MonoBehaviour {
 		if (glyphInput.OnStrokeDraw!=this.OnStrokeDraw) glyphInput.OnStrokeDraw+=this.OnStrokeDraw;
 		if (glyphInput.OnPointDraw!=this.OnPointDraw) glyphInput.OnPointDraw+=this.OnPointDraw;
 
-		player = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>();
+		//player = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>();
 	}
 
-	// void Update () {
-	// 	if(glyphInput.)
-	// }
+	void Update () {
+		if (!player) {
+			GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+			for (int i = 0; i < players.Length; i++) {
+				PlayerBehaviour behaviour = players[i].GetComponent<PlayerBehaviour>();
+				if (behaviour.isLocalPlayer) {
+					player = behaviour;
+				}
+			}
+		}
+	}
 
 	GlyphMatch Match(Stroke[] strokes) {
 		Glyph drawnGlyph = Glyph.CreateGlyph(strokes, glyphInput.sampleDistance);
