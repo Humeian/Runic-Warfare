@@ -57,10 +57,10 @@ public class Shield : MonoBehaviour
     }
 
     IEnumerator FadeOut() {
-        float duration = 0.3f;
+        float quarterStep = 0.3f;
         float currentTime = 0.0001f;
-        while (currentTime < 4*duration) {
-            Color newColor = new Color(0.75f, 0.5f, 0.75f, (duration / currentTime) * 3f);
+        while (currentTime < 4*quarterStep) {
+            Color newColor = new Color(0.75f, 0.5f, 0.75f, (quarterStep / currentTime) * 3f);
             mpb.SetColor("_Color", newColor);
             renderer.SetPropertyBlock(mpb, 0);
             currentTime += Time.deltaTime;

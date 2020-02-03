@@ -9634,6 +9634,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   travelTime: 2.5
-  maxHeight: 7
+  maxHeight: 6
   fireballExplosion: {fileID: 1685594889111544145, guid: cc45b751bd5a8ae4c95e6ef63e559c1b,
     type: 3}
