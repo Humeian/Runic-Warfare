@@ -28,6 +28,8 @@ public class PlayerBehaviour : MonoBehaviour
     void FixedUpdate()
     {
         transform.LookAt(otherPlayer.transform);
+        transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+
         if( health <= 0){
             // set a global death flag to enter finished screen
             Debug.Log(this.gameObject.name +" is dead");
@@ -53,8 +55,30 @@ public class PlayerBehaviour : MonoBehaviour
         StartCoroutine(DashBack());
     }
 
-    void DashLeft() {
+    public void CastWindForward() {
+        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation, transform);
+        StartCoroutine(DashForward());
+    }
 
+    public void ThrowPlayerBack(float horizontal, float vertical, float duration){
+        StartCoroutine(ThrowBack(horizontal, vertical, duration));
+    }
+
+    IEnumerator DashLeft() {
+        float duration = 0.6f;
+        float startTime = Time.time;
+        float currentTime = (Time.time - startTime) / duration;
+        while (currentTime < 1f) {
+            transform.position -= transform.right * dashSpeed * Time.deltaTime;
+
+            currentTime = (Time.time - startTime) / duration;
+            // print(currentTime);
+            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
+
+            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     IEnumerator DashRight() {
@@ -74,7 +98,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-        IEnumerator DashBack() {
+    IEnumerator DashBack() {
         float duration = 0.4f;
         float startTime = Time.time;
         float currentTime = (Time.time - startTime) / duration;
@@ -88,8 +112,23 @@ public class PlayerBehaviour : MonoBehaviour
             transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
 
             yield return new WaitForEndOfFrame();
-        }
-        
+        } 
+    }
+
+    IEnumerator ThrowBack(float throwHorizontal, float throwVertical, float duration=0.4f) {
+        float startTime = Time.time;
+        float currentTime = (Time.time - startTime) / duration;
+        while (currentTime < 3*duration) {
+            transform.position -= transform.forward * throwHorizontal * 2*duration * Time.deltaTime;
+            
+            currentTime = (Time.time - startTime) / duration;
+            // print(currentTime);
+            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * throwVertical * 0.5f) + playerHeight;
+
+            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
+
+            yield return new WaitForEndOfFrame();
+        } 
     }
 
     IEnumerator DashForward() {
@@ -105,10 +144,5 @@ public class PlayerBehaviour : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-    }
-
-    public void CastWindForward() {
-        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation, transform);
-        StartCoroutine(DashForward());
     }
 }

@@ -9633,7 +9633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c3cdc07f1c962f47bf7cda94143e319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  travelTime: 1.5
-  maxHeight: 5
+  travelTime: 2.5
+  maxHeight: 6
   fireballExplosion: {fileID: 1685594889111544145, guid: cc45b751bd5a8ae4c95e6ef63e559c1b,
     type: 3}

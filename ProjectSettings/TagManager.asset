@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - GlyphRecognition
+  - Shield
   layers:
   - Default
   - TransparentFX
