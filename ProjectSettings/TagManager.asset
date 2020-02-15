@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GlyphRecognition
   - Shield
+  - Wall
   layers:
   - Default
   - TransparentFX
