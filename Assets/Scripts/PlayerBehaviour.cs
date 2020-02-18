@@ -1,53 +1,91 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class PlayerBehaviour : MonoBehaviour
+public class PlayerBehaviour : NetworkBehaviour
 {
-    private GameObject otherPlayer;
+    [SyncVar]
+    public GameObject otherPlayer;
+
+    [SyncVar]
+    public int health = 2;
+
     public float dashSpeed;
     public float dashHeight;
     private float playerHeight = 1f;
-
-    public int health = 2;
+    
     public GameObject fireball;
     public GameObject shield;
     public GameObject windslash;
 
+    int movingRight = 0;
+
     // Start is called before the first frame update
-    void Start()
+    public override void OnStartServer()
     {
-        if (this.gameObject.name == "Player1"){
-            otherPlayer = GameObject.Find("Player2");
-        } else {
-            otherPlayer = GameObject.Find("Player1");
-        }
+        base.OnStartServer();
+    }
+
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+    }
+
+    //called by NewNetworkManager
+    public void SetOtherPlayer(GameObject op) {
+        otherPlayer = op;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.LookAt(otherPlayer.transform);
-        transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        if (otherPlayer != null) {
+            transform.LookAt(otherPlayer.transform);
+            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        }
 
         if( health <= 0){
             // set a global death flag to enter finished screen
             Debug.Log(this.gameObject.name +" is dead");
         }
+
+        if (movingRight > 0) {
+            transform.position += transform.right * Time.deltaTime * (movingRight * 1f);
+            movingRight--;
+        }
     }
 
-    void Update() {
-        
+    //Server: Only the server executes the function. 
+    //(However, because the variable is synced, clients will also see the HP decrease.)
+    [Server]
+    public void TakeDamage(int dmg) {
+        health -= (dmg);
     }
 
-    public void TakeDamage(int dmg=1) {
-        health -= dmg;
-        Debug.Log(this.gameObject.name+" takes "+dmg+" damage!" );
+    //TargetRpc: Effect will only appear on the targeted network client.
+    [TargetRpc]
+    public void TargetRedScreen(NetworkConnection target) {
+        UnityEngine.UI.Image red = GameObject.FindGameObjectWithTag("GlyphRecognition").GetComponent<UnityEngine.UI.Image>();
+        red.color = new Color(1f, 0f, 0f, 0.8f);
+
+        Camera.main.GetComponent<PlayerCamera>().Shake(5f);
     }
 
     public void CastFireballRight() {
+        //StartCoroutine(DashRight());
+        //transform.position += transform.TransformDirection(Vector3.right);
+        movingRight += 30;
+        CmdCastFireballRight();
+    }
+
+    //Command: Client sends a message to the server; server executes the function.
+    [Command]
+    public void CmdCastFireballRight() {
         GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
-        StartCoroutine(DashRight());
+        NetworkServer.Spawn(newFireball);
+        newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
+        //StartCoroutine(DashRight());
     }
 
     public void CastShieldBack() {

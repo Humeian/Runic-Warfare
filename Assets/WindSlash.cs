@@ -23,12 +23,12 @@ public class WindSlash : MonoBehaviour
 
     void OnTriggerEnter(Collider other) {
         if (other == otherPlayer) {
-            other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
-            GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>().ThrowPlayerBack(12, 2, 0.5f);
+            //other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
+            //GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>().ThrowPlayerBack(12, 2, 0.5f);
             Destroy(gameObject);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();
-            GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>().ThrowPlayerBack(12, 2, 0.5f);
+            //GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>().ThrowPlayerBack(12, 2, 0.5f);
             Destroy(gameObject);
         }
     }

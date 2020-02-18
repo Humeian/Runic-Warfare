@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Fireball : MonoBehaviour
+public class Fireball : NetworkBehaviour
 {
 
     private Vector3 startPosition;
@@ -12,18 +13,22 @@ public class Fireball : MonoBehaviour
     public float maxHeight;
 
     private float startTime;
+    private Vector3 target;
 
     public GameObject fireballExplosion;
 
     // Start is called before the first frame update
-    void Start()
+    public override void OnStartServer()
     {
         startPosition = transform.position;
         startTime = Time.time;
         startHeight = transform.position.y;
-        endPosition = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().otherPlayer.transform.position;
 
         StartCoroutine(TravelToDestination());
+    }
+
+    public void SetTarget(Vector3 p) {
+        endPosition = p;
     }
 
     IEnumerator TravelToDestination() {
@@ -34,17 +39,17 @@ public class Fireball : MonoBehaviour
 
             transform.position = new Vector3(horizontal.x, vertical, horizontal.z);
 
-            /*
             if (currentTime > 1f) {
-                Instantiate(fireballExplosion, transform.position, Quaternion.identity);
+                GameObject newExplosion = Instantiate(fireballExplosion, transform.position, Quaternion.identity);
+                NetworkServer.Spawn(newExplosion);
                 Destroy(gameObject);
             }
-            */
 
             yield return new WaitForEndOfFrame();
         }
     }
 
+    /*
     void OnTriggerEnter(Collider other) {
         // Should not hit the caster
         if (GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<Collider>() != other ){
@@ -52,6 +57,7 @@ public class Fireball : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    */
 
 
 }
