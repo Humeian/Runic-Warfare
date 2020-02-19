@@ -91,11 +91,11 @@ public class GlyphRecognition : MonoBehaviour {
 				break;
 			case "WaterGlyph":
 				StartCoroutine(Morph (match));
-				//player.CastShieldBack();
+				player.CastShieldBack();
 				break;
 			case "AirGlyph":
 				StartCoroutine(Morph (match));
-				//player.CastWindForward();
+				player.CastWindForward();
 				break;
 			default:
 				Clear(targetGlyphGraphic);

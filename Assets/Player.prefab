@@ -110,9 +110,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
-  syncInterval: 0.05
+  syncInterval: 0.04
   otherPlayer: {fileID: 0}
-  health: 2
+  health: 3
   dashSpeed: 0
   dashHeight: 0
   fireball: {fileID: 4829775223747024804, guid: cac83329c40f499408a5e417be8d3c31,

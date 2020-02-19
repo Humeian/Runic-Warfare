@@ -20,16 +20,29 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject windslash;
 
     int movingRight = 0;
+    int movingForward = 0;
+    float speedRight = 0f;
+    float speedForward = 0f;
 
-    // Start is called before the first frame update
+    // OnServerStart: called when GameObject is created on the server (not called on client).
     public override void OnStartServer()
     {
         base.OnStartServer();
     }
 
+    // OnServerAuthority: called when GameObject is created on the client with authority.
+    // By default, clients only have authority over their Player object and nothing else. 
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
+        StartCoroutine(Movement());
+    }
+
+    IEnumerator testmove() {
+        while (true) {
+            transform.position += transform.forward * Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     //called by NewNetworkManager
@@ -37,7 +50,6 @@ public class PlayerBehaviour : NetworkBehaviour
         otherPlayer = op;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (otherPlayer != null) {
@@ -47,12 +59,27 @@ public class PlayerBehaviour : NetworkBehaviour
 
         if( health <= 0){
             // set a global death flag to enter finished screen
-            Debug.Log(this.gameObject.name +" is dead");
+            //Debug.Log(this.gameObject.name +" is dead");
         }
+    }
 
-        if (movingRight > 0) {
-            transform.position += transform.right * Time.deltaTime * (movingRight * 1f);
-            movingRight--;
+    IEnumerator Movement() {
+        while (true) {
+            if (movingRight != 0) {
+                transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
+
+                if      (movingRight < 0) movingRight++;
+                else if (movingRight > 0) movingRight--;
+            }
+
+            if (movingForward != 0) {
+                transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
+
+                if      (movingForward < 0) movingForward++;
+                else if (movingForward > 0) movingForward--;
+            }
+
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -65,7 +92,7 @@ public class PlayerBehaviour : NetworkBehaviour
 
     //TargetRpc: Effect will only appear on the targeted network client.
     [TargetRpc]
-    public void TargetRedScreen(NetworkConnection target) {
+    public void TargetShowDamageEffects(NetworkConnection target) {
         UnityEngine.UI.Image red = GameObject.FindGameObjectWithTag("GlyphRecognition").GetComponent<UnityEngine.UI.Image>();
         red.color = new Color(1f, 0f, 0f, 0.8f);
 
@@ -73,13 +100,34 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastFireballRight() {
-        //StartCoroutine(DashRight());
         //transform.position += transform.TransformDirection(Vector3.right);
-        movingRight += 30;
+        movingRight = 25;
+        speedRight = 1f;
         CmdCastFireballRight();
     }
 
-    //Command: Client sends a message to the server; server executes the function.
+    public void CastWindForward() {
+        movingForward = 20;
+        speedForward = 2f;
+        CmdCastWindForward();
+    }
+
+    public void CastShieldBack() {
+        movingForward = -30;
+        speedForward = 0.4f;
+        CmdCastShieldBack();
+    }
+
+    [TargetRpc]
+    public void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
+        movingForward = -duration;
+        speedForward = horizontal;
+        //speedUp = vertical;
+        //StartCoroutine(ThrowBack(horizontal, vertical, duration));
+    }
+
+    //-----Commands: Client sends a message to the server; server executes the function.
+
     [Command]
     public void CmdCastFireballRight() {
         GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
@@ -88,19 +136,23 @@ public class PlayerBehaviour : NetworkBehaviour
         //StartCoroutine(DashRight());
     }
 
-    public void CastShieldBack() {
+    [Command]
+    public void CmdCastShieldBack() {
         GameObject newShield = Instantiate(shield, transform.position, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
-        StartCoroutine(DashBack());
+        NetworkServer.Spawn(newShield);
+        //StartCoroutine(DashBack());
     }
 
-    public void CastWindForward() {
-        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation, transform);
-        StartCoroutine(DashForward());
+    [Command]
+    public void CmdCastWindForward() {
+        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation);
+        NetworkServer.Spawn(newWindSlash);
+        newWindSlash.GetComponent<WindSlash>().SetOwner(gameObject);
+        newWindSlash.GetComponent<WindSlash>().SetTarget(otherPlayer);
+        //StartCoroutine(DashForward());
     }
 
-    public void ThrowPlayerBack(float horizontal, float vertical, float duration){
-        StartCoroutine(ThrowBack(horizontal, vertical, duration));
-    }
+    
 
     IEnumerator DashLeft() {
         float duration = 0.6f;

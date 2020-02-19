@@ -20,10 +20,13 @@ public class FireballExplosion : NetworkBehaviour
         
     }
 
+    //Server call only, no call on client.
+    //ServerCallback is similar to Server but doesn't generate a warning when called on client.
+    [ServerCallback]
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Player") {
             other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
-            other.GetComponent<PlayerBehaviour>().TargetRedScreen(other.GetComponent<NetworkIdentity>().connectionToClient);
+            other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();
         }
