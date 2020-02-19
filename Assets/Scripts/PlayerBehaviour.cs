@@ -1,68 +1,158 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class PlayerBehaviour : MonoBehaviour
+public class PlayerBehaviour : NetworkBehaviour
 {
-    private GameObject otherPlayer;
+    [SyncVar]
+    public GameObject otherPlayer;
+
+    [SyncVar]
+    public int health = 2;
+
     public float dashSpeed;
     public float dashHeight;
     private float playerHeight = 1f;
-
-    public int health = 2;
+    
     public GameObject fireball;
     public GameObject shield;
     public GameObject windslash;
 
-    // Start is called before the first frame update
-    void Start()
+    int movingRight = 0;
+    int movingForward = 0;
+    float speedRight = 0f;
+    float speedForward = 0f;
+
+    // OnServerStart: called when GameObject is created on the server (not called on client).
+    public override void OnStartServer()
     {
-        if (this.gameObject.name == "Player1"){
-            otherPlayer = GameObject.Find("Player2");
-        } else {
-            otherPlayer = GameObject.Find("Player1");
+        base.OnStartServer();
+    }
+
+    // OnServerAuthority: called when GameObject is created on the client with authority.
+    // By default, clients only have authority over their Player object and nothing else. 
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+        StartCoroutine(Movement());
+    }
+
+    IEnumerator testmove() {
+        while (true) {
+            transform.position += transform.forward * Time.deltaTime;
+            yield return new WaitForFixedUpdate();
         }
     }
 
-    // Update is called once per frame
+    //called by NewNetworkManager
+    public void SetOtherPlayer(GameObject op) {
+        otherPlayer = op;
+    }
+
     void FixedUpdate()
     {
-        transform.LookAt(otherPlayer.transform);
-        transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        if (otherPlayer != null) {
+            transform.LookAt(otherPlayer.transform);
+            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        }
 
         if( health <= 0){
             // set a global death flag to enter finished screen
-            Debug.Log(this.gameObject.name +" is dead");
+            //Debug.Log(this.gameObject.name +" is dead");
         }
     }
 
-    void Update() {
-        
+    IEnumerator Movement() {
+        while (true) {
+            if (movingRight != 0) {
+                transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
+
+                if      (movingRight < 0) movingRight++;
+                else if (movingRight > 0) movingRight--;
+            }
+
+            if (movingForward != 0) {
+                transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
+
+                if      (movingForward < 0) movingForward++;
+                else if (movingForward > 0) movingForward--;
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
     }
 
-    public void TakeDamage(int dmg=1) {
-        health -= dmg;
-        Debug.Log(this.gameObject.name+" takes "+dmg+" damage!" );
+    //Server: Only the server executes the function. 
+    //(However, because the variable is synced, clients will also see the HP decrease.)
+    [Server]
+    public void TakeDamage(int dmg) {
+        health -= (dmg);
+    }
+
+    //TargetRpc: Effect will only appear on the targeted network client.
+    [TargetRpc]
+    public void TargetShowDamageEffects(NetworkConnection target) {
+        UnityEngine.UI.Image red = GameObject.FindGameObjectWithTag("GlyphRecognition").GetComponent<UnityEngine.UI.Image>();
+        red.color = new Color(1f, 0f, 0f, 0.8f);
+
+        Camera.main.GetComponent<PlayerCamera>().Shake(5f);
     }
 
     public void CastFireballRight() {
-        GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
-        StartCoroutine(DashRight());
-    }
-
-    public void CastShieldBack() {
-        GameObject newShield = Instantiate(shield, transform.position, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
-        StartCoroutine(DashBack());
+        //transform.position += transform.TransformDirection(Vector3.right);
+        movingRight = 25;
+        speedRight = 1f;
+        CmdCastFireballRight();
     }
 
     public void CastWindForward() {
-        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation, transform);
-        StartCoroutine(DashForward());
+        movingForward = 20;
+        speedForward = 2f;
+        CmdCastWindForward();
     }
 
-    public void ThrowPlayerBack(float horizontal, float vertical, float duration){
-        StartCoroutine(ThrowBack(horizontal, vertical, duration));
+    public void CastShieldBack() {
+        movingForward = -30;
+        speedForward = 0.4f;
+        CmdCastShieldBack();
     }
+
+    [TargetRpc]
+    public void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
+        movingForward = -duration;
+        speedForward = horizontal;
+        //speedUp = vertical;
+        //StartCoroutine(ThrowBack(horizontal, vertical, duration));
+    }
+
+    //-----Commands: Client sends a message to the server; server executes the function.
+
+    [Command]
+    public void CmdCastFireballRight() {
+        GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
+        NetworkServer.Spawn(newFireball);
+        newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
+        //StartCoroutine(DashRight());
+    }
+
+    [Command]
+    public void CmdCastShieldBack() {
+        GameObject newShield = Instantiate(shield, transform.position, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
+        NetworkServer.Spawn(newShield);
+        //StartCoroutine(DashBack());
+    }
+
+    [Command]
+    public void CmdCastWindForward() {
+        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation);
+        NetworkServer.Spawn(newWindSlash);
+        newWindSlash.GetComponent<WindSlash>().SetOwner(gameObject);
+        newWindSlash.GetComponent<WindSlash>().SetTarget(otherPlayer);
+        //StartCoroutine(DashForward());
+    }
+
+    
 
     IEnumerator DashLeft() {
         float duration = 0.6f;

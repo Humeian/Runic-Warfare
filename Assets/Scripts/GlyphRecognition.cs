@@ -22,12 +22,19 @@ public class GlyphRecognition : MonoBehaviour {
 		if (glyphInput.OnStrokeDraw!=this.OnStrokeDraw) glyphInput.OnStrokeDraw+=this.OnStrokeDraw;
 		if (glyphInput.OnPointDraw!=this.OnPointDraw) glyphInput.OnPointDraw+=this.OnPointDraw;
 
-		player = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<PlayerBehaviour>();
+		StartCoroutine(CleanScreen());
 	}
 
-	// void Update () {
-	// 	if(glyphInput.)
-	// }
+	IEnumerator CleanScreen() {
+		UnityEngine.UI.Image img = GetComponent<UnityEngine.UI.Image>();
+		while (true) {
+			if (img.color.a > 0f) {
+				float newAlpha = (img.color.a - 0.05f);
+				img.color = new Color(img.color.r, img.color.g, img.color.b, newAlpha);
+			}
+			yield return new WaitForFixedUpdate();
+		}
+	}
 
 	GlyphMatch Match(Stroke[] strokes) {
 		Glyph drawnGlyph = Glyph.CreateGlyph(strokes, glyphInput.sampleDistance);

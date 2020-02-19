@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Shield : MonoBehaviour
+public class Shield : NetworkBehaviour
 {
     public int health = 1;
     public bool reflectsSpells = false;
@@ -12,7 +13,7 @@ public class Shield : MonoBehaviour
     private MeshRenderer renderer;
 
     // Start is called before the first frame update
-    void Start()
+    public override void OnStartServer()
     {
         finalPosition = transform.position;
         transform.position += Vector3.down * 4f;
