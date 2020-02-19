@@ -11,10 +11,15 @@ public class GlyphRecognition : MonoBehaviour {
 
     public GlyphDrawInput glyphInput;
 
-	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic;
+	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic, storedGlyphGraphic;
 
+	public Glyph storedGlyph;
 
 	public PlayerBehaviour player;
+
+	private enum CastDirection {Right, Left};
+
+	private CastDirection currentCast;
 
 	void Start () {
         glyphInput.OnGlyphCast.AddListener(this.OnGlyphCast);
@@ -47,8 +52,8 @@ public class GlyphRecognition : MonoBehaviour {
 
 	}
 
-	Stroke Clone(Stroke stroke) {
-		Vector2[] points = new Vector2[stroke.Length];
+	Stroke Clone(Stroke stroke, out Vector2[] points) {
+		points = new Vector2[stroke.Length];
 		for(int i = 0; i < stroke.Length; i ++) {
 			points[i] = stroke[i];
 		}
@@ -87,7 +92,11 @@ public class GlyphRecognition : MonoBehaviour {
 		switch (match.target.ToString()) {
 			case "FireGlyph":
 				StartCoroutine(Morph (match));
-				player.CastFireballRight();
+				if (currentCast == CastDirection.Right) {
+					player.CastFireball(25, 1f);
+				} else {
+					player.CastFireball(-25, 1f);
+				}
 				break;
 			case "WaterGlyph":
 				StartCoroutine(Morph (match));
@@ -134,21 +143,58 @@ public class GlyphRecognition : MonoBehaviour {
 	void OnStrokeDraw(Stroke[] strokes){
 		Clear(currentStrokeGraphic);
 		if (strokes == null) {
-			Clear(currentGlyphGraphic);
 			return;
 		}
 		Stroke[] latestStroke = new Stroke[1];
-		latestStroke[0] = Clone(strokes[strokes.Length - 1]);
+		Vector2[] points;
+		latestStroke[0] = Clone(strokes[strokes.Length - 1], out points);
+		Vector2 vectorStroke = points[points.Length-1] - points[0];
 		GlyphMatch castGlyph = Match(latestStroke);
-		// Debug.Log(castGlyph.target.ToString());
-		// Debug.Log(castGlyph.Cost);
+
+		Debug.Log(castGlyph.target.ToString());
+        Debug.Log(castGlyph.Cost);
 		if (castGlyph.target.ToString() == "UpStroke" && castGlyph.Cost < 0.06) {
-			Glyph newGlyph=Glyph.CreateGlyph(new List<Stroke>(strokes).GetRange(0, strokes.Length - 1).ToArray(), glyphInput.sampleDistance);
-			newGlyph.name="NewGlyph ["+this.name+"]";
+			float direction = Vector2.Dot(Vector2.up, vectorStroke);
+
+			if (direction > 0) {
+				if (storedGlyph && IsClear(currentGlyphGraphic)) {
+					Set(currentGlyphGraphic, storedGlyph);
+					Clear(storedGlyphGraphic);
+					storedGlyph = null;
+				}
+			} else {
+				Glyph newGlyph=Glyph.CreateGlyph(
+					new List<Stroke>(strokes).GetRange(0, strokes.Length - 1).ToArray(),
+					glyphInput.sampleDistance
+				);
+				storedGlyph = newGlyph;
+				Clear(currentGlyphGraphic);
+				Set(storedGlyphGraphic, newGlyph);
+				glyphInput.ClearInput();
+				Debug.Log("Store");
+			}
+
+		} else if (castGlyph.target.ToString() == "CastLeft" && castGlyph.Cost < 0.1) {
+			Debug.Log("CastLeft");
+			Glyph newGlyph=Glyph.CreateGlyph(
+				new List<Stroke>(strokes).GetRange(0, strokes.Length - 1).ToArray(),
+				glyphInput.sampleDistance
+			);
+			currentCast = CastDirection.Left;
+			glyphInput.Cast(newGlyph);
+			glyphInput.ClearInput();
+
+		} else if (castGlyph.target.ToString() == "CastRight" && castGlyph.Cost < 0.1) {
+			Debug.Log("CastRight");
+			Glyph newGlyph=Glyph.CreateGlyph(
+				new List<Stroke>(strokes).GetRange(0, strokes.Length - 1).ToArray(),
+				glyphInput.sampleDistance
+			);
+			currentCast = CastDirection.Right;
 			glyphInput.Cast(newGlyph);
 			glyphInput.ClearInput();
 		} else {
-			 Set(currentGlyphGraphic,strokes);
+			Set(currentGlyphGraphic,strokes);
 		}
 	}
 

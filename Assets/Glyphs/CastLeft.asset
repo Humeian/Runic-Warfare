@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fbd0a9c775139144a24bc39d0629bab, type: 3}
+  m_Name: CastLeft
+  m_EditorClassIdentifier: 
+  strokes:
+  - points:
+    - {x: 0.29356068, y: -0.4022727}
+    - {x: 0.21704547, y: -0.29848486}
+    - {x: 0.14659093, y: -0.2030303}
+    - {x: 0.074621245, y: -0.104545474}
+    - {x: 0.0026515424, y: -0.00075758994}
+    - {x: -0.06931814, y: 0.106060624}
+    - {x: -0.12992418, y: 0.20984851}
+    - {x: -0.1897727, y: 0.31212127}
+    - {x: -0.24583332, y: 0.40454546}

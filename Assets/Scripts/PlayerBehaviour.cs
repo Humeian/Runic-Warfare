@@ -14,7 +14,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public float dashSpeed;
     public float dashHeight;
     private float playerHeight = 1f;
-    
+
     public GameObject fireball;
     public GameObject shield;
     public GameObject windslash;
@@ -99,11 +99,11 @@ public class PlayerBehaviour : NetworkBehaviour
         Camera.main.GetComponent<PlayerCamera>().Shake(5f);
     }
 
-    public void CastFireballRight() {
+    public void CastFireball(int horizontal, float horizSpeed) {
         //transform.position += transform.TransformDirection(Vector3.right);
-        movingRight = 25;
-        speedRight = 1f;
-        CmdCastFireballRight();
+        movingRight = horizontal;
+        speedRight = horizSpeed;
+        CmdCastFireball();
     }
 
     public void CastWindForward() {
@@ -129,7 +129,7 @@ public class PlayerBehaviour : NetworkBehaviour
     //-----Commands: Client sends a message to the server; server executes the function.
 
     [Command]
-    public void CmdCastFireballRight() {
+    public void CmdCastFireball() {
         GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
         NetworkServer.Spawn(newFireball);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
@@ -152,7 +152,7 @@ public class PlayerBehaviour : NetworkBehaviour
         //StartCoroutine(DashForward());
     }
 
-    
+
 
     IEnumerator DashLeft() {
         float duration = 0.6f;
@@ -194,7 +194,7 @@ public class PlayerBehaviour : NetworkBehaviour
         float currentTime = (Time.time - startTime) / duration;
         while (currentTime < 1f) {
             transform.position -= transform.forward * dashSpeed * 0.8f * Time.deltaTime;
-            
+
             currentTime = (Time.time - startTime) / duration;
             // print(currentTime);
             float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight * 0.5f) + playerHeight;
@@ -202,7 +202,7 @@ public class PlayerBehaviour : NetworkBehaviour
             transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
 
             yield return new WaitForEndOfFrame();
-        } 
+        }
     }
 
     IEnumerator ThrowBack(float throwHorizontal, float throwVertical, float duration=0.4f) {
@@ -210,7 +210,7 @@ public class PlayerBehaviour : NetworkBehaviour
         float currentTime = (Time.time - startTime) / duration;
         while (currentTime < 3*duration) {
             transform.position -= transform.forward * throwHorizontal * 2*duration * Time.deltaTime;
-            
+
             currentTime = (Time.time - startTime) / duration;
             // print(currentTime);
             float vertical = (Mathf.Sin(currentTime * Mathf.PI) * throwVertical * 0.5f) + playerHeight;
@@ -218,7 +218,7 @@ public class PlayerBehaviour : NetworkBehaviour
             transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
 
             yield return new WaitForEndOfFrame();
-        } 
+        }
     }
 
     IEnumerator DashForward() {
