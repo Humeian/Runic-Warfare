@@ -19,7 +19,9 @@ public class Shield : NetworkBehaviour
         transform.position += Vector3.down * 4f;
         startPosition = transform.position;
         StartCoroutine(RiseUp());
+    }
 
+    void Start() {
         mpb = new MaterialPropertyBlock();
         renderer = GetComponent<MeshRenderer>();
         StartCoroutine(FadeIn());
