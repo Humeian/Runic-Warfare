@@ -11,6 +11,11 @@ public class PlayerBehaviour : NetworkBehaviour
     [SyncVar]
     public int health = 2;
 
+    [SyncVar]
+    public int lightningCharge = 0;
+
+    private int lightningChargesNeeded = 3;
+
     public float dashSpeed;
     public float dashHeight;
     private float playerHeight = 1f;
@@ -18,6 +23,8 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject fireball;
     public GameObject shield;
     public GameObject windslash;
+    public GameObject lightningChargeObj;
+    public GameObject lightning;
 
     int movingRight = 0;
     int movingForward = 0;
@@ -99,6 +106,12 @@ public class PlayerBehaviour : NetworkBehaviour
         Camera.main.GetComponent<PlayerCamera>().Shake(5f);
     }
 
+    [TargetRpc]
+    public void TargetPaintScreen(NetworkConnection target, Color c) {
+        UnityEngine.UI.Image screen = GameObject.FindGameObjectWithTag("GlyphRecognition").GetComponent<UnityEngine.UI.Image>();
+        screen.color = c;
+    }
+
     public void CastFireballRight() {
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = 25;
@@ -118,6 +131,21 @@ public class PlayerBehaviour : NetworkBehaviour
         CmdCastShieldBack();
     }
 
+    public void CastLightningNeutral() {
+        CmdCastLightningCharge();
+        lightningCharge++;
+        if (lightningCharge == lightningChargesNeeded) {
+            StartCoroutine(WaitForLightning());
+            lightningCharge = 0;
+        }
+        
+    }
+
+    IEnumerator WaitForLightning() {
+        yield return new WaitForSeconds(0.45f);
+        CmdCastLightning();
+    }
+
     [TargetRpc]
     public void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
         movingForward = -duration;
@@ -127,12 +155,13 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     //-----Commands: Client sends a message to the server; server executes the function.
+    // For instantiating attacks, set owners and targets before NetworkServer.Spawn().
 
     [Command]
     public void CmdCastFireballRight() {
         GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
-        NetworkServer.Spawn(newFireball);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
+        NetworkServer.Spawn(newFireball);
         //StartCoroutine(DashRight());
     }
 
@@ -146,11 +175,27 @@ public class PlayerBehaviour : NetworkBehaviour
     [Command]
     public void CmdCastWindForward() {
         GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation);
-        NetworkServer.Spawn(newWindSlash);
         newWindSlash.GetComponent<WindSlash>().SetOwner(gameObject);
         newWindSlash.GetComponent<WindSlash>().SetTarget(otherPlayer);
+        NetworkServer.Spawn(newWindSlash);
         //StartCoroutine(DashForward());
     }
+
+    [Command]
+    public void CmdCastLightningCharge() {
+        GameObject newChargeEffect = Instantiate(lightningChargeObj, transform.position, transform.rotation);
+        newChargeEffect.GetComponent<LightningCharge>().SetOwner(gameObject);
+        NetworkServer.Spawn(newChargeEffect);
+    }
+
+    [Command]
+    public void CmdCastLightning() {
+        GameObject newLightning = Instantiate(lightning, transform.position, transform.rotation);
+        newLightning.GetComponent<Lightning>().SetOwner(gameObject);
+        newLightning.GetComponent<Lightning>().SetTarget(otherPlayer);
+        NetworkServer.Spawn(newLightning);
+    }
+
 
     
 

@@ -97,6 +97,10 @@ public class GlyphRecognition : MonoBehaviour {
 				StartCoroutine(Morph (match));
 				player.CastWindForward();
 				break;
+			case "LightningGlyph":
+				StartCoroutine(Morph (match));
+				player.CastLightningNeutral();
+				break;
 			default:
 				Clear(targetGlyphGraphic);
 				Clear(castedGlyphGraphic);
