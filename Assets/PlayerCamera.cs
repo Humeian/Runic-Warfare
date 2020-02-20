@@ -8,6 +8,9 @@ public class PlayerCamera : MonoBehaviour
     public GameObject otherPlayer;
     public GameObject currentPlayer;
     public float playerHeight;
+    public GameObject lookAtObject;
+    public Transform playerHipBone;
+    public Vector3 playerHipBonePos;
 
     public GlyphRecognition glyphRecognition;
 
@@ -37,8 +40,23 @@ public class PlayerCamera : MonoBehaviour
             }
         }
         else {
-            transform.position = currentPlayer.transform.position + new Vector3(0f, playerHeight, 0f);
-            transform.LookAt(otherPlayer.transform);
+            // Get body position for deathcam.
+            if (playerHipBone == null) {
+                playerHipBone = currentPlayer.transform.GetChild(0).GetChild(0).GetChild(0);
+                playerHipBonePos = currentPlayer.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Rigidbody>().position;
+            }
+
+            playerHipBonePos = playerHipBone.position;
+
+            if (currentPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
+                transform.position = playerHipBone.position + new Vector3(4f, 4f, 0f);
+                transform.LookAt(playerHipBone);
+            }
+            else {
+                transform.position = currentPlayer.transform.position + new Vector3(0f, playerHeight, 0f);
+                lookAtObject.transform.position = otherPlayer.transform.position + new Vector3(0f, playerHeight * 0.8f, 0f);
+                transform.LookAt(lookAtObject.transform);
+            }
 
             if (shakeFactor >= 0.001f) {
                 transform.position += (Vector3)(Random.insideUnitSphere * shakeFactor);

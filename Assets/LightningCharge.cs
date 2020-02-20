@@ -11,6 +11,7 @@ public class LightningCharge : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        transform.position += Vector3.up;
         StartCoroutine(PaintScreenYellow());
         Destroy(gameObject, 2f);
     }

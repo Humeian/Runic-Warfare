@@ -21,10 +21,12 @@ public class Lightning : NetworkBehaviour
     public override void OnStartServer()
     {
         startPos = owner.transform.position;
+        Vector3 targetPos = target.transform.position + Vector3.up;
+        Vector3 direction = targetPos - startPos;
 
-        Debug.DrawRay(owner.transform.position, target.transform.position - owner.transform.position, Color.red, 5f);
+        Debug.DrawRay(startPos, direction, Color.red, 5f);
 
-        RaycastHit[] rayhits = Physics.RaycastAll(owner.transform.position, target.transform.position - owner.transform.position, 100f);
+        RaycastHit[] rayhits = Physics.RaycastAll(startPos, direction, 100f);
         IEnumerable<RaycastHit> rayhitsOrdered = rayhits.OrderBy(rh => rh.distance);
 
         foreach (RaycastHit rh in rayhitsOrdered) {
