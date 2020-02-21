@@ -32,6 +32,10 @@ namespace Mirror
         /// </summary>
         public int offsetY;
 
+        public void ToggleVisibility(){
+            showGUI = !showGUI;
+        }
+
         void Awake()
         {
             manager = GetComponent<NetworkManager>();
@@ -49,8 +53,8 @@ namespace Mirror
                 {
                     // LAN Host
                     if (Application.platform != RuntimePlatform.WebGLPlayer)
-                    {
-                        if (GUILayout.Button("LAN Host"))
+                    {   
+                        if (GUILayout.Button("LAN host"))
                         {
                             manager.StartHost();
                         }

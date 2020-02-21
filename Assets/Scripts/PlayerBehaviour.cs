@@ -125,6 +125,12 @@ public class PlayerBehaviour : NetworkBehaviour
         red.color = new Color(1f, 0f, 0f, 0.8f);
 
         Camera.main.GetComponent<PlayerCamera>().Shake(5f);
+
+        if (health > 1){
+            GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
+        } else {
+            GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
+        }
     }
 
     [TargetRpc]
