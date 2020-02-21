@@ -3470,6 +3470,11 @@ PrefabInstance:
       propertyPath: m_ScaleInLightmap
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 23475115634240118, guid: 72bad4fa0d60f8344b7671ae201762b3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3e3900e834163f842b8305ac66dce556, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72bad4fa0d60f8344b7671ae201762b3, type: 3}
 --- !u!4 &1373364414 stripped
@@ -3898,6 +3903,11 @@ PrefabInstance:
       propertyPath: m_ScaleInLightmap
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 23475115634240118, guid: 72bad4fa0d60f8344b7671ae201762b3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3e3900e834163f842b8305ac66dce556, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72bad4fa0d60f8344b7671ae201762b3, type: 3}
 --- !u!4 &1597116751 stripped

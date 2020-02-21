@@ -144,6 +144,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public void CastShieldBack() {
         movingForward = -30;
         speedForward = 0.4f;
+        SetAnimTrigger("ShieldBack");
         CmdCastShieldBack();
     }
 
