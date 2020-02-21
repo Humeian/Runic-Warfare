@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,7 +52,11 @@ public class PlayerCamera : MonoBehaviour
                 transform.position = playerHipBone.position + new Vector3(4f, 4f, 0f);
                 transform.LookAt(playerHipBone);
 
+                // Enable rematch button
                 GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(true);
+
+                // Disable glyph input
+                GameObject.FindWithTag("GlyphRecognition").SetActive(false);
             }
             else {
                 transform.position = currentPlayer.transform.position + new Vector3(0f, playerHeight, 0f);
@@ -93,5 +97,6 @@ public class PlayerCamera : MonoBehaviour
         // Reset health, respawn players, reset camera, etc.....
 
         // I straight up have no idea how this works with the network stuff
+        currentPlayer.GetComponent<PlayerBehaviour>().ResetPlayer();
     }
 }

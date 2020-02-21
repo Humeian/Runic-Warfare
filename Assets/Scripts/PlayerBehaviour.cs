@@ -63,6 +63,19 @@ public class PlayerBehaviour : NetworkBehaviour
         otherPlayer = op;
     }
 
+    public void ResetPlayer(){
+        GetComponent<CapsuleCollider>().enabled = true;
+        GetComponent<Animator>().enabled = true;
+
+        health = 2;
+
+        // Disable rematch button
+        GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(false);
+
+        // Enable glyph input
+        GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(true);
+    }
+
     void FixedUpdate()
     {
         
