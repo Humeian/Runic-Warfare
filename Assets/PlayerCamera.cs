@@ -87,4 +87,11 @@ public class PlayerCamera : MonoBehaviour
 
         glyphRecognition.ChangePlayer(currentPlayer);
     }
+
+    public void Rematch() {
+        // Function stub
+        // Reset health, respawn players, reset camera, etc.....
+
+        // I straight up have no idea how this works with the network stuff
+    }
 }
