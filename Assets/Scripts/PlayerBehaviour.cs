@@ -35,6 +35,8 @@ public class PlayerBehaviour : NetworkBehaviour
     float speedRight = 0f;
     float speedForward = 0f;
 
+    private bool firstHit = true;
+
     // OnServerStart: called when GameObject is created on the server (not called on client).
     public override void OnStartServer()
     {
@@ -126,7 +128,8 @@ public class PlayerBehaviour : NetworkBehaviour
 
         Camera.main.GetComponent<PlayerCamera>().Shake(5f);
 
-        if (health > 1){
+        if (firstHit){
+            firstHit = false;
             GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
         } else {
             GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
