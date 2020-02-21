@@ -51,6 +51,8 @@ public class PlayerCamera : MonoBehaviour
             if (currentPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
                 transform.position = playerHipBone.position + new Vector3(4f, 4f, 0f);
                 transform.LookAt(playerHipBone);
+
+                GameObject.Find("Canvas").transform.Find("Ready").gameObject.SetActive(true);
             }
             else {
                 transform.position = currentPlayer.transform.position + new Vector3(0f, playerHeight, 0f);
