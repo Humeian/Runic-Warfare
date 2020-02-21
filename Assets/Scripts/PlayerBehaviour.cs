@@ -13,6 +13,7 @@ public class PlayerBehaviour : NetworkBehaviour
 
     [SyncVar]
     public int lightningCharge = 0;
+    
 
     private int lightningChargesNeeded = 3;
 
@@ -27,6 +28,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject windslash;
     public GameObject lightningChargeObj;
     public GameObject lightning;
+    public RuntimeAnimatorController controller;
 
     int movingRight = 0;
     int movingForward = 0;
@@ -61,17 +63,32 @@ public class PlayerBehaviour : NetworkBehaviour
 
     void FixedUpdate()
     {
+        
         if (otherPlayer != null) {
             transform.LookAt(otherPlayer.transform);
             transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
         }
 
-        if( health <= 0 && GetComponent<Animator>().enabled){
+        if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null) {
+            GetComponent<Animator>().runtimeAnimatorController = controller;
+            //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
+        }
+
+        else if( health <= 0 && GetComponent<Animator>().runtimeAnimatorController != null){
             // set a global death flag to enter finished screen
             //Debug.Log(this.gameObject.name +" is dead");
-            GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
-            GetComponent<Animator>().enabled = !GetComponent<Animator>().enabled;
+            //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
+            GetComponent<Animator>().runtimeAnimatorController = null;
         }
+
+        if (Input.GetKey(KeyCode.H)) {
+            CmdRestoreHealth(2);
+        }
+    }
+
+    [Command]
+    public void CmdRestoreHealth(int h) {
+        health = h;
     }
 
     IEnumerator Movement() {
