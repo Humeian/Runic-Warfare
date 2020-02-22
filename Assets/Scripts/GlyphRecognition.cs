@@ -25,6 +25,10 @@ public class GlyphRecognition : MonoBehaviour {
 		StartCoroutine(CleanScreen());
 	}
 
+	public void InitCleanScreen(){
+		StartCoroutine(CleanScreen());
+	}
+
 	IEnumerator CleanScreen() {
 		UnityEngine.UI.Image img = GetComponent<UnityEngine.UI.Image>();
 		while (true) {
@@ -71,6 +75,13 @@ public class GlyphRecognition : MonoBehaviour {
 	bool IsClear(StrokeGraphic strokeGraphic)
     {
 		return strokeGraphic == null || strokeGraphic.IsClear;
+	}
+
+	public void ClearAll(){
+		if (targetGlyphGraphic != null) targetGlyphGraphic.ClearStrokes();
+		if (castedGlyphGraphic != null) castedGlyphGraphic.ClearStrokes();
+		if (currentGlyphGraphic != null) currentGlyphGraphic.ClearStrokes();
+		if (currentStrokeGraphic != null) currentStrokeGraphic.ClearStrokes();
 	}
 
 

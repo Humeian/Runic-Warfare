@@ -67,19 +67,22 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void ResetPlayer(){
-        CmdRestoreHealth(2);
+        CmdRestoreHealth(3);
 
         // Disable rematch button
         GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(false);
 
-        // Enable glyph input
-        GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(true);
+        // Enable glyph input & reboot the color cleaning coroutine
+        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
+        glyphInput.SetActive(true);
+        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
 
         // Timer reset is done in the onClick() of the rematch button
 
         // Reset health bubble colour
         GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
         GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
+        firstHit = true;
     }
 
     void FixedUpdate()
@@ -105,6 +108,7 @@ public class PlayerBehaviour : NetworkBehaviour
             GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(true);
 
             // Disable glyph input
+            GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
             GameObject.FindWithTag("GlyphRecognition").SetActive(false);
 
             // Stop the timer
