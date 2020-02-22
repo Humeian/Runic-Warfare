@@ -68,6 +68,7 @@ public class PlayerBehaviour : NetworkBehaviour
 
     public void ResetPlayer(){
         CmdRestoreHealth(3);
+        lightningCharge = 0;
 
         // Disable rematch button
         GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(false);

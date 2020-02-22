@@ -977,7 +977,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: overrideThreshold
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: threshold
@@ -4797,6 +4797,11 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 400491167}
+    - target: {fileID: 850189311137747567, guid: bfffd1108bea347478cf9f416f84fa3d,
+        type: 3}
+      propertyPath: m_Value
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 850189311162456916, guid: bfffd1108bea347478cf9f416f84fa3d,
         type: 3}
       propertyPath: m_Name
