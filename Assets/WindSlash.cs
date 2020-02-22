@@ -22,6 +22,11 @@ public class WindSlash : NetworkBehaviour
         //otherPlayer = GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().otherPlayer.GetComponent<Collider>();
     }
 
+    void Start() {
+        Color green = new Color(0.5f, 1f, 0.5f, 0.6f);
+        owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, green);
+    }
+
     public void SetTarget(GameObject g) {
         otherPlayer = g;
     }
@@ -33,9 +38,7 @@ public class WindSlash : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        if (owner != null)
-            transform.position = owner.transform.position + (transform.forward * 2f);
+        transform.position = owner.transform.position + (transform.forward * 2f) + Vector3.up;
     }
 
     [Server]
@@ -46,13 +49,14 @@ public class WindSlash : NetworkBehaviour
                 other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
                 other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
                 owner.GetComponent<PlayerBehaviour>().TargetThrowPlayerBack(owner.GetComponent<NetworkIdentity>().connectionToClient, 0.8f, 2, 40);
+                owner.GetComponent<PlayerBehaviour>().TargetSetAnimTrigger(owner.GetComponent<NetworkIdentity>().connectionToClient, "WindSlashRecoil");
                 Destroy(gameObject);
             } else if (other.tag == "Shield") {
                 other.GetComponent<Shield>().Break();
                 owner.GetComponent<PlayerBehaviour>().TargetThrowPlayerBack(owner.GetComponent<NetworkIdentity>().connectionToClient, 0.4f, 2, 40);
+                owner.GetComponent<PlayerBehaviour>().TargetSetAnimTrigger(owner.GetComponent<NetworkIdentity>().connectionToClient, "WindSlashRecoil");
                 Destroy(gameObject);
             }
         }
-        
     }
 }

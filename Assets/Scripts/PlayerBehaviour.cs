@@ -11,6 +11,13 @@ public class PlayerBehaviour : NetworkBehaviour
     [SyncVar]
     public int health = 2;
 
+    [SyncVar]
+    public int lightningCharge = 0;
+
+    private int lightningChargesNeeded = 3;
+
+    public NetworkAnimator animator;
+
     public float dashSpeed;
     public float dashHeight;
     private float playerHeight = 1f;
@@ -18,6 +25,9 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject fireball;
     public GameObject shield;
     public GameObject windslash;
+    public GameObject lightningChargeObj;
+    public GameObject lightning;
+    public RuntimeAnimatorController controller;
 
     int movingRight = 0;
     int movingForward = 0;
@@ -57,10 +67,26 @@ public class PlayerBehaviour : NetworkBehaviour
             transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
         }
 
-        if( health <= 0){
+        if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null) {
+            GetComponent<Animator>().runtimeAnimatorController = controller;
+            //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
+        }
+
+        else if( health <= 0 && GetComponent<Animator>().runtimeAnimatorController != null){
             // set a global death flag to enter finished screen
             //Debug.Log(this.gameObject.name +" is dead");
+            //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
+            GetComponent<Animator>().runtimeAnimatorController = null;
         }
+
+        if (Input.GetKey(KeyCode.H)) {
+            CmdRestoreHealth(2);
+        }
+    }
+
+    [Command]
+    public void CmdRestoreHealth(int h) {
+        health = h;
     }
 
     IEnumerator Movement() {
@@ -103,19 +129,51 @@ public class PlayerBehaviour : NetworkBehaviour
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
         speedRight = horizSpeed;
+        SetAnimTrigger("FireballRight");
         CmdCastFireball();
+    }
+    [TargetRpc]
+    public void TargetPaintScreen(NetworkConnection target, Color c) {
+        UnityEngine.UI.Image screen = GameObject.FindGameObjectWithTag("GlyphRecognition").GetComponent<UnityEngine.UI.Image>();
+        screen.color = c;
+    }
+
+    public void SetAnimTrigger(string s) {
+        animator.SetTrigger(s);
+    }
+
+    // For outside animation triggers such as WindSlashRecoil.
+    [TargetRpc]
+    public void TargetSetAnimTrigger(NetworkConnection target, string s) {
+        animator.SetTrigger(s);
     }
 
     public void CastWindForward() {
         movingForward = 20;
         speedForward = 2f;
+        SetAnimTrigger("WindSlash");
         CmdCastWindForward();
     }
 
     public void CastShieldBack() {
         movingForward = -30;
         speedForward = 0.4f;
+        SetAnimTrigger("ShieldBack");
         CmdCastShieldBack();
+    }
+
+    public void CastLightningNeutral() {
+        CmdCastLightningCharge();
+        lightningCharge++;
+        if (lightningCharge == lightningChargesNeeded) {
+            StartCoroutine(WaitForLightning());
+            lightningCharge = 0;
+        }
+    }
+
+    IEnumerator WaitForLightning() {
+        yield return new WaitForSeconds(0.45f);
+        CmdCastLightning();
     }
 
     [TargetRpc]
@@ -127,32 +185,46 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     //-----Commands: Client sends a message to the server; server executes the function.
+    // For instantiating attacks, set owners and targets before NetworkServer.Spawn().
 
     [Command]
     public void CmdCastFireball() {
-        GameObject newFireball = Instantiate(fireball, transform.position, transform.rotation);
-        NetworkServer.Spawn(newFireball);
+        GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
+        NetworkServer.Spawn(newFireball);
         //StartCoroutine(DashRight());
     }
 
     [Command]
     public void CmdCastShieldBack() {
-        GameObject newShield = Instantiate(shield, transform.position, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
+        GameObject newShield = Instantiate(shield, transform.position + Vector3.up, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
         NetworkServer.Spawn(newShield);
         //StartCoroutine(DashBack());
     }
 
     [Command]
     public void CmdCastWindForward() {
-        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f), transform.rotation);
-        NetworkServer.Spawn(newWindSlash);
+        GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f) + Vector3.up, transform.rotation);
         newWindSlash.GetComponent<WindSlash>().SetOwner(gameObject);
         newWindSlash.GetComponent<WindSlash>().SetTarget(otherPlayer);
+        NetworkServer.Spawn(newWindSlash);
         //StartCoroutine(DashForward());
     }
 
+    [Command]
+    public void CmdCastLightningCharge() {
+        GameObject newChargeEffect = Instantiate(lightningChargeObj, transform.position + Vector3.up, transform.rotation);
+        newChargeEffect.GetComponent<LightningCharge>().SetOwner(gameObject);
+        NetworkServer.Spawn(newChargeEffect);
+    }
 
+    [Command]
+    public void CmdCastLightning() {
+        GameObject newLightning = Instantiate(lightning, transform.position + Vector3.up, transform.rotation);
+        newLightning.GetComponent<Lightning>().SetOwner(gameObject);
+        newLightning.GetComponent<Lightning>().SetTarget(otherPlayer);
+        NetworkServer.Spawn(newLightning);
+    }
 
     IEnumerator DashLeft() {
         float duration = 0.6f;
