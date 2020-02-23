@@ -51,16 +51,6 @@ public class GlyphDrawer : MonoBehaviour {
 			Clear(castedGlyphGraphic);
 		}
 		Clear(currentGlyphGraphic);
-
-		if (match.target.ToString() == "FireGlyph") {
-			player.CastFireballRight();
-		}
-		else if (match.target.ToString() == "Pi") {
-			//player.CastShieldBack();
-		}
-		else if (match.target.ToString() == "AirGlyph") {
-			//player.CastWindForward();
-		}
 	}
 
 	const float step=0.01f;

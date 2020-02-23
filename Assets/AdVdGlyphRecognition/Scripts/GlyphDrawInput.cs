@@ -15,7 +15,7 @@ namespace AdVd.GlyphRecognition
 	public class GlyphDrawInput : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler {
 
 		List<Vector2> stroke;
-		List<Stroke> strokeList;
+		public List<Stroke> strokeList;
 		public Glyph castedGlyph;
 		public GlyphMatch currentMatch;
 		/// <summary>
