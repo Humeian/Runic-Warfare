@@ -14,7 +14,7 @@ public class GlyphRecognition : MonoBehaviour {
 	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic, storedGlyphGraphic;
 
 	float costThreshold;
-	public float cstThreshold {get{ return costThreshold; } set{
+	public float CostThreshold {get{ return costThreshold; } set{
 		costThreshold = value;
 		Debug.Log(value);
 	}}
@@ -111,7 +111,7 @@ public class GlyphRecognition : MonoBehaviour {
 		// Debug.Log(match.Cost);
 		switch (match.target.ToString()) {
 			case "FireGlyph":
-			case "FireBallGlyph":
+			case "FireBall":
 				StartCoroutine(Morph (match));
 				if (currentCast == CastDirection.Right) {
 					player.CastFireball(25, 1f);
@@ -122,12 +122,12 @@ public class GlyphRecognition : MonoBehaviour {
 				}
 				break;
 			case "WaterGlyph":
-			case "ShieldGlyph":
+			case "Shield":
 				StartCoroutine(Morph (match));
 				player.CastShieldBack();
 				break;
 			case "AirGlyph":
-			case "WindSlashGlyph":
+			case "WindSlash":
 				StartCoroutine(Morph (match));
 				player.CastWindForward();
 				break;
