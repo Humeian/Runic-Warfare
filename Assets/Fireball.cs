@@ -14,6 +14,7 @@ public class Fireball : NetworkBehaviour
 
     private float startTime;
     private Vector3 target;
+    private GameObject owner;
 
     public GameObject fireballExplosion;
 
@@ -29,6 +30,10 @@ public class Fireball : NetworkBehaviour
 
     public void SetTarget(Vector3 p) {
         endPosition = p;
+    }
+
+    public void SetOwner(GameObject o) {
+        owner = o;
     }
 
     IEnumerator TravelToDestination() {
@@ -49,15 +54,22 @@ public class Fireball : NetworkBehaviour
         }
     }
 
-    /*
+
     void OnTriggerEnter(Collider other) {
         // Should not hit the caster
-        if (GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<Collider>() != other ){
-            Instantiate(fireballExplosion, transform.position, Quaternion.identity);
-            Destroy(gameObject);
+        // if (GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().currentPlayer.GetComponent<Collider>() != other ){
+        //     Instantiate(fireballExplosion, transform.position, Quaternion.identity);
+        //     Destroy(gameObject);
+        // }
+        Debug.Log(other.name);
+        if (other.name == "ArcanePulse") {
+            startPosition = transform.position;
+            startTime = Time.time;
+            startHeight = transform.position.y;
+
+            endPosition = owner.transform.position;
         }
     }
-    */
 
 
 }

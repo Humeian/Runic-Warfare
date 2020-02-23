@@ -135,6 +135,10 @@ public class GlyphRecognition : MonoBehaviour {
 				StartCoroutine(Morph (match));
 				player.CastLightningNeutral();
 				break;
+			case "ArcanePulse":
+				StartCoroutine(Morph (match));
+				player.CastArcanePulse();
+				break;
 			default:
 				Clear(targetGlyphGraphic);
 				Clear(castedGlyphGraphic);

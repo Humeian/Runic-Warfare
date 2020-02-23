@@ -334,7 +334,10 @@ MonoBehaviour:
     type: 3}
   lightning: {fileID: 6955213005739047226, guid: b7e691cb869217344a69c8761950f344,
     type: 3}
+  arcanePulse: {fileID: 8005883269175210359, guid: 1de8472b74e374cf396a1b4c452fdac7,
+    type: 3}
   controller: {fileID: 9100000, guid: ca6a1090315c6be47bdea065032083ca, type: 2}
+  timer: {fileID: 0}
 --- !u!114 &-5371499635489939578
 MonoBehaviour:
   m_ObjectHideFlags: 0
