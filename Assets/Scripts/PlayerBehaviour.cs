@@ -28,11 +28,14 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject lightningChargeObj;
     public GameObject lightning;
     public RuntimeAnimatorController controller;
+    public Timer timer;
 
     int movingRight = 0;
     int movingForward = 0;
     float speedRight = 0f;
     float speedForward = 0f;
+
+    private bool firstHit = true;
 
     // OnServerStart: called when GameObject is created on the server (not called on client).
     public override void OnStartServer()
@@ -46,6 +49,7 @@ public class PlayerBehaviour : NetworkBehaviour
     {
         base.OnStartAuthority();
         StartCoroutine(Movement());
+        timer = GameObject.Find("Timer").GetComponent<Timer>();
     }
 
     IEnumerator testmove() {
@@ -58,6 +62,27 @@ public class PlayerBehaviour : NetworkBehaviour
     //called by NewNetworkManager
     public void SetOtherPlayer(GameObject op) {
         otherPlayer = op;
+        timer.StartTimer();
+    }
+
+    public void ResetPlayer(){
+        CmdRestoreHealth(3);
+        lightningCharge = 0;
+
+        // Disable rematch button
+        GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(false);
+
+        // Enable glyph input & reboot the color cleaning coroutine
+        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
+        glyphInput.SetActive(true);
+        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
+
+        // Timer reset is done in the onClick() of the rematch button
+
+        // Reset health bubble colour
+        GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
+        GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
+        firstHit = true;
     }
 
     void FixedUpdate()
@@ -77,6 +102,16 @@ public class PlayerBehaviour : NetworkBehaviour
             //Debug.Log(this.gameObject.name +" is dead");
             //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
             GetComponent<Animator>().runtimeAnimatorController = null;
+
+            // Enable rematch button
+            GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(true);
+
+            // Disable glyph input
+            GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
+            GameObject.FindWithTag("GlyphRecognition").SetActive(false);
+
+            // Stop the timer
+            timer.StopTimer();
         }
 
         if (Input.GetKey(KeyCode.H)) {
@@ -119,10 +154,17 @@ public class PlayerBehaviour : NetworkBehaviour
     //TargetRpc: Effect will only appear on the targeted network client.
     [TargetRpc]
     public void TargetShowDamageEffects(NetworkConnection target) {
-        UnityEngine.UI.Image red = GameObject.FindGameObjectWithTag("GlyphRecognition").GetComponent<UnityEngine.UI.Image>();
+        UnityEngine.UI.Image red = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
         red.color = new Color(1f, 0f, 0f, 0.8f);
 
         Camera.main.GetComponent<PlayerCamera>().Shake(5f);
+
+        if (firstHit){
+            firstHit = false;
+            GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
+        } else {
+            GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
+        }
     }
 
     public void CastFireball(int horizontal, float horizSpeed) {
@@ -134,7 +176,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
     [TargetRpc]
     public void TargetPaintScreen(NetworkConnection target, Color c) {
-        UnityEngine.UI.Image screen = GameObject.FindGameObjectWithTag("GlyphRecognition").GetComponent<UnityEngine.UI.Image>();
+        UnityEngine.UI.Image screen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
         screen.color = c;
     }
 

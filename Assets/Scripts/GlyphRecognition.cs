@@ -13,6 +13,12 @@ public class GlyphRecognition : MonoBehaviour {
 
 	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic, storedGlyphGraphic;
 
+	float costThreshold;
+	public float CostThreshold {get{ return costThreshold; } set{
+		costThreshold = value;
+		Debug.Log(value);
+	}}
+
 	public Stroke[] storedGlyph;
 
 	public PlayerBehaviour player;
@@ -29,6 +35,10 @@ public class GlyphRecognition : MonoBehaviour {
 		if (glyphInput.OnStrokeDraw!=this.OnStrokeDraw) glyphInput.OnStrokeDraw+=this.OnStrokeDraw;
 		if (glyphInput.OnPointDraw!=this.OnPointDraw) glyphInput.OnPointDraw+=this.OnPointDraw;
 
+		StartCoroutine(CleanScreen());
+	}
+
+	public void InitCleanScreen(){
 		StartCoroutine(CleanScreen());
 	}
 
@@ -80,10 +90,18 @@ public class GlyphRecognition : MonoBehaviour {
 		return strokeGraphic == null || strokeGraphic.IsClear;
 	}
 
+	public void ClearAll(){
+		if (targetGlyphGraphic != null) targetGlyphGraphic.ClearStrokes();
+		if (castedGlyphGraphic != null) castedGlyphGraphic.ClearStrokes();
+		if (currentGlyphGraphic != null) currentGlyphGraphic.ClearStrokes();
+		if (currentStrokeGraphic != null) currentStrokeGraphic.ClearStrokes();
+	}
+
 
 	void OnGlyphCast(int index, GlyphMatch match){
 		Clear(currentGlyphGraphic);
-		if (match == null) {
+		Debug.Log(match.Cost);
+		if (match == null || match.Cost > costThreshold) {
 			Clear(targetGlyphGraphic);
 			Clear(castedGlyphGraphic);
 			return;
@@ -93,6 +111,7 @@ public class GlyphRecognition : MonoBehaviour {
 		// Debug.Log(match.Cost);
 		switch (match.target.ToString()) {
 			case "FireGlyph":
+			case "FireBall":
 				StartCoroutine(Morph (match));
 				if (currentCast == CastDirection.Right) {
 					player.CastFireball(25, 1f);
@@ -103,10 +122,12 @@ public class GlyphRecognition : MonoBehaviour {
 				}
 				break;
 			case "WaterGlyph":
+			case "Shield":
 				StartCoroutine(Morph (match));
 				player.CastShieldBack();
 				break;
 			case "AirGlyph":
+			case "WindSlash":
 				StartCoroutine(Morph (match));
 				player.CastWindForward();
 				break;
