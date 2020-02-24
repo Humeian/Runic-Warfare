@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 978fc2808d835e74397f5816c6fa3898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  strokeList: []
   castedGlyph: {fileID: 0}
   targetGlyphSet: {fileID: 11400000, guid: d2ecfeb48f313a545aa877541d3c512f, type: 2}
   normalizedGlyphSize: 0.8

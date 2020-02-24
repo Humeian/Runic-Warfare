@@ -16,6 +16,20 @@ namespace AdVd.GlyphRecognition
         [Range(0, 0.5f)]
         public float capSize = 0.5f;//Half the width
 
+        private bool isTarget = false;
+        public float fadeSpeed = 0.5f;
+
+        public void Start() {
+            if (gameObject.name == "TargetGlyphGraphic") {
+                isTarget = true;
+            }
+        }
+
+        public void Update() {
+            if (isTarget)
+                color = new Color(1f, 1f, 1f, color.a - Time.deltaTime * fadeSpeed);
+        }
+
         protected override void BuildStrokeMesh(Stroke s, VertexHelper vh)
         {
             if (s.Length < 2) return;

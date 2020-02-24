@@ -9,7 +9,9 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject otherPlayer;
 
     [SyncVar]
-    public int health = 2;
+    public int health = 3;
+
+    public UnityEngine.UI.Image hp1, hp2, hp3;
 
     [SyncVar]
     public int lightningCharge = 0;
@@ -29,6 +31,11 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject lightning;
     public RuntimeAnimatorController controller;
     public Timer timer;
+
+    private Color red;
+
+    public List<GameObject> shields;
+    public int maxShields = 2;
 
     int movingRight = 0;
     int movingForward = 0;
@@ -50,6 +57,15 @@ public class PlayerBehaviour : NetworkBehaviour
         base.OnStartAuthority();
         StartCoroutine(Movement());
         timer = GameObject.Find("Timer").GetComponent<Timer>();
+
+        hp1 = GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>();
+        hp2 = GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>();
+        hp3 = GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>();
+    }
+
+    public void Start() {
+        red = new Color(1f, 0f, 0f, 1f);
+        shields = new List<GameObject>();
     }
 
     IEnumerator testmove() {
@@ -62,16 +78,19 @@ public class PlayerBehaviour : NetworkBehaviour
     //called by NewNetworkManager
     public void SetOtherPlayer(GameObject op) {
         otherPlayer = op;
-        timer.StartTimer();
+        //timer.StartTimer();
     }
 
-    public void ResetPlayer(){
-        CmdRestoreHealth(3);
-        lightningCharge = 0;
+    [Command]
+    public void CmdResetMatch(){
+        GameObject.Find("GameManager").GetComponent<GameManager>().ResetMatch();
+
+        /*
+        //CmdRestoreHealth(3);
+        //lightningCharge = 0;
 
         // Disable rematch button
-        GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(false);
-
+        
         // Enable glyph input & reboot the color cleaning coroutine
         GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
         glyphInput.SetActive(true);
@@ -82,7 +101,30 @@ public class PlayerBehaviour : NetworkBehaviour
         // Reset health bubble colour
         GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
         GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
-        firstHit = true;
+        //firstHit = true;
+        */
+    }
+
+    [TargetRpc]
+    public void TargetResetPosition(NetworkConnection connection, Vector3 pos) {
+        transform.position = pos;
+    }
+
+    [ClientRpc]
+    public void RpcResetUI() {
+        // Disable rematch button
+        GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
+
+        // Enable glyph input & reboot the color cleaning coroutine
+        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
+        glyphInput.SetActive(true);
+        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
+
+        GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
+        GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
+        GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
+
+        shields.Clear();
     }
 
     void FixedUpdate()
@@ -104,18 +146,29 @@ public class PlayerBehaviour : NetworkBehaviour
             GetComponent<Animator>().runtimeAnimatorController = null;
 
             // Enable rematch button
-            GameObject.Find("GameUI").transform.Find("Ready").gameObject.SetActive(true);
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
 
             // Disable glyph input
             GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
             GameObject.FindWithTag("GlyphRecognition").SetActive(false);
 
             // Stop the timer
-            timer.StopTimer();
+            //timer.StopTimer();
         }
 
         if (Input.GetKey(KeyCode.H)) {
-            CmdRestoreHealth(2);
+            CmdRestoreHealth(3);
+        }
+
+        // Needs to be in Update as there appear to be damage timing issues.
+        if (health < 3) {
+            hp1.color = red;
+        }
+        if (health < 2) {
+            hp2.color = red;
+        }
+        if (health < 1) {
+            hp3.color = red;
         }
     }
 
@@ -154,17 +207,12 @@ public class PlayerBehaviour : NetworkBehaviour
     //TargetRpc: Effect will only appear on the targeted network client.
     [TargetRpc]
     public void TargetShowDamageEffects(NetworkConnection target) {
-        UnityEngine.UI.Image red = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
-        red.color = new Color(1f, 0f, 0f, 0.8f);
+        UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
+        redscreen.color = new Color(1f, 0f, 0f, 0.8f);
 
         Camera.main.GetComponent<PlayerCamera>().Shake(5f);
 
-        if (firstHit){
-            firstHit = false;
-            GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
-        } else {
-            GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(255, 0, 0);
-        }
+        Color red = new Color(1f, 0f, 0f, 1f);
     }
 
     public void CastFireball(int horizontal, float horizSpeed) {
@@ -232,6 +280,7 @@ public class PlayerBehaviour : NetworkBehaviour
     [Command]
     public void CmdCastFireball() {
         GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
+        newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newFireball);
         //StartCoroutine(DashRight());
@@ -241,6 +290,13 @@ public class PlayerBehaviour : NetworkBehaviour
     public void CmdCastShieldBack() {
         GameObject newShield = Instantiate(shield, transform.position + Vector3.up, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
         NetworkServer.Spawn(newShield);
+
+        shields.Add(newShield);
+        if (shields.Count > maxShields) {
+            GameObject oldShield = shields[0];
+            shields.RemoveAt(0);
+            Destroy(oldShield);
+        }
         //StartCoroutine(DashBack());
     }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
+    public GameManager manager;
 
     public GameObject otherPlayer;
     public GameObject currentPlayer;
@@ -87,10 +88,7 @@ public class PlayerCamera : MonoBehaviour
     }
 
     public void Rematch() {
-        // Function stub
-        // Reset health, respawn players, reset camera, etc.....
-
-        // I straight up have no idea how this works with the network stuff
-        currentPlayer.GetComponent<PlayerBehaviour>().ResetPlayer();
+        // Ask Player script to command server to reset server-side elements
+        currentPlayer.GetComponent<PlayerBehaviour>().CmdResetMatch();
     }
 }

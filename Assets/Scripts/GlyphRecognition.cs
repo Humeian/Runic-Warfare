@@ -13,7 +13,7 @@ public class GlyphRecognition : MonoBehaviour {
 
 	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic, storedGlyphGraphic;
 
-	float costThreshold;
+	float costThreshold = 0.6f;
 	public float CostThreshold {get{ return costThreshold; } set{
 		costThreshold = value;
 		Debug.Log(value);
@@ -99,8 +99,13 @@ public class GlyphRecognition : MonoBehaviour {
 
 
 	void OnGlyphCast(int index, GlyphMatch match){
+		// Reset casted glyph transparency
+		targetGlyphGraphic.color = new Color(1f, 1f, 1f, 1f);
+
 		Clear(currentGlyphGraphic);
-		Debug.Log(match.Cost);
+		if (match != null) {
+			Debug.Log(match.Cost);
+		}
 		if (match == null || match.Cost > costThreshold) {
 			Clear(targetGlyphGraphic);
 			Clear(castedGlyphGraphic);
@@ -109,43 +114,58 @@ public class GlyphRecognition : MonoBehaviour {
 
 		// Debug.Log(match.target.ToString());
 		// Debug.Log(match.Cost);
-		switch (match.target.ToString()) {
-			case "FireGlyph":
-			case "FireBall":
-				StartCoroutine(Morph (match));
-				if (currentCast == CastDirection.Right) {
-					player.CastFireball(25, 1f);
-				} else if (currentCast == CastDirection.Left) {
-					player.CastFireball(-25, 1f);
-				} else {
-					player.CastFireball(0, 0f);
-				}
-				break;
-			case "WaterGlyph":
-			case "Shield":
-				StartCoroutine(Morph (match));
-				player.CastShieldBack();
-				break;
-			case "AirGlyph":
-			case "WindSlash":
-				StartCoroutine(Morph (match));
-				player.CastWindForward();
-				break;
-			case "LightningGlyph":
-				StartCoroutine(Morph (match));
-				player.CastLightningNeutral();
-				break;
-			default:
-				Clear(targetGlyphGraphic);
-				Clear(castedGlyphGraphic);
-				break;
 
+		// Make sure glyph recognition finishes and clears the stroke list
+		// through any possible errors.
+		try {
+			switch (match.target.ToString()) {
+				case "FireGlyph":
+				case "FireBall":
+					StartCoroutine(Morph (match));
+					if (currentCast == CastDirection.Right) {
+						player.CastFireball(25, 1f);
+					} else if (currentCast == CastDirection.Left) {
+						player.CastFireball(-25, 1f);
+					} else {
+						player.CastFireball(0, 0f);
+					}
+					break;
+				case "WaterGlyph":
+				case "Shield":
+					StartCoroutine(Morph (match));
+					player.CastShieldBack();
+					break;
+				case "AirGlyph":
+				case "WindSlash":
+					StartCoroutine(Morph (match));
+					player.CastWindForward();
+					break;
+				case "LightningGlyph":
+					StartCoroutine(Morph (match));
+					player.CastLightningNeutral();
+					break;
+				default:
+					ClearAll();
+					//Clear(targetGlyphGraphic);
+					//Clear(castedGlyphGraphic);
+					//Clear(currentGlyphGraphic);
+					//Clear(currentStrokeGraphic);
+					//glyphInput.strokeList.Clear();
+					break;
+			}
 		}
+		catch (System.Exception e) {
+			Debug.LogError("Glyph recognition " + e + " occured. Clearing strokes.");
+			ClearAll();
+		}
+
 	}
 
 	const float step=0.01f;
 
 	IEnumerator Morph(GlyphMatch match){
+		targetGlyphGraphic.color = new Color(1f, 1f, 1f, 1f);
+
 		Clear(castedGlyphGraphic);
 		Stroke[] strokes = null;
 		/*
@@ -221,8 +241,8 @@ public class GlyphRecognition : MonoBehaviour {
 		Vector2 vectorStroke = points[points.Length-1] - points[0];
 		GlyphMatch castGlyph = Match(latestStroke);
 
-		Debug.Log(castGlyph.target.ToString());
-        Debug.Log(castGlyph.Cost);
+		//Debug.Log(castGlyph.target.ToString());
+        //Debug.Log(castGlyph.Cost);
 		if (castGlyph.target.ToString() == "UpStroke" && castGlyph.Cost < 0.06) {
 			float direction = Vector2.Dot(Vector2.up, vectorStroke);
 

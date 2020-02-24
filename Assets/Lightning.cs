@@ -20,7 +20,7 @@ public class Lightning : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        startPos = owner.transform.position;
+        startPos = owner.transform.position + Vector3.up;
         Vector3 targetPos = target.transform.position + Vector3.up;
         Vector3 direction = targetPos - startPos;
 
@@ -52,14 +52,18 @@ public class Lightning : NetworkBehaviour
 
     void Start() {
         // Set line positions for client
-        lineRenderer.positionCount = 5;
+        lineRenderer.positionCount = 9;
         lineRenderer.SetPosition(0, startPos);
-        lineRenderer.SetPosition(4, endPos);
+        lineRenderer.SetPosition(8, endPos);
 
         // Add zigzags to line
-        lineRenderer.SetPosition(1, Vector3.Lerp(startPos, endPos, 0.25f) + (Random.insideUnitSphere * 1f));
-        lineRenderer.SetPosition(2, Vector3.Lerp(startPos, endPos, 0.5f) + (Random.insideUnitSphere * 1f));
-        lineRenderer.SetPosition(3, Vector3.Lerp(startPos, endPos, 0.75f) + (Random.insideUnitSphere * 1f));
+        lineRenderer.SetPosition(1, Vector3.Lerp(startPos, endPos, 0.125f) + (Random.insideUnitSphere * 2f));
+        lineRenderer.SetPosition(2, Vector3.Lerp(startPos, endPos, 0.25f) + (Random.insideUnitSphere * 2f));
+        lineRenderer.SetPosition(3, Vector3.Lerp(startPos, endPos, 0.375f) + (Random.insideUnitSphere * 2f));
+        lineRenderer.SetPosition(4, Vector3.Lerp(startPos, endPos, 0.5f) + (Random.insideUnitSphere * 2f));
+        lineRenderer.SetPosition(5, Vector3.Lerp(startPos, endPos, 0.625f) + (Random.insideUnitSphere * 2f));
+        lineRenderer.SetPosition(6, Vector3.Lerp(startPos, endPos, 0.75f) + (Random.insideUnitSphere * 2f));
+        lineRenderer.SetPosition(7, Vector3.Lerp(startPos, endPos, 0.875f) + (Random.insideUnitSphere * 2f));
 
         GameObject newExplosion = Instantiate(lightningExplosion, endPos, transform.rotation);
 

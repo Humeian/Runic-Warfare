@@ -9638,7 +9638,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   travelTime: 2.5
-  maxHeight: 6
+  maxHeight: 8
   fireballExplosion: {fileID: 1685594889111544145, guid: cc45b751bd5a8ae4c95e6ef63e559c1b,
     type: 3}
 --- !u!114 &4583846965969410720

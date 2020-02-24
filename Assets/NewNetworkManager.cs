@@ -10,6 +10,7 @@ using Mirror;
 public class NewNetworkManager : NetworkManager
 {
     public GameObject player1, player2;
+    public bool bothPlayersConnected = false;
 
     #region Unity Callbacks
 
@@ -139,6 +140,10 @@ public class NewNetworkManager : NetworkManager
             player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
             player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
         }
+
+        if (player1 && player2) {
+            bothPlayersConnected = true;
+        }
     }
 
     /// <summary>
@@ -202,6 +207,7 @@ public class NewNetworkManager : NetworkManager
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         base.OnClientDisconnect(conn);
+        bothPlayersConnected = false;
     }
 
     /// <summary>
