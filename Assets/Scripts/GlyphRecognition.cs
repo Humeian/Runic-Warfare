@@ -119,8 +119,10 @@ public class GlyphRecognition : MonoBehaviour {
 		// through any possible errors.
 		try {
 			switch (match.target.ToString()) {
-				case "FireGlyph":
-				case "FireBall":
+				case "Fireball":
+				case "Fireball2":
+				case "Fireball3":
+				case "Fireball4":
 					StartCoroutine(Morph (match));
 					if (currentCast == CastDirection.Right) {
 						player.CastFireball(25, 1f);
@@ -130,17 +132,21 @@ public class GlyphRecognition : MonoBehaviour {
 						player.CastFireball(0, 0f);
 					}
 					break;
-				case "WaterGlyph":
 				case "Shield":
+				case "Shield2":
+				case "Shield3":
 					StartCoroutine(Morph (match));
 					player.CastShieldBack();
 					break;
-				case "AirGlyph":
-				case "WindSlash":
+				case "Windslash":
+				case "Windslash2":
+				case "Windslash3":
+				case "Windslash4":
 					StartCoroutine(Morph (match));
 					player.CastWindForward();
 					break;
-				case "LightningGlyph":
+				case "Lightning":
+				case "Lightning2":
 					StartCoroutine(Morph (match));
 					player.CastLightningNeutral();
 					break;
