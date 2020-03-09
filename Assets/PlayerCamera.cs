@@ -15,6 +15,8 @@ public class PlayerCamera : MonoBehaviour
 
     public GlyphRecognition glyphRecognition;
 
+    public GameObject tutorialPanel;
+
     private float shakeFactor = 0f;
     private float shakeDecayFactor = 0.9f;
 
@@ -66,25 +68,20 @@ public class PlayerCamera : MonoBehaviour
         }
 
         if (Input.GetKeyDown("t")){
-            toggleViewPoint();
+            showTutorial();
+        }
+    }
+
+    void showTutorial(){
+        if (tutorialPanel != null){
+            tutorialPanel.SetActive(!tutorialPanel.active);
+        } else {
+            Debug.Log("Tutorial panel cannot be found");
         }
     }
 
     public void Shake(float s) {
         shakeFactor += s;
-    }
-
-    public void toggleViewPoint() {
-        Debug.Log("Switch positions");
-        if (currentPlayer.name == "Player1") {
-            currentPlayer = GameObject.Find("Player2");
-            otherPlayer = GameObject.Find("Player1");
-        } else {
-            currentPlayer = GameObject.Find("Player1");
-            otherPlayer = GameObject.Find("Player2");
-        }
-
-        glyphRecognition.ChangePlayer(currentPlayer);
     }
 
     public void Rematch() {
