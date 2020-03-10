@@ -32,7 +32,7 @@ public class GameManager : NetworkBehaviour
             }
             yield return new WaitForSeconds(0.1f);
         }
-        
+
     }
 
     // Update is called once per frame
@@ -50,7 +50,7 @@ public class GameManager : NetworkBehaviour
         PlayerBehaviour p2 = networkManager.player2.GetComponent<PlayerBehaviour>();
         p1.health = 3;
         p2.health = 3;
-        
+
         p1.lightningCharge = 0;
         p2.lightningCharge = 0;
 

@@ -90,7 +90,7 @@ public class PlayerBehaviour : NetworkBehaviour
         //lightningCharge = 0;
 
         // Disable rematch button
-        
+
         // Enable glyph input & reboot the color cleaning coroutine
         GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
         glyphInput.SetActive(true);
