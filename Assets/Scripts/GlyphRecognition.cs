@@ -150,6 +150,24 @@ public class GlyphRecognition : MonoBehaviour {
 					StartCoroutine(Morph (match));
 					player.CastLightningNeutral();
 					break;
+				// case "Arcanopulse":
+				// case "Arcanopulse2":
+				// case "Arcanopulse3":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
+				// case "Icespike":
+				// case "Icespike2":
+				// case "Icespike3":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
+				// case "Royalfire":
+				// case "Royalfire":
+				// case "Royalfire":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
 				default:
 					ClearAll();
 					//Clear(targetGlyphGraphic);
