@@ -46,5 +46,13 @@ namespace AdVd.GlyphRecognition{
 				Debug.LogError("A stroke graphic component is required to display the glyph.");
 			}
 		}
+
+		public void DisplayGlyph( Glyph glyphl ){
+			glyph = glyphl;
+		}
+
+		public void ClearDisplay(){
+			strokeGraphic.ClearStrokes();
+		}
 	}
 }

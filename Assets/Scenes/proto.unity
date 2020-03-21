@@ -383,6 +383,80 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 113158163}
   m_CullTransparentMesh: 0
+--- !u!1 &131917816
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 131917817}
+  - component: {fileID: 131917819}
+  - component: {fileID: 131917818}
+  m_Layer: 5
+  m_Name: Tracing Plane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &131917817
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131917816}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 759177748}
+  m_Father: {fileID: 638772559}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &131917818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131917816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &131917819
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131917816}
+  m_CullTransparentMesh: 0
 --- !u!1 &166422024
 GameObject:
   m_ObjectHideFlags: 0
@@ -1361,7 +1435,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: OnGlyphCast.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: OnGlyphCast.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1395,6 +1469,18 @@ PrefabInstance:
     - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: threshold
       value: 0.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
+      propertyPath: OnGlyphCast.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 759177749}
+    - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
+      propertyPath: OnGlyphCast.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ClearDisplay
+      objectReference: {fileID: 0}
+    - target: {fileID: 11471114, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
+      propertyPath: OnGlyphCast.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 11471116, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: m_Color.a
@@ -1454,7 +1540,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22471112, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22471112, guid: 5d3813733fcc10b43b8c8b9509ae2afd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1680,7 +1766,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 422281590}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 759177749}
+        m_MethodName: DisplayGlyph
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: bd67d55656ba3e741b20e2387fec6e26,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: AdVd.GlyphRecognition.Glyph, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &422281590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7293,7 +7391,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 557570598}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 759177749}
+        m_MethodName: DisplayGlyph
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 05384170c06f1194a84968cb9ba0c693,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: AdVd.GlyphRecognition.Glyph, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &557570598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7536,6 +7646,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
+  - {fileID: 131917817}
   - {fileID: 1688490808}
   - {fileID: 96509503}
   m_Father: {fileID: 0}
@@ -7953,6 +8064,83 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &759177747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 759177748}
+  - component: {fileID: 759177751}
+  - component: {fileID: 759177750}
+  - component: {fileID: 759177749}
+  m_Layer: 5
+  m_Name: Glyph Display
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &759177748
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759177747}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 131917817}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.1, y: 0.1}
+  m_AnchorMax: {x: 0.9, y: 0.9}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &759177749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759177747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85cc6eebd21a1da4ea17d5ce2ff519aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _glyph: {fileID: 0}
+--- !u!114 &759177750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759177747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61723275976945f42814d519d185a725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  relativeWidth: 0.02
+  capSize: 0.5
+  fadeSpeed: 0.5
+--- !u!222 &759177751
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759177747}
+  m_CullTransparentMesh: 0
 --- !u!1 &764940530
 GameObject:
   m_ObjectHideFlags: 0
@@ -9249,7 +9437,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1117049599}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 759177749}
+        m_MethodName: DisplayGlyph
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: f0d1557be6621e649be40bd74709eca4,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: AdVd.GlyphRecognition.Glyph, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1117049599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9369,7 +9569,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1149664096}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 759177749}
+        m_MethodName: DisplayGlyph
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 349c0c71f85b6db4c87b7463e096554e,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: AdVd.GlyphRecognition.Glyph, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1149664096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15839,7 +16051,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1630590093}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 759177749}
+        m_MethodName: DisplayGlyph
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 68366d58fb84173429c61d41ae0f5697,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: AdVd.GlyphRecognition.Glyph, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1630590093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16165,7 +16389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 13.333333
+  m_AspectRatio: 19.087078
 --- !u!1 &1666162072
 GameObject:
   m_ObjectHideFlags: 0
@@ -16347,7 +16571,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1726220976}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 759177749}
+        m_MethodName: DisplayGlyph
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: f5f5aab214267bf4ab8feee24c761d50,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: AdVd.GlyphRecognition.Glyph, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1726220976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17273,7 +17509,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2110385120}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 759177749}
+        m_MethodName: DisplayGlyph
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: be0b539529b062a4a843501fe479e054,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: AdVd.GlyphRecognition.Glyph, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2110385120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17373,7 +17621,7 @@ PrefabInstance:
     - target: {fileID: 850189311162456917, guid: bfffd1108bea347478cf9f416f84fa3d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 850189311162456917, guid: bfffd1108bea347478cf9f416f84fa3d,
         type: 3}
