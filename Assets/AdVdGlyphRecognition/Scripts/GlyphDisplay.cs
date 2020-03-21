@@ -47,10 +47,6 @@ namespace AdVd.GlyphRecognition{
 			}
 		}
 
-		public void DisplayGlyph( Glyph glyphl ){
-			glyph = glyphl;
-		}
-
 		public void ClearDisplay(){
 			strokeGraphic.ClearStrokes();
 		}

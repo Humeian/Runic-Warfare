@@ -1768,7 +1768,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 759177749}
-        m_MethodName: DisplayGlyph
+        m_MethodName: set_glyph
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: bd67d55656ba3e741b20e2387fec6e26,
@@ -7393,7 +7393,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 759177749}
-        m_MethodName: DisplayGlyph
+        m_MethodName: set_glyph
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 05384170c06f1194a84968cb9ba0c693,
@@ -9439,7 +9439,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 759177749}
-        m_MethodName: DisplayGlyph
+        m_MethodName: set_glyph
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: f0d1557be6621e649be40bd74709eca4,
@@ -9571,7 +9571,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 759177749}
-        m_MethodName: DisplayGlyph
+        m_MethodName: set_glyph
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 349c0c71f85b6db4c87b7463e096554e,
@@ -16053,7 +16053,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 759177749}
-        m_MethodName: DisplayGlyph
+        m_MethodName: set_glyph
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 68366d58fb84173429c61d41ae0f5697,
@@ -16573,7 +16573,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 759177749}
-        m_MethodName: DisplayGlyph
+        m_MethodName: set_glyph
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: f5f5aab214267bf4ab8feee24c761d50,
@@ -17511,7 +17511,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 759177749}
-        m_MethodName: DisplayGlyph
+        m_MethodName: set_glyph
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: be0b539529b062a4a843501fe479e054,
