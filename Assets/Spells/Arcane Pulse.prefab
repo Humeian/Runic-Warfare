@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7773942404607713158}
   m_Layer: 0
   m_Name: Arcane Pulse
-  m_TagString: Untagged
+  m_TagString: ArcanePulse
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -9,6 +9,7 @@ TagManager:
   - NetworkManager
   - Wall
   - BodyPart
+  - ArcanePulse
   layers:
   - Default
   - TransparentFX
