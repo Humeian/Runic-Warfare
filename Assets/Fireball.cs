@@ -14,6 +14,7 @@ public class Fireball : NetworkBehaviour
 
     private float startTime;
     private Vector3 target;
+    private GameObject owner;
 
     public GameObject fireballExplosion;
 
@@ -35,6 +36,10 @@ public class Fireball : NetworkBehaviour
 
     public void SetTarget(Vector3 p) {
         endPosition = p;
+    }
+
+    public void SetOwner(GameObject o) {
+        owner = o;
     }
 
     IEnumerator TravelToDestination() {
@@ -70,6 +75,13 @@ public class Fireball : NetworkBehaviour
             }
             else if (other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != owner.ToString())
                 ServerSpawnExplosion();
+        }
+        if (other.name == "ArcanePulse") {
+            startPosition = transform.position;
+            startTime = Time.time;
+            startHeight = transform.position.y;
+
+            endPosition = owner.transform.position;
         }
     }
 

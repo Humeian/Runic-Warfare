@@ -29,6 +29,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject windslash;
     public GameObject lightningChargeObj;
     public GameObject lightning;
+    public GameObject arcanePulse;
     public RuntimeAnimatorController controller;
     public Timer timer;
 
@@ -261,6 +262,11 @@ public class PlayerBehaviour : NetworkBehaviour
         }
     }
 
+    public void CastArcanePulse() {
+        SetAnimTrigger("ArcanePulse");
+        CmdCastArcanePulse();
+    }
+
     IEnumerator WaitForLightning() {
         yield return new WaitForSeconds(0.45f);
         CmdCastLightning();
@@ -282,6 +288,7 @@ public class PlayerBehaviour : NetworkBehaviour
         GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
         newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
+        newFireball.GetComponent<Fireball>().SetOwner(gameObject);
         NetworkServer.Spawn(newFireball);
         //StartCoroutine(DashRight());
     }
@@ -322,6 +329,13 @@ public class PlayerBehaviour : NetworkBehaviour
         newLightning.GetComponent<Lightning>().SetOwner(gameObject);
         newLightning.GetComponent<Lightning>().SetTarget(otherPlayer);
         NetworkServer.Spawn(newLightning);
+    }
+
+    [Command]
+    public void CmdCastArcanePulse() {
+        GameObject newPulse = Instantiate(arcanePulse, transform.position + Vector3.up, transform.rotation);
+        newPulse.GetComponent<ArcanePulse>().SetOwner(gameObject);
+        NetworkServer.Spawn(newPulse);
     }
 
     IEnumerator DashLeft() {
