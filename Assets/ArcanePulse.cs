@@ -14,16 +14,18 @@ public class ArcanePulse : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        startScale = transform.localScale;
-        startTime = Time.time;
+        //startScale = transform.localScale;
+        //startTime = Time.time;
 
-        StartCoroutine(Expand());
+        //StartCoroutine(Expand());
+        Destroy(gameObject, 1f);
     }
 
     public void SetOwner(GameObject o) {
     	owner = o;
     }
 
+    /*
     IEnumerator Expand() {
     	while (true) {
     		// transform.scale = new Vector3(tranform.scale.x + expansionSpeed);
@@ -39,4 +41,5 @@ public class ArcanePulse : NetworkBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+    */
 }

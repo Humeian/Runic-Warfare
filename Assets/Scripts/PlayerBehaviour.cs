@@ -33,6 +33,8 @@ public class PlayerBehaviour : NetworkBehaviour
     public RuntimeAnimatorController controller;
     public Timer timer;
 
+    private bool onGround = true;
+
     private Color red;
 
     public List<GameObject> shields;
@@ -40,10 +42,15 @@ public class PlayerBehaviour : NetworkBehaviour
 
     int movingRight = 0;
     int movingForward = 0;
+    int movingUp = 0;
     float speedRight = 0f;
     float speedForward = 0f;
+    float speedUp = 0f;
 
     private bool firstHit = true;
+
+    // After using Pulse, number of times spells casted in the air will stop air momentum.
+    private int stopMomentumCharges = 0;
 
     // OnServerStart: called when GameObject is created on the server (not called on client).
     public override void OnStartServer()
@@ -194,6 +201,27 @@ public class PlayerBehaviour : NetworkBehaviour
                 else if (movingForward > 0) movingForward--;
             }
 
+            if (!onGround) {
+                //fall faster if falling down and no spell has been used -- easier to time reflect pulse
+                if (speedUp < 0 && stopMomentumCharges > 0) {
+                    transform.position += transform.up * speedUp * 200f * Time.deltaTime;
+                }
+                else {
+                    transform.position += transform.up * speedUp * 50f * Time.deltaTime;
+                }
+
+                speedUp -= Time.deltaTime;
+                
+                if (transform.position.y <= 0f) {
+                    transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+                    onGround = true;
+                    if (stopMomentumCharges > 0) {
+                        CmdCastArcanePulse();
+                    }
+                    stopMomentumCharges = 0;
+                }
+            }
+
             yield return new WaitForFixedUpdate();
         }
     }
@@ -217,6 +245,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastFireball(int horizontal, float horizSpeed) {
+        StopAirMomentum();
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
         speedRight = horizSpeed;
@@ -240,6 +269,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastWindForward() {
+        StopAirMomentum();
         movingForward = 20;
         speedForward = 2f;
         SetAnimTrigger("WindSlash");
@@ -247,6 +277,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastShieldBack() {
+        StopAirMomentum();
         movingForward = -30;
         speedForward = 0.4f;
         SetAnimTrigger("ShieldBack");
@@ -254,6 +285,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastLightningNeutral() {
+        StopAirMomentum();
         CmdCastLightningCharge();
         lightningCharge++;
         if (lightningCharge == lightningChargesNeeded) {
@@ -263,8 +295,20 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastArcanePulse() {
+        onGround = false;
+        speedUp = 0.6f;
+        stopMomentumCharges = 1;
         SetAnimTrigger("ArcanePulse");
-        CmdCastArcanePulse();
+        //CmdCastArcanePulse();
+    }
+
+    private void StopAirMomentum() {
+        if (stopMomentumCharges > 0) {
+            stopMomentumCharges--;
+            if (speedUp < 0) {
+                speedUp = 0.2f;
+            }
+        }
     }
 
     IEnumerator WaitForLightning() {
@@ -332,7 +376,8 @@ public class PlayerBehaviour : NetworkBehaviour
 
     [Command]
     public void CmdCastArcanePulse() {
-        GameObject newPulse = Instantiate(arcanePulse, transform.position + Vector3.up, transform.rotation);
+        //Arcane Pulse should spawn at the feet
+        GameObject newPulse = Instantiate(arcanePulse, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
         newPulse.GetComponent<ArcanePulse>().SetOwner(gameObject);
         NetworkServer.Spawn(newPulse);
     }
