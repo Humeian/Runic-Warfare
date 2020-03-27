@@ -149,6 +149,8 @@ public class GlyphRecognition : MonoBehaviour {
 					player.CastArcanePulse();
 					break;
 				default:
+					Debug.Log("Fizzle");
+					player.CastFizzle();
 					ClearAll();
 					//Clear(targetGlyphGraphic);
 					//Clear(castedGlyphGraphic);
@@ -264,11 +266,14 @@ public class GlyphRecognition : MonoBehaviour {
 				GlyphMatch match = Match(previousGlyph);
 				Clear(currentGlyphGraphic);
 
-				if (match != null) {
+				if (match != null && match.target.ToString() != "UpStroke" ) {
 					storedGlyph = previousGlyph;
 					Set(storedGlyphGraphic, newGlyph);
 					StartCoroutine(MorphStored (match));
-				}
+				} else
+                {
+					player.CastFizzle();
+                }
 
 				glyphInput.ClearInput();
 				Debug.Log("Store");
