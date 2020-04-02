@@ -114,7 +114,7 @@ public class GlyphRecognition : MonoBehaviour {
 
 		// Debug.Log(match.target.ToString());
 		// Debug.Log(match.Cost);
-
+		
 		// Make sure glyph recognition finishes and clears the stroke list
 		// through any possible errors.
 		try {
@@ -149,6 +149,10 @@ public class GlyphRecognition : MonoBehaviour {
 				case "Lightning2":
 					StartCoroutine(Morph (match));
 					player.CastLightningNeutral();
+					break;
+				case "ArcanePulse":
+					StartCoroutine(Morph (match));
+					player.CastArcanePulse();
 					break;
 				// case "Arcanopulse":
 				// case "Arcanopulse2":

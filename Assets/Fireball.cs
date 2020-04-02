@@ -18,6 +18,7 @@ public class Fireball : NetworkBehaviour
     public GameObject fireballExplosion;
 
     public NetworkConnection owner;
+    private bool wasReflected = false;
 
     // Start is called before the first frame update
     public override void OnStartServer()
@@ -65,12 +66,25 @@ public class Fireball : NetworkBehaviour
             ServerSpawnExplosion();
         }
         else if (other.GetComponent<NetworkIdentity>() != null) {
-            if (other.GetComponent<NetworkIdentity>().connectionToClient == null) {
+            if (other.tag == "ArcanePulse") {
+                startPosition = transform.position;
+                startTime = Time.time;
+                startHeight = transform.position.y;
+
+                endPosition = owner.identity.transform.position;
+                wasReflected = true;
+            }
+            else if (other.GetComponent<NetworkIdentity>().connectionToClient == null) {
                 ServerSpawnExplosion();
             }
+            //if other object has an identity and wasn't the owner, explode
             else if (other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != owner.ToString())
                 ServerSpawnExplosion();
+            //if fireball was reflected and identity is the owner, explode
+            else if (wasReflected == true && other.GetComponent<NetworkIdentity>().connectionToClient.ToString() == owner.ToString())
+                ServerSpawnExplosion();
         }
+        
     }
 
     [Server]
