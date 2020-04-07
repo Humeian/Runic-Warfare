@@ -30,6 +30,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject lightningChargeObj;
     public GameObject lightning;
     public GameObject arcanePulse;
+    public GameObject fizzle;
     public RuntimeAnimatorController controller;
     public Timer timer;
 
@@ -302,6 +303,11 @@ public class PlayerBehaviour : NetworkBehaviour
         //CmdCastArcanePulse();
     }
 
+    public void CastFizzle()
+    {
+        CmdCastFizzle();
+    }
+
     private void StopAirMomentum() {
         if (stopMomentumCharges > 0) {
             stopMomentumCharges--;
@@ -380,6 +386,13 @@ public class PlayerBehaviour : NetworkBehaviour
         GameObject newPulse = Instantiate(arcanePulse, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
         newPulse.GetComponent<ArcanePulse>().SetOwner(gameObject);
         NetworkServer.Spawn(newPulse);
+    }
+
+    [Command]
+    public void CmdCastFizzle()
+    {
+        GameObject newFizzle = Instantiate(fizzle, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
+        NetworkServer.Spawn(newFizzle);
     }
 
     IEnumerator DashLeft() {
