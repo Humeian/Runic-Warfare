@@ -69,7 +69,8 @@ public class GlyphRecognition : MonoBehaviour {
 
 	GlyphMatch Match(Stroke[] strokes) {
 		Glyph drawnGlyph = Glyph.CreateGlyph(strokes, glyphInput.sampleDistance);
-		if (glyphInput.Method!=null && glyphInput.targetGlyphSet!=null){
+        if (glyphInput.Method != null && glyphInput.targetGlyphSet != null)
+        {
 			GlyphMatch match;
 			int index = glyphInput.method.MultiMatch(drawnGlyph, glyphInput.targetGlyphSet, out match);
 			return match;
@@ -133,8 +134,10 @@ public class GlyphRecognition : MonoBehaviour {
 		// through any possible errors.
 		try {
 			switch (match.target.ToString()) {
-				case "FireGlyph":
-				case "FireBall":
+				case "Fireball":
+				case "Fireball2":
+				case "Fireball3":
+				case "Fireball4":
 					StartCoroutine(Morph (match, glyphColours["fireball"]));
 					if (currentCast == CastDirection.Right) {
 						player.CastFireball(25, 1f);
@@ -144,17 +147,21 @@ public class GlyphRecognition : MonoBehaviour {
 						player.CastFireball(0, 0f);
 					}
 					break;
-				case "WaterGlyph":
 				case "Shield":
+				case "Shield2":
+				case "Shield3":
 					StartCoroutine(Morph (match, glyphColours["shield"]));
 					player.CastShieldBack();
 					break;
-				case "AirGlyph":
-				case "WindSlash":
+				case "Windslash":
+				case "Windslash2":
+				case "Windslash3":
+				case "Windslash4":
 					StartCoroutine(Morph (match, glyphColours["windslash"]));
 					player.CastWindForward();
 					break;
-				case "LightningGlyph":
+				case "Lightning":
+				case "Lightning2":
 					StartCoroutine(Morph (match, glyphColours["finalSpark"]));
 					player.CastLightningNeutral();
 					break;
@@ -162,6 +169,24 @@ public class GlyphRecognition : MonoBehaviour {
 					StartCoroutine(Morph (match, glyphColours["arcanePulse"]));
 					player.CastArcanePulse();
 					break;
+				// case "Arcanopulse":
+				// case "Arcanopulse2":
+				// case "Arcanopulse3":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
+				// case "Icespike":
+				// case "Icespike2":
+				// case "Icespike3":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
+				// case "Royalfire":
+				// case "Royalfire":
+				// case "Royalfire":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
 				default:
 					ClearAll();
 					//Clear(targetGlyphGraphic);
