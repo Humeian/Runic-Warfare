@@ -15,6 +15,7 @@ public class GameManager : NetworkBehaviour
     public bool roundStarted = false;
 
     public GameObject spawn1, spawn2;
+    public GameObject menu;
 
     // Start is called before the first frame update
     public override void OnStartServer()
@@ -41,6 +42,10 @@ public class GameManager : NetworkBehaviour
         //print(timer);
         if (networkManager.bothPlayersConnected) {
             roundStarted = true;
+        }
+
+        if (roundStarted && menu != null && menu.activeSelf){
+            menu.SetActive(false);
         }
     }
 
