@@ -105,15 +105,15 @@ public class PlayerCamera : MonoBehaviour
             shakeFactor *= shakeDecayFactor;
         }
 
-        if (Input.GetKeyDown("t")){
+        if (Input.GetKeyDown("tab")){
             showTutorial();
         }
-        if (Input.GetKeyDown("s")){
-            showSettings();
+        if (Input.GetKeyDown("escape")){
+            GameObject.Find("Options").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
         }
     }
 
-    void showTutorial(){
+    public void showTutorial(){
         if (tutorialPanel != null){
             tutorialPanel.SetActive(!tutorialPanel.active);
         } else {
@@ -121,7 +121,8 @@ public class PlayerCamera : MonoBehaviour
         }
     }
 
-    void showSettings(){
+    public void showSettings(){
+        
         if (gameSettings != null){
             gameSettings.SetActive(!gameSettings.active);
         } else {

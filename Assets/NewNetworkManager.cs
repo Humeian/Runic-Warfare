@@ -12,6 +12,10 @@ public class NewNetworkManager : NetworkManager
     public GameObject player1, player2;
     public bool bothPlayersConnected = false;
 
+    public void setNetworkAddress(UnityEngine.UI.Text textComponent){
+        this.networkAddress = textComponent.text;
+    }
+
     #region Unity Callbacks
 
     public override void OnValidate()
