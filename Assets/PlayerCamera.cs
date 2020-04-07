@@ -122,7 +122,6 @@ public class PlayerCamera : MonoBehaviour
     }
 
     public void showSettings(){
-        
         if (gameSettings != null){
             gameSettings.SetActive(!gameSettings.active);
         } else {
