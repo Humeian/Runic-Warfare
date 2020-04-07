@@ -19,6 +19,8 @@ namespace AdVd.GlyphRecognition
         private bool isTarget = false;
         public float fadeSpeed = 0.5f;
 
+        private Color defaultColor = new Color(191/255f, 110/255f, 54/255f, 64/255f);
+
         public void Start() {
             if (gameObject.name == "TargetGlyphGraphic") {
                 isTarget = true;
@@ -26,8 +28,11 @@ namespace AdVd.GlyphRecognition
         }
 
         public void Update() {
-            if (isTarget)
-                color = new Color(1f, 1f, 1f, color.a - Time.deltaTime * fadeSpeed);
+            if (isTarget) {
+                color = new Color(color.r, color.g, color.b, color.a - Time.deltaTime * fadeSpeed);
+                if (color.a <= 0)
+                    material.color = defaultColor;
+            }
         }
 
         protected override void BuildStrokeMesh(Stroke s, VertexHelper vh)

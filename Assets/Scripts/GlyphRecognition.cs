@@ -29,6 +29,9 @@ public class GlyphRecognition : MonoBehaviour {
 
 	private bool stopStoredMorph = false;
 
+    // This should potentially be in a constants file, though I'm not sure how to do importing in c#
+    private Dictionary<string, Color> glyphColours = new Dictionary<string, Color>();
+
 	void Start () {
         glyphInput.OnGlyphCast.AddListener(this.OnGlyphCast);
 
@@ -36,6 +39,17 @@ public class GlyphRecognition : MonoBehaviour {
 		if (glyphInput.OnPointDraw!=this.OnPointDraw) glyphInput.OnPointDraw+=this.OnPointDraw;
 
 		StartCoroutine(CleanScreen());
+
+        // Add Glyph Colour
+        glyphColours.Add("fireball", new Color(1f, 0, 0));
+		glyphColours.Add("shield", new Color(113/255f, 199/255f, 1f));
+		glyphColours.Add("windslash", new Color(26/255f, 1f, 0));
+		glyphColours.Add("finalSpark", new Color(1f, 247/255f, 103/255f));
+		glyphColours.Add("arcanePulse", new Color(214/255f, 135/255f, 1f));
+		glyphColours.Add("iceSpikes", new Color(127/255f, 126/255f, 253/255f));
+		glyphColours.Add("royalFire", new Color(143/255f, 111/255f, 1f));
+		glyphColours.Add("default", new Color(191 / 255f, 110 / 255f, 54 / 255f, 64 / 255f));
+
 	}
 
 	public void InitCleanScreen(){
@@ -55,7 +69,8 @@ public class GlyphRecognition : MonoBehaviour {
 
 	GlyphMatch Match(Stroke[] strokes) {
 		Glyph drawnGlyph = Glyph.CreateGlyph(strokes, glyphInput.sampleDistance);
-		if (glyphInput.Method!=null && glyphInput.targetGlyphSet!=null){
+        if (glyphInput.Method != null && glyphInput.targetGlyphSet != null)
+        {
 			GlyphMatch match;
 			int index = glyphInput.method.MultiMatch(drawnGlyph, glyphInput.targetGlyphSet, out match);
 			return match;
@@ -119,9 +134,11 @@ public class GlyphRecognition : MonoBehaviour {
 		// through any possible errors.
 		try {
 			switch (match.target.ToString()) {
-				case "FireGlyph":
-				case "FireBall":
-					StartCoroutine(Morph (match));
+				case "Fireball":
+				case "Fireball2":
+				case "Fireball3":
+				case "Fireball4":
+					StartCoroutine(Morph (match, glyphColours["fireball"]));
 					if (currentCast == CastDirection.Right) {
 						player.CastFireball(25, 1f);
 					} else if (currentCast == CastDirection.Left) {
@@ -130,24 +147,46 @@ public class GlyphRecognition : MonoBehaviour {
 						player.CastFireball(0, 0f);
 					}
 					break;
-				case "WaterGlyph":
 				case "Shield":
-					StartCoroutine(Morph (match));
+				case "Shield2":
+				case "Shield3":
+					StartCoroutine(Morph (match, glyphColours["shield"]));
 					player.CastShieldBack();
 					break;
-				case "AirGlyph":
-				case "WindSlash":
-					StartCoroutine(Morph (match));
+				case "Windslash":
+				case "Windslash2":
+				case "Windslash3":
+				case "Windslash4":
+					StartCoroutine(Morph (match, glyphColours["windslash"]));
 					player.CastWindForward();
 					break;
-				case "LightningGlyph":
-					StartCoroutine(Morph (match));
+				case "Lightning":
+				case "Lightning2":
+					StartCoroutine(Morph (match, glyphColours["finalSpark"]));
 					player.CastLightningNeutral();
 					break;
 				case "ArcanePulse":
-					StartCoroutine(Morph (match));
+					StartCoroutine(Morph (match, glyphColours["arcanePulse"]));
 					player.CastArcanePulse();
 					break;
+				// case "Arcanopulse":
+				// case "Arcanopulse2":
+				// case "Arcanopulse3":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
+				// case "Icespike":
+				// case "Icespike2":
+				// case "Icespike3":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
+				// case "Royalfire":
+				// case "Royalfire":
+				// case "Royalfire":
+				// 	StartCoroutine(Morph (match));
+				// 	player.CastLightningNeutral();
+				// 	break;
 				default:
 					Debug.Log("Fizzle");
 					player.CastFizzle();
@@ -169,7 +208,7 @@ public class GlyphRecognition : MonoBehaviour {
 
 	const float step=0.01f;
 
-	IEnumerator Morph(GlyphMatch match){
+	IEnumerator Morph(GlyphMatch match, Color color){
 		targetGlyphGraphic.color = new Color(1f, 1f, 1f, 1f);
 
 		Clear(castedGlyphGraphic);
@@ -181,11 +220,13 @@ public class GlyphRecognition : MonoBehaviour {
 			yield return new WaitForSeconds(step);
 		}
 		*/
+
 		float t = 0f;
 		while (t < 0.99f) {
 			match.SetLerpStrokes(t, ref strokes);
 			Set(targetGlyphGraphic, strokes);
-			t += (1 - t) * 0.1f;
+			targetGlyphGraphic.material.color = Color.Lerp(glyphColours["default"], color, t);
+         	t += (1 - t) * 0.1f;
 			yield return new WaitForSeconds(step);
 		}
 
