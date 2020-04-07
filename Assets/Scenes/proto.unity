@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -409.79688, y: 182.57617}
+  m_AnchoredPosition: {x: -409.79688, y: 182.576}
   m_SizeDelta: {x: -1761.1614, y: -620}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7612726
@@ -1032,7 +1032,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -409.79688, y: 182.57617}
+  m_AnchoredPosition: {x: -409.79688, y: 182.57594}
   m_SizeDelta: {x: -1761.1614, y: -620}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &256195414
@@ -1443,7 +1443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 2.5969827
+  m_AspectRatio: 3.015054
 --- !u!222 &358211291
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5549,7 +5549,6 @@ MonoBehaviour:
   - {fileID: 2091421368820422775, guid: c2fc1aa6e76c5f34ab2eed3af16a091c, type: 3}
   - {fileID: 7417042412368800268, guid: 4fc7e5d1c7566a94e8ff825247f267a2, type: 3}
   - {fileID: 6955213005739047226, guid: b7e691cb869217344a69c8761950f344, type: 3}
-  - {fileID: 6837901161223021719, guid: decf7cafe7dde48f1a14286b8b1a4a2a, type: 3}
   - {fileID: 0}
   player1: {fileID: 0}
   player2: {fileID: 0}
@@ -7309,7 +7308,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -409.79688, y: 182.57617}
+  m_AnchoredPosition: {x: -409.79688, y: 182.57594}
   m_SizeDelta: {x: -1761.1614, y: -620}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1891465271
@@ -7934,14 +7933,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 638772559}
     m_Modifications:
-    - target: {fileID: 7612724, guid: bfffd1108bea347478cf9f416f84fa3d, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 472.58496
-      objectReference: {fileID: 0}
-    - target: {fileID: 358211289, guid: bfffd1108bea347478cf9f416f84fa3d, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 530246894, guid: bfffd1108bea347478cf9f416f84fa3d, type: 3}
       propertyPath: sceneId
       value: 2288616952
