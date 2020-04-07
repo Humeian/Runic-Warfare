@@ -18,6 +18,9 @@ public class PlayerCamera : MonoBehaviour
     public PostProcessVolume ppv;
     private DepthOfField dof;
 
+    public GameObject tutorialPanel;
+    public GameObject gameSettings;
+
     private float shakeFactor = 0f;
     private float shakeDecayFactor = 0.9f;
 
@@ -103,25 +106,31 @@ public class PlayerCamera : MonoBehaviour
         }
 
         if (Input.GetKeyDown("t")){
-            toggleViewPoint();
+            showTutorial();
+        }
+        if (Input.GetKeyDown("s")){
+            showSettings();
+        }
+    }
+
+    void showTutorial(){
+        if (tutorialPanel != null){
+            tutorialPanel.SetActive(!tutorialPanel.active);
+        } else {
+            Debug.Log("Tutorial panel cannot be found");
+        }
+    }
+
+    void showSettings(){
+        if (gameSettings != null){
+            gameSettings.SetActive(!gameSettings.active);
+        } else {
+            Debug.Log("Settings panel cannot be found");
         }
     }
 
     public void Shake(float s) {
         shakeFactor += s;
-    }
-
-    public void toggleViewPoint() {
-        Debug.Log("Switch positions");
-        if (currentPlayer.name == "Player1") {
-            currentPlayer = GameObject.Find("Player2");
-            otherPlayer = GameObject.Find("Player1");
-        } else {
-            currentPlayer = GameObject.Find("Player1");
-            otherPlayer = GameObject.Find("Player2");
-        }
-
-        glyphRecognition.ChangePlayer(currentPlayer);
     }
 
     public void Rematch() {
