@@ -13,6 +13,8 @@ public class WindSlash : NetworkBehaviour
     [SyncVar]
     public GameObject owner;
 
+    public GameObject hitParticle;
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -25,6 +27,10 @@ public class WindSlash : NetworkBehaviour
     void Start() {
         Color green = new Color(0.5f, 1f, 0.5f, 0.6f);
         owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, green);
+
+        int random = Random.Range(0, 5);
+        print(random);
+        GetComponents<AudioSource>()[random].Play();
     }
 
     public void SetTarget(GameObject g) {
@@ -45,18 +51,26 @@ public class WindSlash : NetworkBehaviour
     void OnTriggerStay(Collider other) {
         if (owner != null && otherPlayer != null) {
             if (other.gameObject == otherPlayer) {
-                Debug.Log("testing");
+                //Debug.Log("testing");
                 other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
                 other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
                 owner.GetComponent<PlayerBehaviour>().TargetThrowPlayerBack(owner.GetComponent<NetworkIdentity>().connectionToClient, 0.8f, 2, 40);
                 owner.GetComponent<PlayerBehaviour>().TargetSetAnimTrigger(owner.GetComponent<NetworkIdentity>().connectionToClient, "WindSlashRecoil");
+                ServerSpawnHit();
                 Destroy(gameObject);
             } else if (other.tag == "Shield") {
                 other.GetComponent<Shield>().Break();
                 owner.GetComponent<PlayerBehaviour>().TargetThrowPlayerBack(owner.GetComponent<NetworkIdentity>().connectionToClient, 0.4f, 2, 40);
                 owner.GetComponent<PlayerBehaviour>().TargetSetAnimTrigger(owner.GetComponent<NetworkIdentity>().connectionToClient, "WindSlashRecoil");
+                ServerSpawnHit();
                 Destroy(gameObject);
             }
         }
+    }
+
+    [Server]
+    public void ServerSpawnHit() {
+        GameObject newExplosion = Instantiate(hitParticle, transform.position, transform.rotation);
+        NetworkServer.Spawn(newExplosion);
     }
 }
