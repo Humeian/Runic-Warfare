@@ -169,6 +169,10 @@ public class PlayerCamera : MonoBehaviour
             + (currentPlayer.transform.forward * thirdPersonZOffset);
         Vector3 lookTarget = spawnLocation + (Vector3.up * playerHeight * 0.8f);
         while (timer >= 0f) {
+            target = spawnLocation + (Vector3.up * playerHeight)
+                + (currentPlayer.transform.right * thirdPersonXOffset) 
+                + (currentPlayer.transform.up * thirdPersonYOffset)
+                + (currentPlayer.transform.forward * thirdPersonZOffset);
             transform.position = target - (currentPlayer.transform.forward * Mathf.Pow(timer, 3f) * 1f) + (Vector3.up * Mathf.Pow(timer, 3f) * 0.5f) + (currentPlayer.transform.right * Mathf.Pow(timer, 3f) * 1f);
 
             lookTarget = Vector3.Lerp(currentPlayer.transform.position, otherPlayer.transform.position + (Vector3.up * playerHeight * 0.8f), 1 - (Mathf.Pow(timer, 2f) / Mathf.Pow(duration, 2f)));
