@@ -10,6 +10,7 @@ TagManager:
   - Wall
   - BodyPart
   - ArcanePulse
+  - IceSpikes
   layers:
   - Default
   - TransparentFX

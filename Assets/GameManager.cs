@@ -55,9 +55,18 @@ public class GameManager : NetworkBehaviour
         PlayerBehaviour p2 = networkManager.player2.GetComponent<PlayerBehaviour>();
         p1.health = 3;
         p2.health = 3;
-
+        
         p1.lightningCharge = 0;
         p2.lightningCharge = 0;
+
+        GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");
+        foreach (GameObject s in shields) {
+            NetworkServer.Destroy(s);
+        }
+        GameObject[] iceSpikes = GameObject.FindGameObjectsWithTag("IceSpikes");
+        foreach(GameObject i in iceSpikes) {
+            NetworkServer.Destroy(i);
+        }
 
         p1.TargetResetPosition(p1.GetComponent<NetworkIdentity>().connectionToClient, spawn1.transform.position);
         p2.TargetResetPosition(p2.GetComponent<NetworkIdentity>().connectionToClient, spawn2.transform.position);
@@ -67,10 +76,5 @@ public class GameManager : NetworkBehaviour
 
         timer = 60f;
         roundStarted = true;
-
-        GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");
-        foreach (GameObject s in shields) {
-            Destroy(s);
-        }
     }
 }

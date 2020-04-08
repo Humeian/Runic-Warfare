@@ -62,6 +62,7 @@ MonoBehaviour:
   m_RaycastTarget: 1
   relativeWidth: 0.05
   capSize: 0.4
+  fadeSpeed: 0.5
 --- !u!1 &123470
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,6 +125,7 @@ MonoBehaviour:
   m_RaycastTarget: 1
   relativeWidth: 0.05
   capSize: 0.4
+  fadeSpeed: 0.5
 --- !u!1 &123472
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +249,7 @@ MonoBehaviour:
   m_RaycastTarget: 1
   relativeWidth: 0.05
   capSize: 0.4
+  fadeSpeed: 0.5
 --- !u!1 &171112
 GameObject:
   m_ObjectHideFlags: 0
