@@ -81,9 +81,12 @@ public class Lightning : NetworkBehaviour
     public IEnumerator FadeOut() {
         float alpha = 1f;
         while (true) {
-            lineRenderer.widthMultiplier -= 0.05f;
-            if (lineRenderer.widthMultiplier <= 0f) {
-                Destroy(gameObject);
+            if (lineRenderer.widthMultiplier <= 0.001f) {
+                lineRenderer.widthMultiplier = 0f;
+                Destroy(gameObject, 1.5f);
+            }
+            else {
+                lineRenderer.widthMultiplier *= 0.9f;
             }
 
             alpha -= 0.08f;
