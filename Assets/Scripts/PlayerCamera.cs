@@ -176,7 +176,7 @@ public class PlayerCamera : MonoBehaviour
             transform.position = target - (currentPlayer.transform.forward * Mathf.Pow(timer, 3f) * 1f) + (Vector3.up * Mathf.Pow(timer, 3f) * 0.5f) + (currentPlayer.transform.right * Mathf.Pow(timer, 3f) * 1f);
 
             lookTarget = Vector3.Lerp(currentPlayer.transform.position, otherPlayer.transform.position + (Vector3.up * playerHeight * 0.8f), 1 - (Mathf.Pow(timer, 2f) / Mathf.Pow(duration, 2f)));
-            print(Mathf.Pow(duration, 1.5f) - Mathf.Pow(timer, 1.5f));
+            //print(Mathf.Pow(duration, 1.5f) - Mathf.Pow(timer, 1.5f));
             transform.LookAt(lookTarget);
             timer -= Time.deltaTime;
 

@@ -10,6 +10,8 @@ TagManager:
   - Wall
   - BodyPart
   - ArcanePulse
+  - Arena
+  - RoyalFire
   layers:
   - Default
   - TransparentFX

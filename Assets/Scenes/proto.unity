@@ -12424,7 +12424,7 @@ GameObject:
   - component: {fileID: 1025982787}
   m_Layer: 0
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Arena
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13356,6 +13356,8 @@ MonoBehaviour:
   - {fileID: 6955213005739047226, guid: b7e691cb869217344a69c8761950f344, type: 3}
   - {fileID: 6837901161223021719, guid: decf7cafe7dde48f1a14286b8b1a4a2a, type: 3}
   - {fileID: 3089659636743016930, guid: 13c9c78ff4d1aad4eb955e1b878f85cf, type: 3}
+  - {fileID: 8105898572971341154, guid: e856297c018ba5544acab29e6601fc73, type: 3}
+  - {fileID: 68290325394088080, guid: cb308724ab9e4a34e9f135f8f8f11d85, type: 3}
   player1: {fileID: 0}
   player2: {fileID: 0}
   bothPlayersConnected: 0

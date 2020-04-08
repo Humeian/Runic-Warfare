@@ -59,6 +59,16 @@ public class GameManager : NetworkBehaviour
         p1.lightningCharge = 0;
         p2.lightningCharge = 0;
 
+        GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");
+        foreach (GameObject s in shields) {
+            Destroy(s);
+        }
+        
+        GameObject[] royalFires = GameObject.FindGameObjectsWithTag("RoyalFire");
+        foreach (GameObject r in royalFires) {
+            NetworkServer.Destroy(r);
+        }
+
         p1.TargetResetPosition(p1.GetComponent<NetworkIdentity>().connectionToClient, spawn1.transform.position);
         p2.TargetResetPosition(p2.GetComponent<NetworkIdentity>().connectionToClient, spawn2.transform.position);
 
@@ -67,10 +77,5 @@ public class GameManager : NetworkBehaviour
 
         timer = 60f;
         roundStarted = true;
-
-        GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");
-        foreach (GameObject s in shields) {
-            Destroy(s);
-        }
     }
 }
