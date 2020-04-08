@@ -134,6 +134,11 @@ public class PlayerBehaviour : NetworkBehaviour
         GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
 
         shields.Clear();
+
+        //reset momentum
+        movingForward = 0;
+        movingRight = 0;
+        movingUp = 0;
     }
 
     void FixedUpdate()

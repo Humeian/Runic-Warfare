@@ -39,10 +39,13 @@ public class Fireball : NetworkBehaviour
     }
 
     IEnumerator TravelToDestination() {
+        float verticalSpeed = maxHeight;
+        float vertical = startHeight;
         while (true) {
             float currentTime = (Time.time - startTime) / travelTime;
             Vector3 horizontal = Vector3.Lerp(startPosition, endPosition, currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * maxHeight) + startHeight;
+            vertical += verticalSpeed * Time.deltaTime;
+            verticalSpeed -= maxHeight * (2f / travelTime) * Time.deltaTime;
 
             transform.position = new Vector3(horizontal.x, vertical, horizontal.z);
 

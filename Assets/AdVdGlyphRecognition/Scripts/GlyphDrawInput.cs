@@ -280,16 +280,23 @@ namespace AdVd.GlyphRecognition
 		/// </summary>
 		/// 
 		public bool Cast(){
-			if (strokeList!=null){
-				if (strokeList.Count>0){
-					Glyph newGlyph=Glyph.CreateGlyph(strokeList.ToArray(), sampleDistance);
-					newGlyph.name="NewGlyph ["+this.name+"]";
-					Cast(newGlyph);
-					strokeList.Clear();
-					return true;
+			try {
+				if (strokeList!=null){
+					if (strokeList.Count>0){
+						Glyph newGlyph=Glyph.CreateGlyph(strokeList.ToArray(), sampleDistance);
+						newGlyph.name="NewGlyph ["+this.name+"]";
+						Cast(newGlyph);
+						strokeList.Clear();
+						return true;
+					}
 				}
+				return false;
+			} 
+			catch (Exception e) {
+				Debug.LogError("caught Cast() error: " + e.ToString());
+				strokeList.Clear();
+				return false;
 			}
-			return false;
 		}
 
 		/// <summary>

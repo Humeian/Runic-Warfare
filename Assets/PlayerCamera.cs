@@ -14,6 +14,9 @@ public class PlayerCamera : MonoBehaviour
     public Transform playerHipBone;
     public Vector3 playerHipBonePos;
 
+    //more reliable than player location for camera work
+    private Vector3 spawnLocation;
+
     public GlyphRecognition glyphRecognition;
     public PostProcessVolume ppv;
     private DepthOfField dof;
@@ -71,6 +74,7 @@ public class PlayerCamera : MonoBehaviour
                 }
 
                 if (currentPlayer && otherPlayer) {
+                    spawnLocation = currentPlayer.transform.position;
                     cameraState = CameraState.Intro;
                     StartCoroutine(SpinRoutine());
                 }
@@ -153,16 +157,17 @@ public class PlayerCamera : MonoBehaviour
         }
         if (Input.GetKeyDown("escape")){
             GameObject.Find("Options").GetComponent<UnityEngine.UI.Button>().onClick.Invoke();
+        }
     }
 
     public IEnumerator SpinRoutine() {
         float duration = 3f;
         float timer = duration;
-        Vector3 target = currentPlayer.transform.position + (Vector3.up * playerHeight)
+        Vector3 target = spawnLocation + (Vector3.up * playerHeight)
             + (currentPlayer.transform.right * thirdPersonXOffset) 
             + (currentPlayer.transform.up * thirdPersonYOffset)
             + (currentPlayer.transform.forward * thirdPersonZOffset);
-        Vector3 lookTarget = currentPlayer.transform.position + (Vector3.up * playerHeight * 0.8f);
+        Vector3 lookTarget = spawnLocation + (Vector3.up * playerHeight * 0.8f);
         while (timer >= 0f) {
             transform.position = target - (currentPlayer.transform.forward * Mathf.Pow(timer, 3f) * 1f) + (Vector3.up * Mathf.Pow(timer, 3f) * 0.5f) + (currentPlayer.transform.right * Mathf.Pow(timer, 3f) * 1f);
 
