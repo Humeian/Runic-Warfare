@@ -30,6 +30,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public GameObject lightningChargeObj;
     public GameObject lightning;
     public GameObject arcanePulse;
+    public GameObject iceSpikeProjectile;
     public GameObject fizzle;
     public RuntimeAnimatorController controller;
     public Timer timer;
@@ -305,7 +306,18 @@ public class PlayerBehaviour : NetworkBehaviour
         speedUp = 0.6f;
         stopMomentumCharges = 1;
         SetAnimTrigger("ArcanePulse");
-        //CmdCastArcanePulse();
+        CmdCastArcanePulse();
+    }
+
+    public void CastIceSpikes() {
+        onGround = false;
+        speedUp = 0.6f;
+        movingForward = -80;
+        speedForward = 0.1f;
+        //do not fall faster
+        stopMomentumCharges = 0;
+        SetAnimTrigger("ShieldBack");
+        CmdCastIceSpikes();
     }
 
     public void CastFizzle()
@@ -391,6 +403,14 @@ public class PlayerBehaviour : NetworkBehaviour
         GameObject newPulse = Instantiate(arcanePulse, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
         newPulse.GetComponent<ArcanePulse>().SetOwner(gameObject);
         NetworkServer.Spawn(newPulse);
+    }
+
+    [Command]
+    public void CmdCastIceSpikes() {
+        //Arcane Pulse should spawn at the feet
+        GameObject newIceSpikes = Instantiate(iceSpikeProjectile, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
+        newIceSpikes.GetComponent<IceSpikeProjectile>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
+        NetworkServer.Spawn(newIceSpikes);
     }
 
     [Command]

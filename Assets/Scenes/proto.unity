@@ -13356,6 +13356,8 @@ MonoBehaviour:
   - {fileID: 6955213005739047226, guid: b7e691cb869217344a69c8761950f344, type: 3}
   - {fileID: 6837901161223021719, guid: decf7cafe7dde48f1a14286b8b1a4a2a, type: 3}
   - {fileID: 3089659636743016930, guid: 13c9c78ff4d1aad4eb955e1b878f85cf, type: 3}
+  - {fileID: 2964162197209181304, guid: ee71c7971b6bbdb42b485e88405daee2, type: 3}
+  - {fileID: 5893656404576051137, guid: 988aa505e51b6344f821851e3c30068b, type: 3}
   player1: {fileID: 0}
   player2: {fileID: 0}
   bothPlayersConnected: 0
