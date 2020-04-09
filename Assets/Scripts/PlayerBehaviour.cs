@@ -92,6 +92,7 @@ public class PlayerBehaviour : NetworkBehaviour
         otherPlayer = op;
         Debug.Log("Registered Other Player:");
         Debug.Log(otherPlayer);
+        Debug.Log(op);
         //timer.StartTimer();
     }
 

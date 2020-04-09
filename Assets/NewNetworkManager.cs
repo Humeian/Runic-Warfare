@@ -78,8 +78,10 @@ public class NewNetworkManager : NetworkManager
     public void StartPractice()
     {
         base.StartHost();
-        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position + Vector3.up, AISpawn.transform.rotation);
+        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position, AISpawn.transform.rotation);
         player2 = AIPlayer;
+        NetworkServer.Spawn(AIPlayer);
+        //AIPlayer.GetComponent<AIBehaviour>().activateAI();
         if (player1 != null)
         {
             Debug.Log("Here");
@@ -159,6 +161,7 @@ public class NewNetworkManager : NetworkManager
                 Debug.Log(player2);
                 player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
                 player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+                player1.GetComponent<AIBehaviour>().activateAI();
             }
         }
         else {
