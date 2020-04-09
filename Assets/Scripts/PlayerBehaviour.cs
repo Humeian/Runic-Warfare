@@ -202,12 +202,18 @@ public class PlayerBehaviour : NetworkBehaviour
         // Needs to be in Update as there appear to be damage timing issues.
         if (health < 3) {
             hp1.color = red;
+        } else {
+            hp1.color = new Color(1f, 1f, 1f, 1f);
         }
         if (health < 2) {
             hp2.color = red;
+        } else {
+            hp2.color = new Color(1f, 1f, 1f, 1f);
         }
         if (health < 1) {
             hp3.color = red;
+        } else {
+            hp3.color = new Color(1f, 1f, 1f, 1f);
         }
 
         if (royalBurn > 0f) {

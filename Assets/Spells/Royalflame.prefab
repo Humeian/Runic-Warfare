@@ -14329,7 +14329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  royalBurnRate: 0.8
+  royalBurnRate: 0.6
 --- !u!114 &8088040644594814854
 MonoBehaviour:
   m_ObjectHideFlags: 0
