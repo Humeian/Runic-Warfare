@@ -63,9 +63,15 @@ public class GameManager : NetworkBehaviour
         foreach (GameObject s in shields) {
             NetworkServer.Destroy(s);
         }
+        
         GameObject[] iceSpikes = GameObject.FindGameObjectsWithTag("IceSpikes");
         foreach(GameObject i in iceSpikes) {
             NetworkServer.Destroy(i);
+        }
+        
+        GameObject[] royalFires = GameObject.FindGameObjectsWithTag("RoyalFire");
+        foreach (GameObject r in royalFires) {
+            NetworkServer.Destroy(r);
         }
 
         p1.TargetResetPosition(p1.GetComponent<NetworkIdentity>().connectionToClient, spawn1.transform.position);
