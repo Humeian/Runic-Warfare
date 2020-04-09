@@ -13642,8 +13642,8 @@ MonoBehaviour:
   - {fileID: 5893656404576051137, guid: 988aa505e51b6344f821851e3c30068b, type: 3}
   player1: {fileID: 0}
   player2: {fileID: 0}
-  AI: {fileID: 1497479179481301358, guid: 12c9668642a9b49bc90f0931ed772b89, type: 3}
-  AISpawn: {fileID: 0}
+  AI: {fileID: 1083056964383538082, guid: 12c9668642a9b49bc90f0931ed772b89, type: 3}
+  AISpawn: {fileID: 654093164}
   bothPlayersConnected: 0
 --- !u!1 &1372997630
 GameObject:
