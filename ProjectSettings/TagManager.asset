@@ -11,6 +11,8 @@ TagManager:
   - BodyPart
   - ArcanePulse
   - IceSpikes
+  - Arena
+  - RoyalFire
   layers:
   - Default
   - TransparentFX
