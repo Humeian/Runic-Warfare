@@ -8,11 +8,16 @@ public class GameManager : NetworkBehaviour
     public NewNetworkManager networkManager;
     public PlayerCamera cam;
 
+    private PlayerBehaviour p1, p2;
+
     [SyncVar]
     public float timer;
 
     [SyncVar]
     public bool roundStarted = false;
+
+    [SyncVar]
+    public bool roundFinished = false;
 
     public GameObject spawn1, spawn2;
     public GameObject menu;
@@ -21,7 +26,7 @@ public class GameManager : NetworkBehaviour
     public override void OnStartServer()
     {
         roundStarted = false;
-        timer = 60f;
+        timer = 10f;
         StartCoroutine(KeepTimer());
     }
 
@@ -30,6 +35,9 @@ public class GameManager : NetworkBehaviour
         while (true) {
             if (roundStarted && timer > 0f) {
                 timer -= 0.1f;
+            }
+            if (roundStarted && timer <= 0f) {
+                roundFinished = true;
             }
             yield return new WaitForSeconds(0.1f);
         }
@@ -40,19 +48,26 @@ public class GameManager : NetworkBehaviour
     void Update()
     {
         //print(timer);
-        if (networkManager.bothPlayersConnected) {
+        if (networkManager.bothPlayersConnected && !roundStarted && !roundFinished) {
             roundStarted = true;
+
+            // These gets will be called once per round, this is harmless
+            p1 = networkManager.player1.GetComponent<PlayerBehaviour>();
+            p2 = networkManager.player2.GetComponent<PlayerBehaviour>();
         }
 
         if (roundStarted && menu != null && menu.activeSelf){
             menu.SetActive(false);
         }
+
+        if (roundFinished && roundStarted) {
+            EndRound();
+            roundStarted = false;
+        }
     }
 
     [Server]
     public void ResetMatch() {
-        PlayerBehaviour p1 = networkManager.player1.GetComponent<PlayerBehaviour>();
-        PlayerBehaviour p2 = networkManager.player2.GetComponent<PlayerBehaviour>();
         p1.health = 3;
         p2.health = 3;
         
@@ -76,5 +91,23 @@ public class GameManager : NetworkBehaviour
 
         timer = 60f;
         roundStarted = true;
+    }
+
+    [Server]
+    public void EndRound() {
+        p1.RpcDisableGlyphInput();
+        p2.RpcDisableGlyphInput();
+
+        float p1Distance = p1.DistanceToCenter();
+        float p2Distance = p2.DistanceToCenter();
+        Debug.Log("p1 distance: "+p1Distance+"     p2 distance: "+p2Distance);
+
+        if (p1Distance < p2Distance){
+            p1.RpcWinRound();
+            p2.RpcLoseRound();
+        } else {
+            p2.RpcWinRound();
+            p1.RpcLoseRound();
+        }
     }
 }

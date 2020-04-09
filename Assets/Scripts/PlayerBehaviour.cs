@@ -85,6 +85,11 @@ public class PlayerBehaviour : NetworkBehaviour
         }
     }
 
+    public float DistanceToCenter(){
+        GameObject centerMark = GameObject.Find("CenterMark");
+        return Vector3.Distance(this.gameObject.transform.position, centerMark.transform.position);
+    }
+
     //called by NewNetworkManager
     public void SetOtherPlayer(GameObject op) {
         otherPlayer = op;
@@ -140,6 +145,18 @@ public class PlayerBehaviour : NetworkBehaviour
         movingForward = 0;
         movingRight = 0;
         movingUp = 0;
+    }
+
+    [ClientRpc]
+    public void RpcDisableGlyphInput(){
+        GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
+        GameObject.FindWithTag("GlyphRecognition").SetActive(false);
+    }
+    public void RpcWinRound() {
+        GameObject.Find("RoundDisplayPanel").transform.Find("WinPanel").gameObject.SetActive(true);
+    }
+    public void RpcLoseRound() {
+        GameObject.Find("RoundDisplayPanel").transform.Find("LossPanel").gameObject.SetActive(true);
     }
 
     void FixedUpdate()
