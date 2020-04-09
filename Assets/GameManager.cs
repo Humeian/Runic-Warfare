@@ -19,6 +19,13 @@ public class GameManager : NetworkBehaviour
     [SyncVar]
     public bool roundFinished = false;
 
+    [SyncVar]
+    public int p1Wins = 0;
+    [SyncVar]
+    public int p2Wins = 0;
+    [SyncVar]
+    public int round = 1; 
+
     public GameObject spawn1, spawn2;
     public GameObject menu;
 
@@ -60,8 +67,16 @@ public class GameManager : NetworkBehaviour
             menu.SetActive(false);
         }
 
+        if (roundStarted && !roundFinished){
+            if (p1.health <= 0 || p2.health <= 0) {
+                roundStarted = false;
+                roundFinished = true;
+                EndRound(0);
+            }
+        }
+
         if (roundFinished && roundStarted) {
-            EndRound();
+            EndRound(1);
             roundStarted = false;
         }
     }
@@ -91,23 +106,39 @@ public class GameManager : NetworkBehaviour
 
         timer = 60f;
         roundStarted = true;
+        roundFinished = false;
     }
 
+    // Ending the round with a reason of 0 means a player has died
+    //                         reason of 1 means a timeout has occured
     [Server]
-    public void EndRound() {
+    public void EndRound(int reason) {
         p1.RpcDisableGlyphInput();
         p2.RpcDisableGlyphInput();
 
-        float p1Distance = p1.DistanceToCenter();
-        float p2Distance = p2.DistanceToCenter();
-        Debug.Log("p1 distance: "+p1Distance+"     p2 distance: "+p2Distance);
+        round += 1;
 
-        if (p1Distance < p2Distance){
-            p1.RpcWinRound();
-            p2.RpcLoseRound();
+        bool p1win;
+
+        if (reason == 1){
+            float p1Distance = p1.DistanceToCenter();
+            float p2Distance = p2.DistanceToCenter();
+            Debug.Log("p1 distance: "+p1Distance+"     p2 distance: "+p2Distance);
+            p1win = p1Distance < p2Distance;
         } else {
-            p2.RpcWinRound();
-            p1.RpcLoseRound();
+            p1win = p2.health <= 0;
         }
+        
+        if (p1win){
+            p1Wins += 1;
+            p1.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
+            p2.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
+        } else {
+            p2Wins += 1;
+            p2.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
+            p1.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
+        }
+
+
     }
 }

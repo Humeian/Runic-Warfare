@@ -135,9 +135,14 @@ public class PlayerBehaviour : NetworkBehaviour
         glyphInput.SetActive(true);
         glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
 
+        // Recolour the health bubbles
         GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
         GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
         GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
+
+        // Disable Win/Loss text
+        GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(false);
+        GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(false);
 
         shields.Clear();
 
@@ -152,11 +157,28 @@ public class PlayerBehaviour : NetworkBehaviour
         GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
         GameObject.FindWithTag("GlyphRecognition").SetActive(false);
     }
-    public void RpcWinRound() {
-        GameObject.Find("RoundDisplayPanel").transform.Find("WinPanel").gameObject.SetActive(true);
+
+    [TargetRpc]
+    public void TargetWinRound(NetworkConnection connection, int wins, int round) {
+        // Display Win text
+        GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(true);
+
+        // Display Rematch button
+        GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+
+        //Update # of wins and round number
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
+        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
     }
-    public void RpcLoseRound() {
-        GameObject.Find("RoundDisplayPanel").transform.Find("LossPanel").gameObject.SetActive(true);
+    [TargetRpc]
+    public void TargetLoseRound(NetworkConnection connection, int wins, int round) {
+        GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(true);
+
+        GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        
+        //Update # of wins and round number
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
+        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
     }
 
     void FixedUpdate()
