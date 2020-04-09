@@ -409,6 +409,7 @@ public class PlayerBehaviour : NetworkBehaviour
     public void CmdCastIceSpikes() {
         //Arcane Pulse should spawn at the feet
         GameObject newIceSpikes = Instantiate(iceSpikeProjectile, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
+        newIceSpikes.GetComponent<IceSpikeProjectile>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         NetworkServer.Spawn(newIceSpikes);
     }
 

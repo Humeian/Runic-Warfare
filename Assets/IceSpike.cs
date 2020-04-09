@@ -10,8 +10,8 @@ public class IceSpike : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnStartServer()
     {
-        Destroy(GetComponent<SphereCollider>(), 10f);
-        Destroy(gameObject, 6f);
+        Destroy(GetComponent<CapsuleCollider>(), 6f);
+        Destroy(gameObject, 7f);
     }
 
     // Update is called once per frame
