@@ -33,7 +33,7 @@ public class GameManager : NetworkBehaviour
     public override void OnStartServer()
     {
         roundStarted = false;
-        timer = 10f;
+        timer = 60f;
         StartCoroutine(KeepTimer());
     }
 
