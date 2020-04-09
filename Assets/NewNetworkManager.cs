@@ -10,6 +10,8 @@ using Mirror;
 public class NewNetworkManager : NetworkManager
 {
     public GameObject player1, player2;
+    public GameObject AI;
+    public GameObject AISpawn;
     public bool bothPlayersConnected = false;
 
     public void setNetworkAddress(UnityEngine.UI.Text textComponent){
@@ -71,6 +73,19 @@ public class NewNetworkManager : NetworkManager
     public override void StartHost()
     {
         base.StartHost();
+    }
+
+    public void StartPractice()
+    {
+        base.StartHost();
+        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position + Vector3.up, AISpawn.transform.rotation);
+        player2 = AIPlayer;
+        if (player1 != null)
+        {
+            Debug.Log("Here");
+            player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+        }
     }
 
     /// <summary>
@@ -137,6 +152,14 @@ public class NewNetworkManager : NetworkManager
         base.OnServerAddPlayer(conn);
         if (player1 == null) {
             player1 = conn.identity.gameObject;
+            if (player2 != null)
+            {
+                Debug.Log("Here2");
+                Debug.Log(player1);
+                Debug.Log(player2);
+                player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
+                player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+            }
         }
         else {
             player2 = conn.identity.gameObject;
@@ -194,12 +217,12 @@ public class NewNetworkManager : NetworkManager
     {
         base.OnClientConnect(conn);
 
-        if (player1.GetComponent<PlayerBehaviour>().isLocalPlayer) {
-            player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-        }
-        else {
-            player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
-        }
+        //if (player1.GetComponent<PlayerBehaviour>().isLocalPlayer) {
+        //    player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
+        //}
+        //else {
+        //    player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+        //}
         
     }
 

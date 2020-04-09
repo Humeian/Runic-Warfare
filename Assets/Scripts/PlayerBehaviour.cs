@@ -87,7 +87,11 @@ public class PlayerBehaviour : NetworkBehaviour
 
     //called by NewNetworkManager
     public void SetOtherPlayer(GameObject op) {
+        Debug.Log("Passed Other Player:");
+        Debug.Log(op);
         otherPlayer = op;
+        Debug.Log("Registered Other Player:");
+        Debug.Log(otherPlayer);
         //timer.StartTimer();
     }
 

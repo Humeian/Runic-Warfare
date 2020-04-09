@@ -77,4 +77,14 @@ public class GameManager : NetworkBehaviour
         timer = 60f;
         roundStarted = true;
     }
+
+    public void StartPractice()
+    {
+
+    }
+
+    public void StartTutorial()
+    {
+     
+    }
 }
