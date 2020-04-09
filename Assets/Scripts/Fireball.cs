@@ -66,6 +66,7 @@ public class Fireball : NetworkBehaviour
         // This is pretty messy - reminder to clean up afterwards
         // print("owner: " + owner.ToString());
         if (other.GetComponent<NetworkIdentity>() == null && other.tag != "BodyPart") {
+            print(other.name);
             ServerSpawnExplosion();
         }
         else if (other.GetComponent<NetworkIdentity>() != null) {
@@ -81,11 +82,14 @@ public class Fireball : NetworkBehaviour
                 ServerSpawnExplosion();
             }
             //if other object has an identity and wasn't the owner, explode
-            else if (other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != owner.ToString())
+            else if (other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != owner.ToString()) {
                 ServerSpawnExplosion();
+            }
             //if fireball was reflected and identity is the owner, explode
-            else if (wasReflected == true && other.GetComponent<NetworkIdentity>().connectionToClient.ToString() == owner.ToString())
+            else if (wasReflected == true && other.GetComponent<NetworkIdentity>().connectionToClient.ToString() == owner.ToString()) {
                 ServerSpawnExplosion();
+            }
+                
         }
         
     }
