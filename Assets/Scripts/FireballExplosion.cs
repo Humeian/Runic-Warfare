@@ -7,6 +7,8 @@ public class FireballExplosion : NetworkBehaviour
 {
     public int damage = 1;
 
+    
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -27,10 +29,10 @@ public class FireballExplosion : NetworkBehaviour
         if (other.tag == "Player") {
             other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
             other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
-            Destroy(gameObject, 0);
+            Destroy(GetComponent<SphereCollider>(), 0);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();
-            Destroy(gameObject, 0);
+            Destroy(GetComponent<SphereCollider>(), 0);
         }
     }
 }
