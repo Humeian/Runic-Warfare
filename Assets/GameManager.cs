@@ -198,7 +198,7 @@ public class GameManager : NetworkBehaviour
 
         introduction.SetActive(true);
 
-        while(!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+        while(!Input.GetMouseButtonDown(0)) { yield return null; }
 
         introduction.SetActive(false);
 
@@ -271,7 +271,7 @@ public class GameManager : NetworkBehaviour
 
         tutorialPanel.SetActive(true);
 
-        while (!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+        while (!Input.GetMouseButtonDown(0)) { yield return null; }
 
         tracingPanel.SetActive(false);
 
@@ -281,7 +281,7 @@ public class GameManager : NetworkBehaviour
 
         UIGameRules.SetActive(true);
 
-        while (!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+        while (!Input.GetMouseButtonDown(0)) { yield return null; }
 
         UIGameRules.SetActive(false);
 
@@ -289,7 +289,7 @@ public class GameManager : NetworkBehaviour
 
         conclusion.SetActive(true);
 
-        while (!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+        while(!Input.GetMouseButtonDown(0)) { yield return null; }
 
         conclusion.SetActive(false);
 
