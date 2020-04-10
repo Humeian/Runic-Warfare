@@ -192,6 +192,7 @@ public class GameManager : NetworkBehaviour
 
     public IEnumerator Tutorial()
     {
+        GlyphDisplay glyphDisplay = GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>();
         yield return new WaitForSecondsRealtime(2);
 
         Time.timeScale = 0;
@@ -205,12 +206,20 @@ public class GameManager : NetworkBehaviour
         Time.timeScale = 1;
 
 
+        yield return new WaitForSecondsRealtime(1);
 
         shootFireball.SetActive(true);
 
-        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = fireball;
+        glyphDisplay.glyph = fireball;
 
-        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Fireball4") { yield return new WaitForSecondsRealtime(0.1f); }
+        Time.timeScale = 0;
+
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Fireball4") {
+            glyphDisplay.RebuildGlyph();
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
+
+        Time.timeScale = 1;
 
         while (networkManager.player2.GetComponent<CharacterBehaviour>().health == 3) { yield return new WaitForSecondsRealtime(0.1f); }
 
@@ -227,9 +236,12 @@ public class GameManager : NetworkBehaviour
 
         blockFireball.SetActive(true);
 
-        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = shield;
+        glyphDisplay.glyph = shield;
 
-        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Shield2") { yield return new WaitForSecondsRealtime(0.1f); }
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Shield2") {
+            glyphDisplay.RebuildGlyph();
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
 
         glyphRecognizer.lastCast = null;
 
@@ -242,9 +254,18 @@ public class GameManager : NetworkBehaviour
 
         storeSpell.SetActive(true);
 
-        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = shield;
+        glyphDisplay.glyph = shield;
 
-        while (glyphRecognizer.storedGlyph.Length <= 1 || (glyphRecognizer.Match(glyphRecognizer.storedGlyph) != null && glyphRecognizer.Match(glyphRecognizer.storedGlyph).target.ToString() != "Shield2")) { yield return new WaitForSecondsRealtime(0.1f); }
+        Time.timeScale = 0;
+
+        while (glyphRecognizer.storedGlyph.Length <= 1 || (glyphRecognizer.Match(glyphRecognizer.storedGlyph) != null && glyphRecognizer.Match(glyphRecognizer.storedGlyph).target.ToString() != "Shield2")) {
+            glyphDisplay.RebuildGlyph();
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
+
+        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = null;
+
+        Time.timeScale = 1;
 
         storeSpell.SetActive(false);
 
