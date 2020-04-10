@@ -40,6 +40,13 @@ public class Lightning : NetworkBehaviour
                 //lineRenderer.SetPosition(1, rh.point);
                 break;
             }
+            else if (rh.collider.tag == "ArcanePulse") {
+                startPos = rh.point;
+                endPos = owner.transform.position + Vector3.up;
+                owner.GetComponent<PlayerBehaviour>().TakeDamage(damage);
+                owner.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(rh.collider.GetComponent<NetworkIdentity>().connectionToClient);
+                break;
+            }
             else if (rh.collider.tag == "Player") {
                 rh.collider.GetComponent<PlayerBehaviour>().TakeDamage(damage);
                 rh.collider.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(rh.collider.GetComponent<NetworkIdentity>().connectionToClient);

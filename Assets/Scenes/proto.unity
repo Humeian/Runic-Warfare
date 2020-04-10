@@ -25220,11 +25220,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4129894425215817561, guid: 956a20fa073193d41a276896a5e43a48,
-        type: 3}
-      propertyPath: far clip plane
-      value: 5000
-      objectReference: {fileID: 0}
     - target: {fileID: 4129894425215817563, guid: 956a20fa073193d41a276896a5e43a48,
         type: 3}
       propertyPath: m_Name
@@ -25232,29 +25227,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
         type: 3}
-      propertyPath: lookAtObject
-      value: 
-      objectReference: {fileID: 742443890}
-    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
-        type: 3}
       propertyPath: manager
       value: 
       objectReference: {fileID: 1314731717}
     - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
         type: 3}
-      propertyPath: gameSettings
+      propertyPath: lookAtObject
       value: 
-      objectReference: {fileID: 1999965363}
-    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
-        type: 3}
-      propertyPath: tutorialPanel
-      value: 
-      objectReference: {fileID: 588129790}
-    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
-        type: 3}
-      propertyPath: ppv
-      value: 
-      objectReference: {fileID: 1007554755}
+      objectReference: {fileID: 742443890}
     - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
         type: 3}
       propertyPath: glyphRecognition
@@ -25262,19 +25242,24 @@ PrefabInstance:
       objectReference: {fileID: 400491167}
     - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
         type: 3}
-      propertyPath: thirdPersonXOffset
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
-        type: 3}
-      propertyPath: thirdPersonZOffset
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
-        type: 3}
-      propertyPath: roundWin
+      propertyPath: ppv
       value: 
-      objectReference: {fileID: 8300000, guid: df17338572020844bb97e4a29a22afd5, type: 3}
+      objectReference: {fileID: 1007554755}
+    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
+        type: 3}
+      propertyPath: tutorialPanel
+      value: 
+      objectReference: {fileID: 588129790}
+    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
+        type: 3}
+      propertyPath: gameSettings
+      value: 
+      objectReference: {fileID: 1999965363}
+    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
+        type: 3}
+      propertyPath: roundStartClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 8796cf4ff3be18d4a8ac65d056c3a986, type: 3}
     - target: {fileID: 4129894425215817566, guid: 956a20fa073193d41a276896a5e43a48,
         type: 3}
       propertyPath: m_LocalPosition.x

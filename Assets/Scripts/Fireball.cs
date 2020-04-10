@@ -20,6 +20,9 @@ public class Fireball : NetworkBehaviour
     public NetworkConnection owner;
     private bool wasReflected = false;
 
+    private float verticalSpeed;
+    private float vertical;
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -39,8 +42,8 @@ public class Fireball : NetworkBehaviour
     }
 
     IEnumerator TravelToDestination() {
-        float verticalSpeed = maxHeight;
-        float vertical = startHeight;
+        verticalSpeed = maxHeight;
+        vertical = startHeight;
         while (true) {
             float currentTime = (Time.time - startTime) / travelTime;
             Vector3 horizontal = Vector3.Lerp(startPosition, endPosition, currentTime);
@@ -71,10 +74,14 @@ public class Fireball : NetworkBehaviour
         }
         else if (other.GetComponent<NetworkIdentity>() != null) {
             if (other.tag == "ArcanePulse") {
+                //doesn't reflect more than once... kind of a cop out
+                if (wasReflected == true) {
+                    Destroy(gameObject);
+                }
                 startPosition = transform.position;
                 startTime = Time.time;
-                startHeight = transform.position.y;
-
+                //startHeight = transform.position.y;
+                verticalSpeed = maxHeight;
                 endPosition = owner.identity.transform.position;
                 wasReflected = true;
             }

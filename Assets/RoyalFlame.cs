@@ -10,8 +10,8 @@ public class RoyalFlame : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnStartServer()
     {
-        Destroy(GetComponent<CapsuleCollider>(), 8f);
-        Destroy(gameObject, 12f);
+        Destroy(GetComponent<CapsuleCollider>(), 10f);
+        Destroy(gameObject, 14f);
     }
 
     // Update is called once per frame
@@ -25,10 +25,16 @@ public class RoyalFlame : NetworkBehaviour
         if (other.tag == "Player" && other.GetComponent<PlayerBehaviour>().health > 0) {
             other.GetComponent<PlayerBehaviour>().royalBurn += royalBurnRate * Time.deltaTime;
             if (other.GetComponent<PlayerBehaviour>().royalBurn >= 1f) {
+                RpcPlaySound();
                 other.GetComponent<PlayerBehaviour>().TakeDamage(1);
                 other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
                 other.GetComponent<PlayerBehaviour>().royalBurn = 0f;
             }
         }
+    }
+
+    [ClientRpc]
+    void RpcPlaySound() {
+        GetComponents<AudioSource>()[1].Play();
     }
 }

@@ -20,6 +20,9 @@ public class Royalfireball : NetworkBehaviour
     public NetworkConnection owner;
     private bool wasReflected = false;
 
+    private float verticalSpeed;
+    private float vertical;
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -39,13 +42,13 @@ public class Royalfireball : NetworkBehaviour
     }
 
     IEnumerator TravelToDestination() {
-        float verticalSpeed = maxHeight;
-        float vertical = startHeight;
+        verticalSpeed = maxHeight;
+        vertical = startHeight;
         while (true) {
             float currentTime = (Time.time - startTime) / travelTime;
             Vector3 horizontal = Vector3.Lerp(startPosition, endPosition, currentTime);
             vertical += verticalSpeed * Time.deltaTime;
-            verticalSpeed -= maxHeight * (2.5f / travelTime) * Time.deltaTime;
+            verticalSpeed -= maxHeight * (2.2f / travelTime) * Time.deltaTime;
 
             transform.position = new Vector3(horizontal.x, vertical, horizontal.z);
 
@@ -68,6 +71,16 @@ public class Royalfireball : NetworkBehaviour
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();
             Destroy(gameObject);
+        } else if (other.tag == "ArcanePulse") {
+            if (wasReflected) {
+                Destroy(gameObject);
+            }
+            startPosition = transform.position;
+            startTime = Time.time;
+            //startHeight = transform.position.y;
+            verticalSpeed = maxHeight;
+            endPosition = owner.identity.transform.position;
+            wasReflected = true;
         }
     }
 

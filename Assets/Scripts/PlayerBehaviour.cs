@@ -43,6 +43,8 @@ public class PlayerBehaviour : NetworkBehaviour
     public RuntimeAnimatorController controller;
     public Timer timer;
 
+    public AudioClip[] clips;
+
     private bool onGround = true;
 
     private Color red;
@@ -162,6 +164,7 @@ public class PlayerBehaviour : NetworkBehaviour
         GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
 
         shields.Clear();
+        lightningCharge = 0;
 
         //reset momentum
         movingForward = 0;
@@ -320,6 +323,17 @@ public class PlayerBehaviour : NetworkBehaviour
         animator.SetTrigger(s);
     }
 
+    [Command]
+    public void CmdPlayClip(int a) {
+        RpcPlayClip(a);
+    }
+
+    [ClientRpc]
+    public void RpcPlayClip(int a) {
+        GetComponent<AudioSource>().clip = clips[a];
+        GetComponent<AudioSource>().Play();
+    }
+
     // For outside animation triggers such as WindSlashRecoil.
     [TargetRpc]
     public void TargetSetAnimTrigger(NetworkConnection target, string s) {
@@ -343,6 +357,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastLightningNeutral() {
+        CmdPlayClip(0);
         StopAirMomentum();
         animator.ResetTrigger("LightningCharged");
         animator.ResetTrigger("LightningShoot");
@@ -359,6 +374,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     public void CastArcanePulse() {
+        CmdPlayClip(1);
         onGround = false;
         speedUp = 0.6f;
         comingDown = false;

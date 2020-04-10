@@ -43,7 +43,9 @@ public class PlayerCamera : MonoBehaviour
     public enum CameraState {PreGame, Intro, InGame, MyPlayerDead, OtherPlayerDead};
     public CameraState cameraState;
 
-    public AudioClip roundWin;
+    public AudioClip roundStartClip;
+    public AudioClip roundEndClip;
+    public AudioClip lastRoundClip;
 
     // Start is called before the first frame update
     void Start()
@@ -96,10 +98,12 @@ public class PlayerCamera : MonoBehaviour
 
             if (currentPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
                 cameraState = CameraState.MyPlayerDead;
+                GetComponent<AudioSource>().clip = roundEndClip;
+                GetComponent<AudioSource>().Play();
             }
             if (otherPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
                 cameraState = CameraState.OtherPlayerDead;
-                GetComponent<AudioSource>().clip = roundWin;
+                GetComponent<AudioSource>().clip = roundEndClip;
                 GetComponent<AudioSource>().Play();
             }
         }
@@ -161,6 +165,8 @@ public class PlayerCamera : MonoBehaviour
     }
 
     public IEnumerator SpinRoutine() {
+        GetComponent<AudioSource>().clip = roundStartClip;
+        GetComponent<AudioSource>().Play();
         float duration = 3f;
         float timer = duration;
         Vector3 target = spawnLocation + (Vector3.up * playerHeight)
