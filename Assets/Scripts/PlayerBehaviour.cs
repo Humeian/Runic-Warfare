@@ -322,10 +322,10 @@ public class PlayerBehaviour : CharacterBehaviour
                         CmdSetAnimTrigger("PulseDown");
                         comingDown = true;
                     }
-                    transform.position += transform.up * speedUp * 200f * Time.deltaTime;
+                    transform.position += transform.up * speedUp * 250f * Time.deltaTime;
                 }
                 else {
-                    transform.position += transform.up * speedUp * 50f * Time.deltaTime;
+                    transform.position += transform.up * speedUp * 60f * Time.deltaTime;
                 }
 
                 speedUp -= Time.deltaTime;
@@ -367,6 +367,8 @@ public class PlayerBehaviour : CharacterBehaviour
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
         speedRight = horizSpeed;
+        movingForward = 25;
+        speedForward = 0.5f;
         if (horizontal > 0f)
             CmdSetAnimTrigger("FireballRight");
         else 
@@ -438,7 +440,7 @@ public class PlayerBehaviour : CharacterBehaviour
     public void CastArcanePulse() {
         CmdPlayClip(1);
         onGround = false;
-        speedUp = 0.6f;
+        speedUp = 0.5f;
         comingDown = false;
         stopMomentumCharges = 1;
         animator.ResetTrigger("PulseDown");
@@ -457,13 +459,16 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdCastIceSpikes();
     }
 
-    public void CastRoyalFire() {
+    public void CastRoyalFire(int horizontal, float horizSpeed) {
         onGround = false;
         speedUp = 0.4f;
         stopMomentumCharges = 0;
-        movingRight = 50;
-        speedRight = 0.2f;
-        CmdSetAnimTrigger("FireballRight");
+        movingRight = horizontal;
+        speedRight = horizSpeed;
+        if (horizontal > 0f)
+            CmdSetAnimTrigger("FireballRight");
+        else 
+            CmdSetAnimTrigger("FireballLeft");
         CmdCastRoyalFire();
     }
 

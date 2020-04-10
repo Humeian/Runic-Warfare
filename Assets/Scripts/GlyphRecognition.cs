@@ -186,9 +186,15 @@ public class GlyphRecognition : MonoBehaviour {
 				//case "Royalfire":
 				//case "Royalfire2":
 				case "Royalfire3":
-				 	StartCoroutine(Morph (match, glyphColours["royalFire"]));
-				 	player.CastRoyalFire();
-				 	break;
+					StartCoroutine(Morph (match, glyphColours["royalFire"]));
+					if (currentCast == CastDirection.Right) {
+						player.CastRoyalFire(50, 0.2f);
+					} else if (currentCast == CastDirection.Left) {
+						player.CastRoyalFire(-50, 0.2f);
+					} else {
+						player.CastRoyalFire(0, 0f);
+					}
+					break;
 				default:
 					Debug.Log("Fizzle");
 					player.CastFizzle();
