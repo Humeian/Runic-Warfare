@@ -85,8 +85,8 @@ public class NewNetworkManager : NetworkManager
         if (player1 != null)
         {
      
-            player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-            player2.GetComponent<AIBehaviour>().SetOtherPlayer(player1);
+            player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
         }
     }
 
@@ -159,15 +159,15 @@ public class NewNetworkManager : NetworkManager
                 Debug.Log("Here2");
                 Debug.Log(player1);
                 Debug.Log(player2);
-                player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-                player2.GetComponent<AIBehaviour>().SetOtherPlayer(player1);
+                player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+                player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
             }
         }
         else {
             player2 = conn.identity.gameObject;
 
-            player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-            player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+            player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
         }
 
         if (player1 && player2) {

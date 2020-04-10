@@ -28,6 +28,7 @@ public class LightningCharge : NetworkBehaviour
     IEnumerator PaintScreenYellow() {
         yield return new WaitForSeconds(0.45f);
         Color yellow = new Color(1f, 1f, 0.5f, 0.6f);
-        owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, yellow);
+        if (owner.GetComponent<PlayerBehaviour>() != null)
+            owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, yellow);
     }
 }

@@ -3,37 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class AIBehaviour : MonoBehaviour
+public class AIBehaviour : CharacterBehaviour
 {
-
-    public GameObject otherPlayer;
-
-    public int health = 3;
-
-    public int lightningCharge = 0;
 
     private int lightningChargesNeeded = 3;
 
     public Animator animator;
 
-    public float dashSpeed;
-    public float dashHeight;
     private float playerHeight = 1f;
 
-    public GameObject fireball;
-    public GameObject shield;
-    public GameObject windslash;
-    public GameObject lightningChargeObj;
-    public GameObject lightning;
-    public GameObject arcanePulse;
-    public GameObject iceSpikeProjectile;
-    public GameObject fizzle;
-    public RuntimeAnimatorController controller;
-
     private bool onGround = true;
-
-    public List<GameObject> shields;
-    public int maxShields = 2;
 
     int movingRight = 0;
     int movingForward = 0;
@@ -57,18 +36,7 @@ public class AIBehaviour : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    //called by NewNetworkManager
-    public void SetOtherPlayer(GameObject op)
-    {
-        otherPlayer = op;
-    }
-
-    public void ResetPosition(Vector3 pos)
-    {
-        transform.position = pos;
-    }
-
-    public void Reset()
+    public override void ResetUI()
     {
         shields.Clear();
 
@@ -102,11 +70,6 @@ public class AIBehaviour : MonoBehaviour
             // Stop the timer
             //timer.StopTimer();
         }
-    }
-
-    public void RestoreHealth(int h)
-    {
-        health = h;
     }
 
     IEnumerator Movement()
@@ -161,13 +124,6 @@ public class AIBehaviour : MonoBehaviour
         }
     }
 
-    //Server: Only the server executes the function. 
-    //(However, because the variable is synced, clients will also see the HP decrease.)
-    public void TakeDamage(int dmg)
-    {
-        health -= (dmg);
-    }
-
     public void CastFireball(int horizontal, float horizSpeed)
     {
         StopAirMomentum();
@@ -192,7 +148,7 @@ public class AIBehaviour : MonoBehaviour
         StopAirMomentum();
         movingForward = 20;
         speedForward = 2f;
-        SetAnimTrigger("WindSlash");
+        this.SetAnimTrigger("WindSlash");
         GameObject newWindSlash = Instantiate(windslash, transform.position + (transform.forward * 2f) + Vector3.up, transform.rotation);
         newWindSlash.GetComponent<WindSlash>().SetOwner(gameObject);
         newWindSlash.GetComponent<WindSlash>().SetTarget(otherPlayer);
@@ -283,7 +239,7 @@ public class AIBehaviour : MonoBehaviour
         NetworkServer.Spawn(newLightning);
     }
 
-    public void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration)
+    public override void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration)
     {
         movingForward = -duration;
         speedForward = horizontal;
@@ -291,8 +247,10 @@ public class AIBehaviour : MonoBehaviour
         //StartCoroutine(ThrowBack(horizontal, vertical, duration));
     }
 
-    //-----Commands: Client sends a message to the server; server executes the function.
-    // For instantiating attacks, set owners and targets before NetworkServer.Spawn().
+    public override void TargetSetAnimTrigger(NetworkConnection target, string s)
+    {
+        animator.SetTrigger(s);
+    }
 
     IEnumerator DashLeft()
     {
@@ -394,7 +352,7 @@ public class AIBehaviour : MonoBehaviour
         while (true)
         {
             Debug.Log("CastRandom");
-            if (!tutorialMode && AIAttacks)
+            if (!tutorialMode && AIAttacks && health > 0)
             {
                 switch (Random.Range(0, 7))
                 {

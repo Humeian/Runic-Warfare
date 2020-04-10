@@ -25,8 +25,13 @@ public class FireballExplosion : NetworkBehaviour
     [ServerCallback]
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Player") {
-            other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
-            other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            
+            other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
+            if (other.GetComponent<PlayerBehaviour>() != null)
+            {
+                other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            }
+            
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();
         }

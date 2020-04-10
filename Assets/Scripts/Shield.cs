@@ -12,7 +12,7 @@ public class Shield : NetworkBehaviour
     private MaterialPropertyBlock mpb;
     private MeshRenderer renderer;
 
-    public PlayerBehaviour owner;
+    public CharacterBehaviour owner;
 
     // Start is called before the first frame update
     public override void OnStartServer()

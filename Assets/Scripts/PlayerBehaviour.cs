@@ -3,52 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PlayerBehaviour : NetworkBehaviour
+public class PlayerBehaviour : CharacterBehaviour
 {
-    [SyncVar]
-    public GameObject otherPlayer;
-
-    [SyncVar]
-    public int health = 3;
 
     public UnityEngine.UI.Image hp1, hp2, hp3;
 
-    [SyncVar]
-    public int lightningCharge = 0;
-
-    //Royal Fire will deal damage if royalBurn reaches 1
-    [SyncVar]
-    public float royalBurn = 0f;
-    
-    //royalBurn decreases by this every second
-    public float royalBurnRecovery = 0.2f;
 
     private int lightningChargesNeeded = 3;
 
     public NetworkAnimator animator;
 
-    public float dashSpeed;
-    public float dashHeight;
     private float playerHeight = 1f;
 
-    public GameObject fireball;
-    public GameObject royalFireball;
-    public GameObject shield;
-    public GameObject windslash;
-    public GameObject lightningChargeObj;
-    public GameObject lightning;
-    public GameObject arcanePulse;
-    public GameObject iceSpikeProjectile;
-    public GameObject fizzle;
-    public RuntimeAnimatorController controller;
     public Timer timer;
 
     private bool onGround = true;
 
     private Color red;
-
-    public List<GameObject> shields;
-    public int maxShields = 2;
 
     int movingRight = 0;
     int movingForward = 0;
@@ -96,22 +67,6 @@ public class PlayerBehaviour : NetworkBehaviour
         }
     }
 
-    public float DistanceToCenter(){
-        GameObject centerMark = GameObject.Find("CenterMark");
-        return Vector3.Distance(this.gameObject.transform.position, centerMark.transform.position);
-    }
-
-    //called by NewNetworkManager
-    public void SetOtherPlayer(GameObject op) {
-        Debug.Log("Passed Other Player:");
-        Debug.Log(op);
-        otherPlayer = op;
-        Debug.Log("Registered Other Player:");
-        Debug.Log(otherPlayer);
-        Debug.Log(op);
-        //timer.StartTimer();
-    }
-
     [Command]
     public void CmdResetMatch(){
         GameObject.Find("GameManager").GetComponent<GameManager>().ResetMatch();
@@ -137,7 +92,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetResetPosition(NetworkConnection connection, Vector3 pos) {
+    public new void ResetPosition(Vector3 pos) {
         transform.position = pos;
     }
 
@@ -159,7 +114,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcResetUI() {
+    public override void ResetUI() {
         // Disable rematch button
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
 
@@ -271,6 +226,10 @@ public class PlayerBehaviour : NetworkBehaviour
             royalBurn = 0f;
     }
 
+    public new void RestoreHealth(int h)
+    {
+        CmdRestoreHealth(h);
+    }
     [Command]
     public void CmdRestoreHealth(int h) {
         health = h;
@@ -320,7 +279,7 @@ public class PlayerBehaviour : NetworkBehaviour
     //Server: Only the server executes the function. 
     //(However, because the variable is synced, clients will also see the HP decrease.)
     [Server]
-    public void TakeDamage(int dmg) {
+    public new void TakeDamage(int dmg) {
         health -= (dmg);
     }
 
@@ -355,7 +314,7 @@ public class PlayerBehaviour : NetworkBehaviour
 
     // For outside animation triggers such as WindSlashRecoil.
     [TargetRpc]
-    public void TargetSetAnimTrigger(NetworkConnection target, string s) {
+    public override void TargetSetAnimTrigger(NetworkConnection target, string s) {
         animator.SetTrigger(s);
     }
 
@@ -434,7 +393,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
+    public override void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
         movingForward = -duration;
         speedForward = horizontal;
         //speedUp = vertical;

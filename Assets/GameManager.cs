@@ -8,7 +8,7 @@ public class GameManager : NetworkBehaviour
     public NewNetworkManager networkManager;
     public PlayerCamera cam;
 
-    private PlayerBehaviour p1, p2;
+    private CharacterBehaviour p1, p2;
 
     [SyncVar]
     public float timer;
@@ -59,8 +59,8 @@ public class GameManager : NetworkBehaviour
             roundStarted = true;
 
             // These gets will be called once per round, this is harmless
-            p1 = networkManager.player1.GetComponent<PlayerBehaviour>();
-            p2 = networkManager.player2.GetComponent<PlayerBehaviour>();
+            p1 = networkManager.player1.GetComponent<CharacterBehaviour>();
+            p2 = networkManager.player2.GetComponent<CharacterBehaviour>();
         }
 
         if (roundStarted && menu != null && menu.activeSelf){
@@ -104,11 +104,11 @@ public class GameManager : NetworkBehaviour
             NetworkServer.Destroy(r);
         }
 
-        p1.TargetResetPosition(p1.GetComponent<NetworkIdentity>().connectionToClient, spawn1.transform.position);
-        p2.TargetResetPosition(p2.GetComponent<NetworkIdentity>().connectionToClient, spawn2.transform.position);
+        p1.ResetPosition(spawn1.transform.position);
+        p2.ResetPosition(spawn2.transform.position);
 
-        p1.RpcResetUI();
-        p2.RpcResetUI();
+        p1.ResetUI();
+        p2.ResetUI();
 
         timer = 60f;
         roundStarted = true;
@@ -119,8 +119,11 @@ public class GameManager : NetworkBehaviour
     //                         reason of 1 means a timeout has occured
     [Server]
     public void EndRound(int reason) {
-        p1.RpcDisableGlyphInput();
-        p2.RpcDisableGlyphInput();
+        PlayerBehaviour p1PlayerBehaviour = networkManager.player1.GetComponent<PlayerBehaviour>();
+        PlayerBehaviour p2PlayerBehaviour = networkManager.player2.GetComponent<PlayerBehaviour>();
+        p1PlayerBehaviour.RpcDisableGlyphInput();
+        if(p2PlayerBehaviour != null)
+            p2PlayerBehaviour.RpcDisableGlyphInput();
 
         round += 1;
 
@@ -137,12 +140,14 @@ public class GameManager : NetworkBehaviour
         
         if (p1win){
             p1Wins += 1;
-            p1.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
-            p2.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
+            p1PlayerBehaviour.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
+            if (p2PlayerBehaviour != null)
+                p2PlayerBehaviour.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
         } else {
             p2Wins += 1;
-            p2.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
-            p1.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
+            p1PlayerBehaviour.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
+            if (p2PlayerBehaviour != null)
+                p2PlayerBehaviour.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
         }
 
 
