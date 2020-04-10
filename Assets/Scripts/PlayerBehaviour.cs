@@ -92,7 +92,7 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     [TargetRpc]
-    public new void ResetPosition(Vector3 pos) {
+    public new void TargetResetPosition(Vector3 pos) {
         transform.position = pos;
     }
 
@@ -114,7 +114,7 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     [ClientRpc]
-    public override void ResetUI() {
+    public override void RpcResetUI() {
         // Disable rematch button
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
 

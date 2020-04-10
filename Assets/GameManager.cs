@@ -104,11 +104,11 @@ public class GameManager : NetworkBehaviour
             NetworkServer.Destroy(r);
         }
 
-        p1.ResetPosition(spawn1.transform.position);
-        p2.ResetPosition(spawn2.transform.position);
+        p1.TargetResetPosition(spawn1.transform.position);
+        p2.TargetResetPosition(spawn2.transform.position);
 
-        p1.ResetUI();
-        p2.ResetUI();
+        p1.RpcResetUI();
+        p2.RpcResetUI();
 
         timer = 60f;
         roundStarted = true;
