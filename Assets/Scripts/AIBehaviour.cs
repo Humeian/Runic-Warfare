@@ -39,7 +39,7 @@ public class AIBehaviour : CharacterBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public override void ResetUI()
+    public override void RpcResetUI()
     {
         shields.Clear();
 

@@ -47,13 +47,15 @@ public abstract class CharacterBehaviour : NetworkBehaviour
         Debug.Log("Set other player");
         Debug.Log(otherPlayer);
     }
-
-    public void ResetPosition(Vector3 pos)
+    
+    [TargetRpc]
+    public void TargetResetPosition(NetworkConnection connection, Vector3 pos)
     {
         transform.position = pos;
     }
 
-    public abstract void ResetUI();
+    [ClientRpc]
+    public abstract void RpcResetUI();
 
     public void RestoreHealth(int h) {
         health = h;
