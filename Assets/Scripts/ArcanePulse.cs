@@ -18,7 +18,8 @@ public class ArcanePulse : NetworkBehaviour
         //startTime = Time.time;
 
         //StartCoroutine(Expand());
-        Destroy(gameObject, 1f);
+        Destroy(GetComponent<SphereCollider>(), 1.4f);
+        Destroy(gameObject, 1.7f);
     }
 
     public void SetOwner(GameObject o) {
