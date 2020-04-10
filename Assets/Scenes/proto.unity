@@ -5256,8 +5256,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: But if the timer runs out the the player closest to the centre wins! So
-    make sure to play aggressively
+  m_Text: If the timer runs out then the player closest to the centre wins of the
+    arena wins! So make sure to play aggressively
 --- !u!222 &98029708
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5677,8 +5677,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -329, y: -157}
-  m_SizeDelta: {x: 295.1, y: 156.4}
+  m_AnchoredPosition: {x: -352, y: -144}
+  m_SizeDelta: {x: 410.6, y: 156.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &339798350
 MonoBehaviour:
@@ -5711,8 +5711,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: You and your oppoennt can both survive 3 hits, make them lose their final
-    one to win the round
+  m_Text: You can only survive 3 hits. So make sure you knock your opponent out before
+    they take all our your lives and win the round!
 --- !u!222 &339798351
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11958,6 +11958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 736737459}
   - component: {fileID: 736737460}
+  - component: {fileID: 736737461}
   m_Layer: 5
   m_Name: Tutorial
   m_TagString: Untagged
@@ -12000,6 +12001,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736737458}
   m_CullTransparentMesh: 0
+--- !u!114 &736737461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736737458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 1
+  m_AspectRatio: 2.503125
 --- !u!1 &742443890
 GameObject:
   m_ObjectHideFlags: 0
