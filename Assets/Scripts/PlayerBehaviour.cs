@@ -63,9 +63,12 @@ public class PlayerBehaviour : NetworkBehaviour
     bool comingDown = false;
 
     private bool firstHit = true;
+    private int currentRound;
 
     // After using Pulse, number of times spells casted in the air will stop air momentum.
     private int stopMomentumCharges = 0;
+
+    public GameManager gameManager;
 
     // OnServerStart: called when GameObject is created on the server (not called on client).
     public override void OnStartServer()
@@ -79,14 +82,10 @@ public class PlayerBehaviour : NetworkBehaviour
     {
         base.OnStartAuthority();
         StartCoroutine(Movement());
-        timer = GameObject.Find("Timer").GetComponent<Timer>();
-
-        hp1 = GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>();
-        hp2 = GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>();
-        hp3 = GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>();
     }
 
     public void Start() {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         red = new Color(1f, 0f, 0f, 1f);
         shields = new List<GameObject>();
     }
@@ -112,7 +111,7 @@ public class PlayerBehaviour : NetworkBehaviour
 
     [Command]
     public void CmdResetMatch(){
-        GameObject.Find("GameManager").GetComponent<GameManager>().ResetMatch();
+        gameManager.ResetMatch();
 
         /*
         //CmdRestoreHealth(3);
@@ -156,15 +155,21 @@ public class PlayerBehaviour : NetworkBehaviour
         }
     }
 
+    public void InitializeUI() {
+        timer = GameObject.Find("Timer").GetComponent<Timer>();
+
+        hp1 = GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>();
+        hp2 = GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>();
+        hp3 = GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>();
+    }
+
     [ClientRpc]
     public void RpcResetUI() {
         // Disable rematch button
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
 
-        // Enable glyph input & reboot the color cleaning coroutine
-        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
-        glyphInput.SetActive(true);
-        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
+        // Wait for round to start before enabling input
+        StartCoroutine(WaitForRoundStart());
 
         // Recolour the health bubbles
         GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
@@ -184,6 +189,14 @@ public class PlayerBehaviour : NetworkBehaviour
         movingUp = 0;
     }
 
+    private IEnumerator WaitForRoundStart() {
+        yield return new WaitForSeconds(3.0f);
+        // Enable glyph input & reboot the color cleaning coroutine
+        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
+        glyphInput.SetActive(true);
+        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
+    }
+
     [ClientRpc]
     public void RpcDisableGlyphInput(){
         GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
@@ -191,26 +204,60 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetWinRound(NetworkConnection connection, int wins, int round) {
+    public void TargetWinRound(NetworkConnection connection, int p1Score, int p2Score, int round) {
         // Display Win text
         GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(true);
 
+        if (p1Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
+        }
+        else if (p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        }
+        
         // Display Rematch button
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        if (p1Score >= 3 || p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
+        }
 
         //Update # of wins and round number
-        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
         GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
+        currentRound = round;
     }
     [TargetRpc]
-    public void TargetLoseRound(NetworkConnection connection, int wins, int round) {
+    public void TargetLoseRound(NetworkConnection connection, int p1Score, int p2Score, int round) {
         GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(true);
+        
+        if (p1Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
+        }
+        else if (p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        }
 
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        if (p1Score >= 3 || p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
+        }
         
         //Update # of wins and round number
-        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
         GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
+        currentRound = round;
     }
 
     void FixedUpdate()
