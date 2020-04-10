@@ -57,6 +57,8 @@ public class PlayerBehaviour : NetworkBehaviour
     float speedForward = 0f;
     float speedUp = 0f;
 
+    bool comingDown = false;
+
     private bool firstHit = true;
 
     // After using Pulse, number of times spells casted in the air will stop air momentum.
@@ -201,20 +203,23 @@ public class PlayerBehaviour : NetworkBehaviour
         }
 
         // Needs to be in Update as there appear to be damage timing issues.
-        if (health < 3) {
-            hp1.color = red;
-        } else {
-            hp1.color = new Color(1f, 1f, 1f, 1f);
-        }
-        if (health < 2) {
-            hp2.color = red;
-        } else {
-            hp2.color = new Color(1f, 1f, 1f, 1f);
-        }
-        if (health < 1) {
-            hp3.color = red;
-        } else {
-            hp3.color = new Color(1f, 1f, 1f, 1f);
+
+        if (hasAuthority) {
+            if (health < 3) {
+                hp1.color = red;
+            } else {
+                hp1.color = new Color(1f, 1f, 1f, 1f);
+            }
+            if (health < 2) {
+                hp2.color = red;
+            } else {
+                hp2.color = new Color(1f, 1f, 1f, 1f);
+            }
+            if (health < 1) {
+                hp3.color = red;
+            } else {
+                hp3.color = new Color(1f, 1f, 1f, 1f);
+            }
         }
 
         if (royalBurn > 0f) {
@@ -248,6 +253,10 @@ public class PlayerBehaviour : NetworkBehaviour
             if (!onGround) {
                 //fall faster if falling down and no spell has been used -- easier to time reflect pulse
                 if (speedUp < 0 && stopMomentumCharges > 0) {
+                    if (!comingDown && hasAuthority) {
+                        CmdSetAnimTrigger("PulseDown");
+                        comingDown = true;
+                    }
                     transform.position += transform.up * speedUp * 200f * Time.deltaTime;
                 }
                 else {
@@ -293,7 +302,10 @@ public class PlayerBehaviour : NetworkBehaviour
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
         speedRight = horizSpeed;
-        SetAnimTrigger("FireballRight");
+        if (horizontal > 0f)
+            CmdSetAnimTrigger("FireballRight");
+        else 
+            CmdSetAnimTrigger("FireballLeft");
         CmdCastFireball();
     }
     [TargetRpc]
@@ -302,21 +314,23 @@ public class PlayerBehaviour : NetworkBehaviour
         screen.color = c;
     }
 
-    public void SetAnimTrigger(string s) {
+    [Command]
+    public void CmdSetAnimTrigger(string s) {
+        print("Calling animation for " + s);
         animator.SetTrigger(s);
     }
 
     // For outside animation triggers such as WindSlashRecoil.
     [TargetRpc]
     public void TargetSetAnimTrigger(NetworkConnection target, string s) {
-        animator.SetTrigger(s);
+        CmdSetAnimTrigger(s);
     }
 
     public void CastWindForward() {
         StopAirMomentum();
         movingForward = 20;
         speedForward = 2f;
-        SetAnimTrigger("WindSlash");
+        CmdSetAnimTrigger("WindSlash");
         CmdCastWindForward();
     }
 
@@ -324,26 +338,34 @@ public class PlayerBehaviour : NetworkBehaviour
         StopAirMomentum();
         movingForward = -30;
         speedForward = 0.4f;
-        SetAnimTrigger("ShieldBack");
+        CmdSetAnimTrigger("ShieldBack");
         CmdCastShieldBack();
     }
 
     public void CastLightningNeutral() {
         StopAirMomentum();
+        animator.ResetTrigger("LightningCharged");
+        animator.ResetTrigger("LightningShoot");
+        CmdSetAnimTrigger("LightningCharging");
         CmdCastLightningCharge();
         lightningCharge++;
         if (lightningCharge == lightningChargesNeeded) {
             StartCoroutine(WaitForLightning());
             lightningCharge = 0;
         }
+        else {
+            StartCoroutine(WaitForLightningCharge());
+        }
     }
 
     public void CastArcanePulse() {
         onGround = false;
         speedUp = 0.6f;
+        comingDown = false;
         stopMomentumCharges = 1;
-        SetAnimTrigger("ArcanePulse");
-        CmdCastArcanePulse();
+        animator.ResetTrigger("PulseDown");
+        CmdSetAnimTrigger("PulseUp");
+        //CmdCastArcanePulse is called during Update, when the player hits the ground.
     }
 
     public void CastIceSpikes() {
@@ -353,7 +375,7 @@ public class PlayerBehaviour : NetworkBehaviour
         speedForward = 0.1f;
         //do not fall faster
         stopMomentumCharges = 0;
-        SetAnimTrigger("ShieldBack");
+        CmdSetAnimTrigger("ShieldBack");
         CmdCastIceSpikes();
     }
 
@@ -363,7 +385,7 @@ public class PlayerBehaviour : NetworkBehaviour
         stopMomentumCharges = 0;
         movingRight = 50;
         speedRight = 0.2f;
-        SetAnimTrigger("FireballRight");
+        CmdSetAnimTrigger("FireballRight");
         CmdCastRoyalFire();
     }
 
@@ -382,8 +404,15 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     IEnumerator WaitForLightning() {
-        yield return new WaitForSeconds(0.45f);
+        yield return new WaitForSeconds(0.35f);
+        CmdSetAnimTrigger("LightningShoot");
+        yield return new WaitForSeconds(0.1f);
         CmdCastLightning();
+    }
+
+    IEnumerator WaitForLightningCharge() {
+        yield return new WaitForSeconds(0.3f);
+        CmdSetAnimTrigger("LightningCharged");
     }
 
     [TargetRpc]

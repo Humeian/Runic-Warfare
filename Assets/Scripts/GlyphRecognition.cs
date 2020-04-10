@@ -165,16 +165,13 @@ public class GlyphRecognition : MonoBehaviour {
 					StartCoroutine(Morph (match, glyphColours["finalSpark"]));
 					player.CastLightningNeutral();
 					break;
-				case "ArcanePulse":
+				case "Arcanopulse":
+				//case "ArcanePulse":
+				// case "Arcanopulse2":
+				// case "Arcanopulse3":
 					StartCoroutine(Morph (match, glyphColours["arcanePulse"]));
 					player.CastArcanePulse();
 					break;
-				// case "Arcanopulse":
-				// case "Arcanopulse2":
-				// case "Arcanopulse3":
-				// 	StartCoroutine(Morph (match));
-				// 	player.CastLightningNeutral();
-				// 	break;
 				case "Icespike":
 				case "Icespike2":
 				case "Icespike3":
