@@ -84,9 +84,9 @@ public class NewNetworkManager : NetworkManager
         //AIPlayer.GetComponent<AIBehaviour>().activateAI();
         if (player1 != null)
         {
-            Debug.Log("Here");
+     
             player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-            player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+            player2.GetComponent<AIBehaviour>().SetOtherPlayer(player1);
         }
     }
 
@@ -160,8 +160,7 @@ public class NewNetworkManager : NetworkManager
                 Debug.Log(player1);
                 Debug.Log(player2);
                 player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-                player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
-                player1.GetComponent<AIBehaviour>().activateAI();
+                player2.GetComponent<AIBehaviour>().SetOtherPlayer(player1);
             }
         }
         else {

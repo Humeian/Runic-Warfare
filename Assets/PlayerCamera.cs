@@ -8,6 +8,8 @@ public class PlayerCamera : MonoBehaviour
     public GameManager manager;
 
     public GameObject otherPlayer;
+    public PlayerBehaviour otherPlayerBehaviour;
+    public AIBehaviour otherAIBehaviour;
     public GameObject currentPlayer;
     public float playerHeight;
     public GameObject lookAtObject;
@@ -48,6 +50,8 @@ public class PlayerCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        otherPlayerBehaviour = otherPlayer.GetComponent<PlayerBehaviour>();
+        otherAIBehaviour = otherPlayer.GetComponent<AIBehaviour>();
         glyphRecognition = GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>();
         ppv.profile.TryGetSettings(out dof);
         currentMouseOffset = Vector2.zero;
@@ -65,7 +69,7 @@ public class PlayerCamera : MonoBehaviour
         if (cameraState == CameraState.PreGame) {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject p in players) {
-                if (p.GetComponent<PlayerBehaviour>().isLocalPlayer) {
+                if (p.GetComponent<PlayerBehaviour>() != null && p.GetComponent<PlayerBehaviour>().isLocalPlayer) {
                     currentPlayer = p;
                     glyphRecognition.player = p.GetComponent<PlayerBehaviour>();
                 }
@@ -97,7 +101,7 @@ public class PlayerCamera : MonoBehaviour
             if (currentPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
                 cameraState = CameraState.MyPlayerDead;
             }
-            if (otherPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
+            if (otherPlayerBehaviour != null && otherPlayerBehaviour.health <= 0 || otherAIBehaviour != null && otherAIBehaviour.health <= 0) {
                 cameraState = CameraState.OtherPlayerDead;
                 GetComponent<AudioSource>().clip = roundWin;
                 GetComponent<AudioSource>().Play();
@@ -130,7 +134,7 @@ public class PlayerCamera : MonoBehaviour
             //adjust depth of view focus distance
             dof.focusDistance.value = Vector3.Distance(transform.position, playerHipBone.position);
 
-            if (otherPlayer.GetComponent<PlayerBehaviour>().health > 0) {
+            if (otherPlayerBehaviour != null && otherPlayerBehaviour.health > 0 || otherAIBehaviour != null && otherAIBehaviour.health > 0) {
                 cameraState = CameraState.Intro;
                 StartCoroutine(SpinRoutine());
             }

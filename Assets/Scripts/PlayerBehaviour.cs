@@ -51,6 +51,8 @@ public class PlayerBehaviour : NetworkBehaviour
 
     private bool firstHit = true;
 
+    private bool isAIChar;
+
     // After using Pulse, number of times spells casted in the air will stop air momentum.
     private int stopMomentumCharges = 0;
 
@@ -66,8 +68,9 @@ public class PlayerBehaviour : NetworkBehaviour
     {
         base.OnStartAuthority();
         StartCoroutine(Movement());
-        timer = GameObject.Find("Timer").GetComponent<Timer>();
 
+        timer = GameObject.Find("Timer").GetComponent<Timer>();
+        
         hp1 = GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>();
         hp2 = GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>();
         hp3 = GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>();
@@ -181,13 +184,13 @@ public class PlayerBehaviour : NetworkBehaviour
         }
 
         // Needs to be in Update as there appear to be damage timing issues.
-        if (health < 3) {
+        if (health < 3 && !isAIChar) {
             hp1.color = red;
         }
-        if (health < 2) {
+        if (health < 2 && !isAIChar) {
             hp2.color = red;
         }
-        if (health < 1) {
+        if (health < 1 && !isAIChar) {
             hp3.color = red;
         }
     }
