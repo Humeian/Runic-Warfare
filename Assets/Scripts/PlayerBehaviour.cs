@@ -187,6 +187,10 @@ public class PlayerBehaviour : NetworkBehaviour
         movingForward = 0;
         movingRight = 0;
         movingUp = 0;
+
+        if (gameManager.round == 1) {
+            GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = 0 + " - " + 0;
+        }
     }
 
     private IEnumerator WaitForRoundStart() {
@@ -229,7 +233,6 @@ public class PlayerBehaviour : NetworkBehaviour
 
         //Update # of wins and round number
         GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
-        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
         currentRound = round;
     }
     [TargetRpc]
@@ -256,7 +259,6 @@ public class PlayerBehaviour : NetworkBehaviour
         
         //Update # of wins and round number
         GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
-        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
         currentRound = round;
     }
 
