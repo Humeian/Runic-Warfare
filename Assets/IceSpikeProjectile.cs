@@ -64,5 +64,11 @@ public class IceSpikeProjectile : NetworkBehaviour
             other.GetComponent<Shield>().Break();
             Destroy(gameObject);
         }
+        else if (other.tag == "ArcanePulse") {
+            startPosition = transform.position;
+            transform.rotation *= Quaternion.Euler(0f, 180f, 0f);
+            distanceTravelled = 0f;
+            nextSpikeDistance = spikeDistance;
+        }
     }
 }
