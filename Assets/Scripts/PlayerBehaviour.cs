@@ -46,6 +46,7 @@ public class PlayerBehaviour : NetworkBehaviour
     private bool onGround = true;
 
     private Color red;
+    private Color white = new Color(1f, 1f, 1f, 1f);
 
     public List<GameObject> shields;
     public int maxShields = 2;
@@ -95,7 +96,8 @@ public class PlayerBehaviour : NetworkBehaviour
 
     public float DistanceToCenter(){
         GameObject centerMark = GameObject.Find("CenterMark");
-        return Vector3.Distance(this.gameObject.transform.position, centerMark.transform.position);
+        Vector3 playerXZ = new Vector3(transform.position.x, 3.87f, transform.position.z);
+        return Vector3.Distance(playerXZ, centerMark.transform.position);
     }
 
     //called by NewNetworkManager
@@ -243,17 +245,17 @@ public class PlayerBehaviour : NetworkBehaviour
         if (health < 3) {
             hp1.color = red;
         } else {
-            hp1.color = new Color(1f, 1f, 1f, 1f);
+            hp1.color = white;
         }
         if (health < 2) {
             hp2.color = red;
         } else {
-            hp2.color = new Color(1f, 1f, 1f, 1f);
+            hp2.color = white;
         }
         if (health < 1) {
             hp3.color = red;
         } else {
-            hp3.color = new Color(1f, 1f, 1f, 1f);
+            hp3.color = white;
         }
 
         if (royalBurn > 0f) {
@@ -270,18 +272,26 @@ public class PlayerBehaviour : NetworkBehaviour
 
     IEnumerator Movement() {
         while (true) {
-            if (movingRight != 0) {
-                transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
+            float distanceFromCenter = DistanceToCenter();
 
-                if      (movingRight < 0) movingRight++;
-                else if (movingRight > 0) movingRight--;
-            }
+            if (distanceFromCenter < 24){
+                if (movingRight != 0) {
+                    transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
 
-            if (movingForward != 0) {
-                transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
+                    if      (movingRight < 0) movingRight++;
+                    else if (movingRight > 0) movingRight--;
+                }
 
-                if      (movingForward < 0) movingForward++;
-                else if (movingForward > 0) movingForward--;
+                if (movingForward != 0) {
+                    transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
+
+                    if      (movingForward < 0) movingForward++;
+                    else if (movingForward > 0) movingForward--;
+                }
+            } else {
+                movingRight = 0;
+                movingForward = 0;
+                transform.position -= (transform.position - GameObject.Find("CenterMark").transform.position).normalized;
             }
 
             if (!onGround) {
