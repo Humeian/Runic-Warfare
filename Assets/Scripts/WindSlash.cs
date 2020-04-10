@@ -47,7 +47,7 @@ public class WindSlash : NetworkBehaviour
         transform.position = owner.transform.position + (transform.forward * 2f) + Vector3.up;
     }
 
-    [Server]
+    [ServerCallback]
     void OnTriggerStay(Collider other) {
         if (owner != null && otherPlayer != null) {
             if (other.gameObject == otherPlayer) {

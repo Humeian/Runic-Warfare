@@ -16,6 +16,13 @@ public class PlayerBehaviour : NetworkBehaviour
     [SyncVar]
     public int lightningCharge = 0;
 
+    //Royal Fire will deal damage if royalBurn reaches 1
+    [SyncVar]
+    public float royalBurn = 0f;
+    
+    //royalBurn decreases by this every second
+    public float royalBurnRecovery = 0.2f;
+
     private int lightningChargesNeeded = 3;
 
     public NetworkAnimator animator;
@@ -25,6 +32,7 @@ public class PlayerBehaviour : NetworkBehaviour
     private float playerHeight = 1f;
 
     public GameObject fireball;
+    public GameObject royalFireball;
     public GameObject shield;
     public GameObject windslash;
     public GameObject lightningChargeObj;
@@ -88,6 +96,11 @@ public class PlayerBehaviour : NetworkBehaviour
         }
     }
 
+    public float DistanceToCenter(){
+        GameObject centerMark = GameObject.Find("CenterMark");
+        return Vector3.Distance(this.gameObject.transform.position, centerMark.transform.position);
+    }
+
     //called by NewNetworkManager
     public void SetOtherPlayer(GameObject op) {
         Debug.Log("Passed Other Player:");
@@ -128,6 +141,23 @@ public class PlayerBehaviour : NetworkBehaviour
         transform.position = pos;
     }
 
+    [TargetRpc]
+    public void TargetTakeRoyalBurn(NetworkConnection connection, float b) {
+        royalBurn += b;
+        if (royalBurn > 1f) {
+
+            health -= 1;
+            
+            //This is basically TargetShowDamageEffects, but called client-side
+            UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
+            redscreen.color = new Color(1f, 0f, 0f, 0.8f);
+            Camera.main.GetComponent<PlayerCamera>().Shake(5f);
+            Color red = new Color(1f, 0f, 0f, 1f);
+
+            royalBurn = 0f;
+        }
+    }
+
     [ClientRpc]
     public void RpcResetUI() {
         // Disable rematch button
@@ -138,9 +168,14 @@ public class PlayerBehaviour : NetworkBehaviour
         glyphInput.SetActive(true);
         glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
 
+        // Recolour the health bubbles
         GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
         GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
         GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
+
+        // Disable Win/Loss text
+        GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(false);
+        GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(false);
 
         shields.Clear();
 
@@ -148,6 +183,35 @@ public class PlayerBehaviour : NetworkBehaviour
         movingForward = 0;
         movingRight = 0;
         movingUp = 0;
+    }
+
+    [ClientRpc]
+    public void RpcDisableGlyphInput(){
+        GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
+        GameObject.FindWithTag("GlyphRecognition").SetActive(false);
+    }
+
+    [TargetRpc]
+    public void TargetWinRound(NetworkConnection connection, int wins, int round) {
+        // Display Win text
+        GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(true);
+
+        // Display Rematch button
+        GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+
+        //Update # of wins and round number
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
+        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
+    }
+    [TargetRpc]
+    public void TargetLoseRound(NetworkConnection connection, int wins, int round) {
+        GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(true);
+
+        GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        
+        //Update # of wins and round number
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
+        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
     }
 
     void FixedUpdate()
@@ -186,13 +250,25 @@ public class PlayerBehaviour : NetworkBehaviour
         // Needs to be in Update as there appear to be damage timing issues.
         if (health < 3 && !isAIChar) {
             hp1.color = red;
+        } else {
+            hp1.color = new Color(1f, 1f, 1f, 1f);
         }
         if (health < 2 && !isAIChar) {
             hp2.color = red;
+        } else {
+            hp2.color = new Color(1f, 1f, 1f, 1f);
         }
         if (health < 1 && !isAIChar) {
             hp3.color = red;
+        } else {
+            hp3.color = new Color(1f, 1f, 1f, 1f);
         }
+
+        if (royalBurn > 0f) {
+            royalBurn -= royalBurnRecovery * Time.deltaTime; 
+        }
+        else 
+            royalBurn = 0f;
     }
 
     [Command]
@@ -328,6 +404,16 @@ public class PlayerBehaviour : NetworkBehaviour
         CmdCastIceSpikes();
     }
 
+    public void CastRoyalFire() {
+        onGround = false;
+        speedUp = 0.4f;
+        stopMomentumCharges = 0;
+        movingRight = 50;
+        speedRight = 0.2f;
+        SetAnimTrigger("FireballRight");
+        CmdCastRoyalFire();
+    }
+
     public void CastFizzle()
     {
         CmdCastFizzle();
@@ -364,6 +450,15 @@ public class PlayerBehaviour : NetworkBehaviour
         newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newFireball);
+        //StartCoroutine(DashRight());
+    }
+
+    [Command]
+    public void CmdCastRoyalFire() {
+        GameObject newRoyalFireball = Instantiate(royalFireball, transform.position + Vector3.up, transform.rotation);
+        newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
+        newRoyalFireball.GetComponent<Royalfireball>().SetTarget(otherPlayer.transform.position);
+        NetworkServer.Spawn(newRoyalFireball);
         //StartCoroutine(DashRight());
     }
 

@@ -166,27 +166,24 @@ public class GlyphRecognition : MonoBehaviour {
 					player.CastLightningNeutral();
 					break;
 				case "ArcanePulse":
+				case "Arcanopulse":
+				case "Arcanopulse2":
+				case "Arcanopulse3":
 					StartCoroutine(Morph (match, glyphColours["arcanePulse"]));
 					player.CastArcanePulse();
 					break;
-				// case "Arcanopulse":
-				// case "Arcanopulse2":
-				// case "Arcanopulse3":
-				// 	StartCoroutine(Morph (match));
-				// 	player.CastLightningNeutral();
-				// 	break;
 				case "Icespike":
 				case "Icespike2":
 				case "Icespike3":
 				 	StartCoroutine(Morph (match, glyphColours["iceSpikes"]));
 				 	player.CastIceSpikes();
 				 	break;
-				// case "Royalfire":
-				// case "Royalfire":
-				// case "Royalfire":
-				// 	StartCoroutine(Morph (match, glyphColours["royalFire"]));
-				// 	player.CastLightningNeutral();
-				// 	break;
+				case "Royalfire":
+				case "Royalfire2":
+				case "Royalfire3":
+				 	StartCoroutine(Morph (match, glyphColours["royalFire"]));
+				 	player.CastRoyalFire();
+				 	break;
 				default:
 					Debug.Log("Fizzle");
 					player.CastFizzle();
