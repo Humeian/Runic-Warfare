@@ -23,6 +23,8 @@ public class AIBehaviour : CharacterBehaviour
 
     private bool firstHit = true;
 
+    bool comingDown = false;
+
     public bool tutorialMode = false;
     public bool AIAttacks = true;
 
@@ -79,20 +81,31 @@ public class AIBehaviour : CharacterBehaviour
     {
         while (true)
         {
-            if (movingRight != 0)
-            {
-                transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
+            float distanceFromCenter = DistanceToCenter();
 
-                if (movingRight < 0) movingRight++;
-                else if (movingRight > 0) movingRight--;
+            if (distanceFromCenter < 24)
+            {
+                if (movingRight != 0)
+                {
+                    transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
+
+                    if (movingRight < 0) movingRight++;
+                    else if (movingRight > 0) movingRight--;
+                }
+
+                if (movingForward != 0)
+                {
+                    transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
+
+                    if (movingForward < 0) movingForward++;
+                    else if (movingForward > 0) movingForward--;
+                }
             }
-
-            if (movingForward != 0)
+            else
             {
-                transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
-
-                if (movingForward < 0) movingForward++;
-                else if (movingForward > 0) movingForward--;
+                movingRight = 0;
+                movingForward = 0;
+                transform.position -= (transform.position - GameObject.Find("CenterMark").transform.position).normalized;
             }
 
             if (!onGround)
@@ -100,11 +113,16 @@ public class AIBehaviour : CharacterBehaviour
                 //fall faster if falling down and no spell has been used -- easier to time reflect pulse
                 if (speedUp < 0 && stopMomentumCharges > 0)
                 {
-                    transform.position += transform.up * speedUp * 200f * Time.deltaTime;
+                    if (!comingDown && hasAuthority)
+                    {
+                        SetAnimTrigger("PulseDown");
+                        comingDown = true;
+                    }
+                    transform.position += transform.up * speedUp * 250f * Time.deltaTime;
                 }
                 else
                 {
-                    transform.position += transform.up * speedUp * 50f * Time.deltaTime;
+                    transform.position += transform.up * speedUp * 60f * Time.deltaTime;
                 }
 
                 speedUp -= Time.deltaTime;
@@ -129,13 +147,20 @@ public class AIBehaviour : CharacterBehaviour
 
     public void CastFireball(int horizontal, float horizSpeed)
     {
+
+        print("AI Cast Fireball");
         StopAirMomentum();
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
         speedRight = horizSpeed;
-        SetAnimTrigger("FireballRight");
+        movingForward = 25;
+        speedForward = 0.5f;
+        if (horizontal > 0f)
+            SetAnimTrigger("FireballRight");
+        else
+            SetAnimTrigger("FireballLeft");
         GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
-        newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
+        newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newFireball);
     }
@@ -213,6 +238,23 @@ public class AIBehaviour : CharacterBehaviour
         GameObject newIceSpikes = Instantiate(iceSpikeProjectile, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
         newIceSpikes.GetComponent<IceSpikeProjectile>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         NetworkServer.Spawn(newIceSpikes);
+    }
+
+    public void CastRoyalFire(int horizontal, float horizSpeed)
+    {
+        onGround = false;
+        speedUp = 0.4f;
+        stopMomentumCharges = 0;
+        movingRight = horizontal;
+        speedRight = horizSpeed;
+        if (horizontal > 0f)
+            SetAnimTrigger("FireballRight");
+        else
+            SetAnimTrigger("FireballLeft");
+        GameObject newRoyalFireball = Instantiate(royalFireball, transform.position + Vector3.up, transform.rotation);
+        newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
+        newRoyalFireball.GetComponent<Royalfireball>().SetTarget(otherPlayer.transform.position);
+        NetworkServer.Spawn(newRoyalFireball);
     }
 
     public void CastFizzle()
@@ -355,13 +397,13 @@ public class AIBehaviour : CharacterBehaviour
             Debug.Log("CastRandom");
             if (!tutorialMode && AIAttacks && health > 0)
             {
-                switch (Random.Range(0, 7))
+                switch (Random.Range(1, 2))
                 {
                     case 0:
                         int direction = Random.Range(0, 3);
                         if (direction == 0)
                             CastFireball(25, 1f);
-                        if (direction == 1)
+                        else if (direction == 1)
                             CastFireball(-25, 1f);
                         else
                             CastFireball(0, 0f);
@@ -382,7 +424,13 @@ public class AIBehaviour : CharacterBehaviour
                         CastIceSpikes();
                         break;
                     case 6:
-                        // Cast Royal Fire
+                        int dir = Random.Range(0, 3);
+                        if (dir == 0)
+                            CastRoyalFire(50, 0.2f);
+                        else if (dir == 1)
+                            CastRoyalFire(-50, 0.2f);
+                        else
+                            CastRoyalFire(0, 0f);
                         break;
                     default:
                         Debug.Log("CastFailed");

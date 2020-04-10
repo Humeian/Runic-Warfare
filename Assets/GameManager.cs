@@ -216,6 +216,8 @@ public class GameManager : NetworkBehaviour
 
         shootFireball.SetActive(false);
 
+        yield return new WaitForSecondsRealtime(2);
+
 
         networkManager.player2.GetComponent<AIBehaviour>().CastFireball(0, 0f);
 

@@ -18,6 +18,7 @@ public class Fireball : NetworkBehaviour
     public GameObject fireballExplosion;
 
     public NetworkConnection owner;
+    public GameObject ownerGO;
     private bool wasReflected = false;
 
     private float verticalSpeed;
@@ -33,8 +34,11 @@ public class Fireball : NetworkBehaviour
         StartCoroutine(TravelToDestination());
     }
 
-    public void SetOwner(NetworkConnection connection) {
+    public void SetOwner(NetworkConnection connection, GameObject go) {
+
+        Debug.Log(connection);
         owner = connection;
+        ownerGO = go;
     }
 
     public void SetTarget(Vector3 p) {
@@ -68,8 +72,10 @@ public class Fireball : NetworkBehaviour
         // Should not hit the caster
         // This is pretty messy - reminder to clean up afterwards
         // print("owner: " + owner.ToString());
+        print("other: " + other.ToString());
         if (other.GetComponent<NetworkIdentity>() == null && other.tag != "BodyPart") {
             print(other.name);
+            print("explode here1");
             ServerSpawnExplosion();
         }
         else if (other.GetComponent<NetworkIdentity>() != null) {
@@ -78,18 +84,28 @@ public class Fireball : NetworkBehaviour
                 if (wasReflected == true) {
                     Destroy(gameObject);
                 }
+
                 startPosition = transform.position;
                 startTime = Time.time;
                 //startHeight = transform.position.y;
                 verticalSpeed = maxHeight;
-                endPosition = owner.identity.transform.position;
+
+                if (owner != null)
+                    endPosition = owner.identity.transform.position;
+                else
+                    endPosition = ownerGO.transform.position;
+                SetOwner(other.GetComponent<ArcanePulse>().owner.GetComponent<NetworkIdentity>().connectionToClient, other.gameObject);
                 wasReflected = true;
             }
             else if (other.GetComponent<NetworkIdentity>().connectionToClient == null) {
-                ServerSpawnExplosion();
+                
+                if (other.GetComponent<AIBehaviour>() == null && other != ownerGO && !other.transform.IsChildOf(ownerGO.transform))
+                {
+                    ServerSpawnExplosion();
+                }
             }
             //if other object has an identity and wasn't the owner, explode
-            else if (other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != owner.ToString()) {
+            else if ((other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != (owner == null ? null : owner.ToString()))) {
                 ServerSpawnExplosion();
             }
             //if fireball was reflected and identity is the owner, explode

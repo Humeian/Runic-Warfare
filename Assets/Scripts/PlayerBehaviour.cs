@@ -512,7 +512,7 @@ public class PlayerBehaviour : CharacterBehaviour
     [Command]
     public void CmdCastFireball() {
         GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
-        newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
+        newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newFireball);
         //StartCoroutine(DashRight());

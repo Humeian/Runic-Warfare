@@ -5,7 +5,7 @@ using Mirror;
 
 public class FireballExplosion : NetworkBehaviour
 {
-    public int damage = 1;
+    public int damage = 0;
 
     
 
