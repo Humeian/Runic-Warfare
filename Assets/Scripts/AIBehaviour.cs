@@ -397,7 +397,7 @@ public class AIBehaviour : CharacterBehaviour
             Debug.Log("CastRandom");
             if (!tutorialMode && AIAttacks && health > 0)
             {
-                switch (Random.Range(1, 2))
+                switch (Random.Range(0, 7))
                 {
                     case 0:
                         int direction = Random.Range(0, 3);
