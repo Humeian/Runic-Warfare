@@ -92,7 +92,7 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     [TargetRpc]
-    public new void TargetResetPosition(Vector3 pos) {
+    public new void TargetResetPosition(NetworkConnection connection, Vector3 pos) {
         transform.position = pos;
     }
 

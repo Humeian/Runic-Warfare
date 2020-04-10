@@ -104,8 +104,8 @@ public class GameManager : NetworkBehaviour
             NetworkServer.Destroy(r);
         }
 
-        p1.TargetResetPosition(spawn1.transform.position);
-        p2.TargetResetPosition(spawn2.transform.position);
+        p1.TargetResetPosition(p1.connectionToClient, spawn1.transform.position);
+        p2.TargetResetPosition(p2.connectionToClient, spawn2.transform.position);
 
         p1.RpcResetUI();
         p2.RpcResetUI();
