@@ -61,10 +61,10 @@ public abstract class CharacterBehaviour : NetworkBehaviour
         health = h;
     }
 
-    public float DistanceToCenter()
-    {
+    public float DistanceToCenter(){
         GameObject centerMark = GameObject.Find("CenterMark");
-        return Vector3.Distance(this.gameObject.transform.position, centerMark.transform.position);
+        Vector3 playerXZ = new Vector3(transform.position.x, 3.87f, transform.position.z);
+        return Vector3.Distance(playerXZ, centerMark.transform.position);
     }
 
     //Server: Only the server executes the function. 

@@ -14,6 +14,9 @@ public class Shield : NetworkBehaviour
 
     public CharacterBehaviour owner;
 
+    public AudioClip emergeClip;
+    public AudioClip breakClip;
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -24,6 +27,8 @@ public class Shield : NetworkBehaviour
     }
 
     void Start() {
+        GetComponent<AudioSource>().clip = emergeClip;
+        GetComponent<AudioSource>().Play();
         mpb = new MaterialPropertyBlock();
         renderer = GetComponent<MeshRenderer>();
         StartCoroutine(FadeIn());
@@ -46,7 +51,7 @@ public class Shield : NetworkBehaviour
         float duration = 0.3f;
         float currentTime = 0f;
         while (currentTime < duration) {
-            Color newColor = new Color(0.75f, 0.5f, 0.75f, (currentTime / duration) * 3f);
+            Color newColor = new Color(0.125f, 0.25f, 0.75f, (currentTime / duration) * 3f);
             mpb.SetColor("_Color", newColor);
             renderer.SetPropertyBlock(mpb, 0);
             currentTime += Time.deltaTime;
@@ -62,17 +67,18 @@ public class Shield : NetworkBehaviour
         float currentTime = 0f;
         while (currentTime < duration) {
             float remainingTime = (duration - currentTime);
-            Color newColor = new Color(0.75f, 0.5f, 0.75f, (duration - currentTime) * 6f);
-            Vector3 emission = new Vector3(remainingTime * 90f, remainingTime * 60f, remainingTime * 90f);
+            Color newColor = new Color(0.125f, 0.25f, 0.75f, (duration - currentTime) * 6f);
+            Vector3 emission = new Vector3(remainingTime * 15f, remainingTime * 30f, remainingTime * 90f);
             mpb.SetColor("_Color", newColor);
             mpb.SetVector("_EmissionColor", emission);
             renderer.SetPropertyBlock(mpb, 0);
             currentTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
-        Destroy(transform.GetChild(0));
-        Destroy(transform.GetChild(1));
-        Destroy(transform.GetChild(2));
+        Destroy(transform.GetChild(2).gameObject);
+        Destroy(transform.GetChild(1).gameObject);
+        Destroy(transform.GetChild(0).gameObject);
+        Destroy(GetComponent<MeshRenderer>());
         Destroy(gameObject, 2f);
     }
 
@@ -107,5 +113,7 @@ public class Shield : NetworkBehaviour
     [ClientRpc]
     public void RpcBreak() {
         StartCoroutine(FadeOut());
+        GetComponent<AudioSource>().clip = breakClip;
+        GetComponent<AudioSource>().Play();
     }
 }

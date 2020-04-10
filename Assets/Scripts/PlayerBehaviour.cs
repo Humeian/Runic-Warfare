@@ -17,9 +17,12 @@ public class PlayerBehaviour : CharacterBehaviour
 
     public Timer timer;
 
+    public AudioClip[] clips;
+
     private bool onGround = true;
 
     private Color red;
+    private Color white = new Color(1f, 1f, 1f, 1f);
 
     int movingRight = 0;
     int movingForward = 0;
@@ -28,12 +31,17 @@ public class PlayerBehaviour : CharacterBehaviour
     float speedForward = 0f;
     float speedUp = 0f;
 
+    bool comingDown = false;
+
     private bool firstHit = true;
+    private int currentRound;
 
     private bool isAIChar;
 
     // After using Pulse, number of times spells casted in the air will stop air momentum.
     private int stopMomentumCharges = 0;
+
+    public GameManager gameManager;
 
     // OnServerStart: called when GameObject is created on the server (not called on client).
     public override void OnStartServer()
@@ -47,15 +55,10 @@ public class PlayerBehaviour : CharacterBehaviour
     {
         base.OnStartAuthority();
         StartCoroutine(Movement());
-
-        timer = GameObject.Find("Timer").GetComponent<Timer>();
-        
-        hp1 = GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>();
-        hp2 = GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>();
-        hp3 = GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>();
     }
 
     public void Start() {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         red = new Color(1f, 0f, 0f, 1f);
         shields = new List<GameObject>();
     }
@@ -69,7 +72,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [Command]
     public void CmdResetMatch(){
-        GameObject.Find("GameManager").GetComponent<GameManager>().ResetMatch();
+        gameManager.ResetMatch();
 
         /*
         //CmdRestoreHealth(3);
@@ -113,15 +116,21 @@ public class PlayerBehaviour : CharacterBehaviour
         }
     }
 
+    public void InitializeUI() {
+        timer = GameObject.Find("Timer").GetComponent<Timer>();
+
+        hp1 = GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>();
+        hp2 = GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>();
+        hp3 = GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>();
+    }
+
     [ClientRpc]
     public override void RpcResetUI() {
         // Disable rematch button
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
 
-        // Enable glyph input & reboot the color cleaning coroutine
-        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
-        glyphInput.SetActive(true);
-        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
+        // Wait for round to start before enabling input
+        StartCoroutine(WaitForRoundStart());
 
         // Recolour the health bubbles
         GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
@@ -133,11 +142,24 @@ public class PlayerBehaviour : CharacterBehaviour
         GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(false);
 
         shields.Clear();
+        lightningCharge = 0;
 
         //reset momentum
         movingForward = 0;
         movingRight = 0;
         movingUp = 0;
+
+        if (gameManager.round == 1) {
+            GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = 0 + " - " + 0;
+        }
+    }
+
+    private IEnumerator WaitForRoundStart() {
+        yield return new WaitForSeconds(3.0f);
+        // Enable glyph input & reboot the color cleaning coroutine
+        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
+        glyphInput.SetActive(true);
+        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
     }
 
     [ClientRpc]
@@ -147,26 +169,58 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     [TargetRpc]
-    public void TargetWinRound(NetworkConnection connection, int wins, int round) {
+    public void TargetWinRound(NetworkConnection connection, int p1Score, int p2Score, int round) {
         // Display Win text
         GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(true);
 
+        if (p1Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
+        }
+        else if (p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        }
+        
         // Display Rematch button
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        if (p1Score >= 3 || p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
+        }
 
         //Update # of wins and round number
-        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
-        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        currentRound = round;
     }
     [TargetRpc]
-    public void TargetLoseRound(NetworkConnection connection, int wins, int round) {
+    public void TargetLoseRound(NetworkConnection connection, int p1Score, int p2Score, int round) {
         GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(true);
+        
+        if (p1Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
+        }
+        else if (p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        }
 
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        if (p1Score >= 3 || p2Score >= 3) {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
+        }
+        else {
+            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
+        }
         
         //Update # of wins and round number
-        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = wins.ToString();
-        GameObject.Find("RoundText").GetComponent<UnityEngine.UI.Text>().text = round.ToString();
+        GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        currentRound = round;
     }
 
     void FixedUpdate()
@@ -203,20 +257,22 @@ public class PlayerBehaviour : CharacterBehaviour
         }
 
         // Needs to be in Update as there appear to be damage timing issues.
-        if (health < 3 && !isAIChar) {
-            hp1.color = red;
-        } else {
-            hp1.color = new Color(1f, 1f, 1f, 1f);
-        }
-        if (health < 2 && !isAIChar) {
-            hp2.color = red;
-        } else {
-            hp2.color = new Color(1f, 1f, 1f, 1f);
-        }
-        if (health < 1 && !isAIChar) {
-            hp3.color = red;
-        } else {
-            hp3.color = new Color(1f, 1f, 1f, 1f);
+        if (hasAuthority) {
+            if (health < 3) {
+                hp1.color = red;
+            } else {
+                hp1.color = white;
+            }
+            if (health < 2) {
+                hp2.color = red;
+            } else {
+                hp2.color = white;
+            }
+            if (health < 1) {
+                hp3.color = red;
+            } else {
+                hp3.color = white;
+            }
         }
 
         if (royalBurn > 0f) {
@@ -237,23 +293,35 @@ public class PlayerBehaviour : CharacterBehaviour
 
     IEnumerator Movement() {
         while (true) {
-            if (movingRight != 0) {
-                transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
+            float distanceFromCenter = DistanceToCenter();
 
-                if      (movingRight < 0) movingRight++;
-                else if (movingRight > 0) movingRight--;
-            }
+            if (distanceFromCenter < 24){
+                if (movingRight != 0) {
+                    transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
 
-            if (movingForward != 0) {
-                transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
+                    if      (movingRight < 0) movingRight++;
+                    else if (movingRight > 0) movingRight--;
+                }
 
-                if      (movingForward < 0) movingForward++;
-                else if (movingForward > 0) movingForward--;
+                if (movingForward != 0) {
+                    transform.position += transform.forward * Time.deltaTime * (movingForward * speedForward);
+
+                    if      (movingForward < 0) movingForward++;
+                    else if (movingForward > 0) movingForward--;
+                }
+            } else {
+                movingRight = 0;
+                movingForward = 0;
+                transform.position -= (transform.position - GameObject.Find("CenterMark").transform.position).normalized;
             }
 
             if (!onGround) {
                 //fall faster if falling down and no spell has been used -- easier to time reflect pulse
                 if (speedUp < 0 && stopMomentumCharges > 0) {
+                    if (!comingDown && hasAuthority) {
+                        CmdSetAnimTrigger("PulseDown");
+                        comingDown = true;
+                    }
                     transform.position += transform.up * speedUp * 200f * Time.deltaTime;
                 }
                 else {
@@ -299,7 +367,10 @@ public class PlayerBehaviour : CharacterBehaviour
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
         speedRight = horizSpeed;
-        SetAnimTrigger("FireballRight");
+        if (horizontal > 0f)
+            CmdSetAnimTrigger("FireballRight");
+        else 
+            CmdSetAnimTrigger("FireballLeft");
         CmdCastFireball();
     }
     [TargetRpc]
@@ -308,21 +379,34 @@ public class PlayerBehaviour : CharacterBehaviour
         screen.color = c;
     }
 
-    public void SetAnimTrigger(string s) {
+    [Command]
+    public void CmdSetAnimTrigger(string s) {
+        print("Calling animation for " + s);
         animator.SetTrigger(s);
+    }
+
+    [Command]
+    public void CmdPlayClip(int a) {
+        RpcPlayClip(a);
+    }
+
+    [ClientRpc]
+    public void RpcPlayClip(int a) {
+        GetComponent<AudioSource>().clip = clips[a];
+        GetComponent<AudioSource>().Play();
     }
 
     // For outside animation triggers such as WindSlashRecoil.
     [TargetRpc]
     public override void TargetSetAnimTrigger(NetworkConnection target, string s) {
-        animator.SetTrigger(s);
+        CmdSetAnimTrigger(s);
     }
 
     public void CastWindForward() {
         StopAirMomentum();
         movingForward = 20;
         speedForward = 2f;
-        SetAnimTrigger("WindSlash");
+        CmdSetAnimTrigger("WindSlash");
         CmdCastWindForward();
     }
 
@@ -330,26 +414,36 @@ public class PlayerBehaviour : CharacterBehaviour
         StopAirMomentum();
         movingForward = -30;
         speedForward = 0.4f;
-        SetAnimTrigger("ShieldBack");
+        CmdSetAnimTrigger("ShieldBack");
         CmdCastShieldBack();
     }
 
     public void CastLightningNeutral() {
+        CmdPlayClip(0);
         StopAirMomentum();
+        animator.ResetTrigger("LightningCharged");
+        animator.ResetTrigger("LightningShoot");
+        CmdSetAnimTrigger("LightningCharging");
         CmdCastLightningCharge();
         lightningCharge++;
         if (lightningCharge == lightningChargesNeeded) {
             StartCoroutine(WaitForLightning());
             lightningCharge = 0;
         }
+        else {
+            StartCoroutine(WaitForLightningCharge());
+        }
     }
 
     public void CastArcanePulse() {
+        CmdPlayClip(1);
         onGround = false;
         speedUp = 0.6f;
+        comingDown = false;
         stopMomentumCharges = 1;
-        SetAnimTrigger("ArcanePulse");
-        CmdCastArcanePulse();
+        animator.ResetTrigger("PulseDown");
+        CmdSetAnimTrigger("PulseUp");
+        //CmdCastArcanePulse is called during Update, when the player hits the ground.
     }
 
     public void CastIceSpikes() {
@@ -359,7 +453,7 @@ public class PlayerBehaviour : CharacterBehaviour
         speedForward = 0.1f;
         //do not fall faster
         stopMomentumCharges = 0;
-        SetAnimTrigger("ShieldBack");
+        CmdSetAnimTrigger("ShieldBack");
         CmdCastIceSpikes();
     }
 
@@ -369,7 +463,7 @@ public class PlayerBehaviour : CharacterBehaviour
         stopMomentumCharges = 0;
         movingRight = 50;
         speedRight = 0.2f;
-        SetAnimTrigger("FireballRight");
+        CmdSetAnimTrigger("FireballRight");
         CmdCastRoyalFire();
     }
 
@@ -388,8 +482,15 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     IEnumerator WaitForLightning() {
-        yield return new WaitForSeconds(0.45f);
+        yield return new WaitForSeconds(0.35f);
+        CmdSetAnimTrigger("LightningShoot");
+        yield return new WaitForSeconds(0.1f);
         CmdCastLightning();
+    }
+
+    IEnumerator WaitForLightningCharge() {
+        yield return new WaitForSeconds(0.3f);
+        CmdSetAnimTrigger("LightningCharged");
     }
 
     [TargetRpc]

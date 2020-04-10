@@ -13,7 +13,7 @@ public class GlyphRecognition : MonoBehaviour {
 
 	public StrokeGraphic targetGlyphGraphic, castedGlyphGraphic, currentGlyphGraphic, currentStrokeGraphic, storedGlyphGraphic;
 
-	float costThreshold = 0.6f;
+	float costThreshold = 0.4f;
 	public float CostThreshold {get{ return costThreshold; } set{
 		costThreshold = value;
 		Debug.Log(value);
@@ -139,9 +139,9 @@ public class GlyphRecognition : MonoBehaviour {
 		// through any possible errors.
 		try {
 			switch (match.target.ToString()) {
-				case "Fireball":
-				case "Fireball2":
-				case "Fireball3":
+				//case "Fireball":
+				//case "Fireball2":
+				//case "Fireball3":
 				case "Fireball4":
 					StartCoroutine(Morph (match, glyphColours["fireball"]));
 					if (currentCast == CastDirection.Right) {
@@ -152,39 +152,39 @@ public class GlyphRecognition : MonoBehaviour {
 						player.CastFireball(0, 0f);
 					}
 					break;
-				case "Shield":
+				//case "Shield":
 				case "Shield2":
-				case "Shield3":
+				//case "Shield3":
 					StartCoroutine(Morph (match, glyphColours["shield"]));
 					player.CastShieldBack();
 					break;
-				case "Windslash":
-				case "Windslash2":
-				case "Windslash3":
-				case "Windslash4":
+				case "WindSlash":
+				//case "Windslash2":
+				//case "Windslash3":
+				//case "Windslash4":
 					StartCoroutine(Morph (match, glyphColours["windslash"]));
 					player.CastWindForward();
 					break;
 				case "Lightning":
-				case "Lightning2":
+				//case "Lightning2":
 					StartCoroutine(Morph (match, glyphColours["finalSpark"]));
 					player.CastLightningNeutral();
 					break;
-				case "ArcanePulse":
+				//case "ArcanePulse":
 				case "Arcanopulse":
-				case "Arcanopulse2":
-				case "Arcanopulse3":
+				//case "Arcanopulse2":
+				//case "Arcanopulse3":
 					StartCoroutine(Morph (match, glyphColours["arcanePulse"]));
 					player.CastArcanePulse();
 					break;
 				case "Icespike":
-				case "Icespike2":
-				case "Icespike3":
+				//case "Icespike2":
+				//case "Icespike3":
 				 	StartCoroutine(Morph (match, glyphColours["iceSpikes"]));
 				 	player.CastIceSpikes();
 				 	break;
-				case "Royalfire":
-				case "Royalfire2":
+				//case "Royalfire":
+				//case "Royalfire2":
 				case "Royalfire3":
 				 	StartCoroutine(Morph (match, glyphColours["royalFire"]));
 				 	player.CastRoyalFire();

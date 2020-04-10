@@ -41,10 +41,13 @@ public class PlayerCamera : MonoBehaviour
     private bool isInIntro = false;
     private bool introCompleted = false;
 
-    public enum CameraState {PreGame, Intro, InGame, MyPlayerDead, OtherPlayerDead};
+    public enum CameraState {PreGame, Intro, InGame, MyPlayerDead, OtherPlayerDead, TimeOut};
     public CameraState cameraState;
 
-    public AudioClip roundWin;
+    public GameObject roundStartPanel;
+    public AudioClip roundStartClip;
+    public AudioClip roundEndClip;
+    public AudioClip lastRoundClip;
 
     // Start is called before the first frame update
     void Start()
@@ -83,6 +86,7 @@ public class PlayerCamera : MonoBehaviour
             }
         }
         else if (cameraState == CameraState.Intro) {
+            currentPlayer.GetComponent<PlayerBehaviour>().InitializeUI();
             //stay idle, let routine switch state.
         }
         else if (cameraState == CameraState.InGame) {
@@ -98,11 +102,21 @@ public class PlayerCamera : MonoBehaviour
 
             if (currentPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
                 cameraState = CameraState.MyPlayerDead;
+                GetComponent<AudioSource>().clip = roundEndClip;
+                GetComponent<AudioSource>().Play();
             }
             if (otherCharacterBehaviour.health <= 0) {
                 cameraState = CameraState.OtherPlayerDead;
-                GetComponent<AudioSource>().clip = roundWin;
+                GetComponent<AudioSource>().clip = roundEndClip;
                 GetComponent<AudioSource>().Play();
+            }
+
+            if (manager.timer <= 0) {
+                cameraState = CameraState.TimeOut;
+                GetComponent<AudioSource>().clip = roundEndClip;
+                GetComponent<AudioSource>().Play();
+
+                transform.position = new Vector3(0f, 10f, -50f);
             }
         }
         else if (cameraState == CameraState.MyPlayerDead) {
@@ -137,6 +151,16 @@ public class PlayerCamera : MonoBehaviour
                 StartCoroutine(SpinRoutine());
             }
         }
+        else if (cameraState == CameraState.TimeOut) {
+            Vector3 target = new Vector3(0f, 5f, 0f);
+            transform.RotateAround(target, transform.up, -4f * Time.deltaTime);
+            transform.LookAt(target);
+            
+            if (manager.timer > 0f) {
+                cameraState = CameraState.Intro;
+                StartCoroutine(SpinRoutine());
+            }
+        }
                 
             //if object is close, switch to narrow depth of field
         if (dof.focusDistance.value < 16f) {
@@ -163,6 +187,8 @@ public class PlayerCamera : MonoBehaviour
     }
 
     public IEnumerator SpinRoutine() {
+        GetComponent<AudioSource>().clip = roundStartClip;
+        GetComponent<AudioSource>().Play();
         float duration = 3f;
         float timer = duration;
         Vector3 target = spawnLocation + (Vector3.up * playerHeight)
@@ -171,6 +197,16 @@ public class PlayerCamera : MonoBehaviour
             + (currentPlayer.transform.forward * thirdPersonZOffset);
         Vector3 lookTarget = spawnLocation + (Vector3.up * playerHeight * 0.8f);
         while (timer >= 0f) {
+            if (timer <= 2f) {
+                if (!roundStartPanel.activeInHierarchy) {
+                    roundStartPanel.SetActive(true);
+                    if (manager.round >= 5) {
+                        roundStartPanel.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Final Round";
+                    } else {
+                        roundStartPanel.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Round " + manager.round;
+                    }
+                }
+            }
             target = spawnLocation + (Vector3.up * playerHeight)
                 + (currentPlayer.transform.right * thirdPersonXOffset) 
                 + (currentPlayer.transform.up * thirdPersonYOffset)
@@ -186,6 +222,11 @@ public class PlayerCamera : MonoBehaviour
             Debug.Log(lookTarget);
             dof.focusDistance.value = Vector3.Distance(transform.position, lookTarget);
             yield return new WaitForEndOfFrame();
+        }
+        roundStartPanel.SetActive(false);
+        if (manager.p1Wins >= 2 || manager.p2Wins >= 2) {
+            GetComponent<AudioSource>().clip = lastRoundClip;
+            GetComponent<AudioSource>().Play();
         }
         cameraState = CameraState.InGame;
     }

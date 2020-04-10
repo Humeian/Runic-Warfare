@@ -30,6 +30,7 @@ public class GameManager : NetworkBehaviour
 
     public GameObject spawn1, spawn2;
     public GameObject menu;
+    public GameObject topPanel, bottomPanel;
 
     public Glyph fireball;
     public Glyph shield;
@@ -49,7 +50,7 @@ public class GameManager : NetworkBehaviour
     public override void OnStartServer()
     {
         roundStarted = false;
-        timer = 60f;
+        timer = 63f;
         StartCoroutine(KeepTimer());
     }
 
@@ -57,12 +58,12 @@ public class GameManager : NetworkBehaviour
     IEnumerator KeepTimer() {
         while (true) {
             if (roundStarted && timer > 0f) {
-                timer -= 0.1f;
+                timer -= Time.deltaTime;
             }
             if (roundStarted && timer <= 0f) {
                 roundFinished = true;
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForEndOfFrame();
         }
 
     }
@@ -81,6 +82,10 @@ public class GameManager : NetworkBehaviour
 
         if (roundStarted && menu != null && menu.activeSelf){
             menu.SetActive(false);
+            topPanel.SetActive(true);
+            GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+            GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+            GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = Color.white;
         }
 
         if (roundStarted && !roundFinished){
@@ -126,7 +131,13 @@ public class GameManager : NetworkBehaviour
         p1.RpcResetUI();
         p2.RpcResetUI();
 
-        timer = 60f;
+        timer = 63f;
+
+        if (round == 1) {
+            p1Wins = 0;
+            p2Wins = 0;
+        }
+
         roundStarted = true;
         roundFinished = false;
     }
@@ -141,8 +152,6 @@ public class GameManager : NetworkBehaviour
         if(p2PlayerBehaviour != null)
             p2PlayerBehaviour.RpcDisableGlyphInput();
 
-        round += 1;
-
         bool p1win;
 
         if (reason == 1){
@@ -154,17 +163,29 @@ public class GameManager : NetworkBehaviour
             p1win = p2.health <= 0;
         }
         
+        //If either p1 or p2 win three rounds, reset round number to 1.
         if (p1win){
             p1Wins += 1;
-            p1PlayerBehaviour.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
+            if (p1Wins >= 3) {
+                round = 1;
+            } else {
+                round++;
+            }
+            p1PlayerBehaviour.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
             if (p2PlayerBehaviour != null)
-                p2PlayerBehaviour.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
+                p2PlayerBehaviour.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
         } else {
             p2Wins += 1;
-            p1PlayerBehaviour.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p2Wins, round);
+            if (p2Wins >= 3) {
+                round = 1;
+            } else {
+                round++;
+            }
             if (p2PlayerBehaviour != null)
-                p2PlayerBehaviour.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, round);
+                p2PlayerBehaviour.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+            p1PlayerBehaviour.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
         }
+        print("p1Win " + p1Wins + ", p2Win " + p2Wins);
 
 
     }
