@@ -25260,6 +25260,11 @@ PrefabInstance:
       propertyPath: roundStartClip
       value: 
       objectReference: {fileID: 8300000, guid: 8796cf4ff3be18d4a8ac65d056c3a986, type: 3}
+    - target: {fileID: 4129894425215817564, guid: 956a20fa073193d41a276896a5e43a48,
+        type: 3}
+      propertyPath: roundEndClip
+      value: 
+      objectReference: {fileID: 8300000, guid: df17338572020844bb97e4a29a22afd5, type: 3}
     - target: {fileID: 4129894425215817566, guid: 956a20fa073193d41a276896a5e43a48,
         type: 3}
       propertyPath: m_LocalPosition.x
