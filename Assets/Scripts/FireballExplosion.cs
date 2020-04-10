@@ -27,8 +27,10 @@ public class FireballExplosion : NetworkBehaviour
         if (other.tag == "Player") {
             other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
             other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            Destroy(gameObject, 0);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();
+            Destroy(gameObject, 0);
         }
     }
 }
