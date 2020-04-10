@@ -90,6 +90,22 @@ public class NewNetworkManager : NetworkManager
         }
     }
 
+    public void StartTutorial()
+    {
+        base.StartHost();
+        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position, AISpawn.transform.rotation);
+        player2 = AIPlayer;
+        NetworkServer.Spawn(AIPlayer);
+        AIPlayer.GetComponent<AIBehaviour>().AIAttacks = false;
+        if (player1 != null)
+        {
+
+            player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
+        }
+        StartCoroutine(GameObject.Find("GameManager").GetComponent<GameManager>().Tutorial());
+    }
+
     /// <summary>
     /// called when quitting the application by closing the window / pressing stop in the editor
     /// <para>virtual so that inheriting classes' OnApplicationQuit() can call base.OnApplicationQuit() too</para>

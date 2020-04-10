@@ -23,6 +23,9 @@ public class AIBehaviour : CharacterBehaviour
 
     private bool firstHit = true;
 
+    public bool tutorialMode = false;
+    public bool AIAttacks = true;
+
     // After using Pulse, number of times spells casted in the air will stop air momentum.
     private int stopMomentumCharges = 0;
 
@@ -344,8 +347,6 @@ public class AIBehaviour : CharacterBehaviour
 
     }
     //public bool isAIPlayer = false;
-    public bool tutorialMode = false;
-    public bool AIAttacks = true;
     IEnumerator CastRandom()
     {
         yield return new WaitForSeconds(5);

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using AdVd.GlyphRecognition;
 
 public class GameManager : NetworkBehaviour
 {
     public NewNetworkManager networkManager;
+    public GlyphRecognition glyphRecognizer;
     public PlayerCamera cam;
 
     private CharacterBehaviour p1, p2;
@@ -28,6 +30,20 @@ public class GameManager : NetworkBehaviour
 
     public GameObject spawn1, spawn2;
     public GameObject menu;
+
+    public Glyph fireball;
+    public Glyph shield;
+
+    public GameObject introduction;
+    public GameObject shootFireball;
+    public GameObject blockFireball;
+    public GameObject storeSpell;
+    public GameObject retrieveSpell;
+    public GameObject UIGameRules;
+    public GameObject tracingPanel;
+    public GameObject conclusion;
+
+    public GameObject tutorialPanel;
 
     // Start is called before the first frame update
     public override void OnStartServer()
@@ -153,13 +169,109 @@ public class GameManager : NetworkBehaviour
 
     }
 
-    public void StartPractice()
+    public IEnumerator Tutorial()
     {
+        yield return new WaitForSecondsRealtime(2);
 
-    }
+        Time.timeScale = 0;
 
-    public void StartTutorial()
-    {
-     
+        introduction.SetActive(true);
+
+        while(!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+
+        introduction.SetActive(false);
+
+        Time.timeScale = 1;
+
+
+
+        shootFireball.SetActive(true);
+
+        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = fireball;
+
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Fireball4") { yield return new WaitForSecondsRealtime(0.1f); }
+
+        while (networkManager.player2.GetComponent<CharacterBehaviour>().health == 3) { yield return new WaitForSecondsRealtime(0.1f); }
+
+        shootFireball.SetActive(false);
+
+
+        networkManager.player2.GetComponent<AIBehaviour>().CastFireball(0, 0f);
+
+        yield return new WaitForSecondsRealtime(1);
+
+        Time.timeScale = 0;
+
+        blockFireball.SetActive(true);
+
+        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = shield;
+
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Shield2") { yield return new WaitForSecondsRealtime(0.1f); }
+
+        glyphRecognizer.lastCast = null;
+
+        Time.timeScale = 1;
+
+        yield return new WaitForSecondsRealtime(3);
+
+        blockFireball.SetActive(false);
+
+
+        storeSpell.SetActive(true);
+
+        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = shield;
+
+        while (glyphRecognizer.storedGlyph.Length <= 1 || (glyphRecognizer.Match(glyphRecognizer.storedGlyph) != null && glyphRecognizer.Match(glyphRecognizer.storedGlyph).target.ToString() != "Shield2")) { yield return new WaitForSecondsRealtime(0.1f); }
+
+        storeSpell.SetActive(false);
+
+
+        networkManager.player2.GetComponent<AIBehaviour>().CastFireball(0, 0f);
+
+        yield return new WaitForSecondsRealtime(1);
+
+        Time.timeScale = 0;
+
+        retrieveSpell.SetActive(true);
+
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Shield2") { yield return new WaitForSecondsRealtime(0.1f); }
+
+        Time.timeScale = 1;
+
+        yield return new WaitForSecondsRealtime(3);
+
+        Time.timeScale = 0;
+
+        retrieveSpell.SetActive(false);
+
+        tracingPanel.SetActive(true);
+
+        tutorialPanel.SetActive(true);
+
+        while (!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+
+        tracingPanel.SetActive(false);
+
+        tutorialPanel.SetActive(false);
+
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        UIGameRules.SetActive(true);
+
+        while (!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+
+        UIGameRules.SetActive(false);
+
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        conclusion.SetActive(true);
+
+        while (!Input.GetMouseButtonDown(0)) { yield return new WaitForSecondsRealtime(0.1f); }
+
+        conclusion.SetActive(false);
+
+        networkManager.player2.GetComponent<AIBehaviour>().AIAttacks = true;
+
+        Time.timeScale = 1;
     }
 }
