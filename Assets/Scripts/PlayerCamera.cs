@@ -232,8 +232,8 @@ public class PlayerCamera : MonoBehaviour
             transform.LookAt(lookTarget);
             timer -= Time.deltaTime;
 
-            Debug.Log(dof);
-            Debug.Log(lookTarget);
+            //Debug.Log(dof);
+            //Debug.Log(lookTarget);
             dof.focusDistance.value = Vector3.Distance(transform.position, lookTarget);
             yield return new WaitForEndOfFrame();
         }

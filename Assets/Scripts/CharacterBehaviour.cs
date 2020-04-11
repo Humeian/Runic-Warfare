@@ -47,7 +47,7 @@ public abstract class CharacterBehaviour : NetworkBehaviour
         Debug.Log("Set other player");
         Debug.Log(otherPlayer);
     }
-    
+
     public void TargetResetPosition(NetworkConnection connection, Vector3 pos)
     {
         transform.position = pos;

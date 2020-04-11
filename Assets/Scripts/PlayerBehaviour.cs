@@ -96,6 +96,8 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [TargetRpc]
     public new void TargetResetPosition(NetworkConnection connection, Vector3 pos) {
+        Debug.Break();
+        Debug.LogWarning("TargetRPC");
         transform.position = pos;
     }
 
@@ -164,8 +166,8 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [ClientRpc]
     public void RpcDisableGlyphInput(){
-        GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
-        GameObject.FindWithTag("GlyphRecognition").SetActive(false);
+        GameObject.Find("Canvas").transform.Find("Basic Glyph Input").GetComponent<GlyphRecognition>().ClearAll();
+        GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(false);
     }
 
     [TargetRpc]
@@ -251,8 +253,8 @@ public class PlayerBehaviour : CharacterBehaviour
             GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
 
             // Disable glyph input
-            GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
-            GameObject.FindWithTag("GlyphRecognition").SetActive(false);
+            //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").GetComponent<GlyphRecognition>().ClearAll();
+            //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(false);
 
             // Stop the timer
             //timer.StopTimer();
