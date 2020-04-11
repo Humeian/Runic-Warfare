@@ -46,6 +46,8 @@ public class GameManager : NetworkBehaviour
 
     public GameObject tutorialPanel;
 
+    public bool isTutorial = false;
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -164,30 +166,43 @@ public class GameManager : NetworkBehaviour
         }
         
         //If either p1 or p2 win three rounds, reset round number to 1.
-        if (p1win){
-            p1Wins += 1;
-            if (p1Wins >= 3) {
-                round = 1;
-            } else {
-                round++;
+        if (isTutorial)
+        {
+            p1PlayerBehaviour.TargetEndTutorial(p1.GetComponent<NetworkIdentity>().connectionToClient);
+        } else
+        {
+            if (p1win)
+            {
+                p1Wins += 1;
+                if (p1Wins >= 3)
+                {
+                    round = 1;
+                }
+                else
+                {
+                    round++;
+                }
+                p1PlayerBehaviour.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+                if (p2PlayerBehaviour != null)
+                    p2PlayerBehaviour.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
             }
-            p1PlayerBehaviour.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
-            if (p2PlayerBehaviour != null)
-                p2PlayerBehaviour.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
-        } else {
-            p2Wins += 1;
-            if (p2Wins >= 3) {
-                round = 1;
-            } else {
-                round++;
+            else
+            {
+                p2Wins += 1;
+                if (p2Wins >= 3)
+                {
+                    round = 1;
+                }
+                else
+                {
+                    round++;
+                }
+                if (p2PlayerBehaviour != null)
+                    p2PlayerBehaviour.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+                p1PlayerBehaviour.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
             }
-            if (p2PlayerBehaviour != null)
-                p2PlayerBehaviour.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
-            p1PlayerBehaviour.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+            print("p1Win " + p1Wins + ", p2Win " + p2Wins);
         }
-        print("p1Win " + p1Wins + ", p2Win " + p2Wins);
-
-
     }
 
     public IEnumerator Tutorial()

@@ -18,6 +18,14 @@ public class NewNetworkManager : NetworkManager
         this.networkAddress = textComponent.text;
     }
 
+    //public void ReturnToMenu()
+    //{
+    //    StopHost();
+    //    //GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().Reset();
+        
+
+    //}
+
     #region Unity Callbacks
 
     public override void OnValidate()
@@ -97,6 +105,7 @@ public class NewNetworkManager : NetworkManager
         player2 = AIPlayer;
         NetworkServer.Spawn(AIPlayer);
         AIPlayer.GetComponent<AIBehaviour>().AIAttacks = false;
+        AIPlayer.GetComponent<AIBehaviour>().tutorialMode = true;
         if (player1 != null)
         {
 
@@ -104,6 +113,8 @@ public class NewNetworkManager : NetworkManager
             player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
         }
         StartCoroutine(GameObject.Find("GameManager").GetComponent<GameManager>().Tutorial());
+        GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().isTutorial = true;
+        GameObject.Find("GameManager").GetComponent<GameManager>().isTutorial = true;
     }
 
     /// <summary>
@@ -329,7 +340,9 @@ public class NewNetworkManager : NetworkManager
     /// <summary>
     /// This is called when a host is stopped.
     /// </summary>
-    public override void OnStopHost() { }
+    public override void OnStopHost() {
+        base.OnStartHost();
+    }
 
     #endregion
 }

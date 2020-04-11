@@ -223,6 +223,12 @@ public class PlayerBehaviour : CharacterBehaviour
         currentRound = round;
     }
 
+    [TargetRpc]
+    public void TargetEndTutorial(NetworkConnection connection)
+    {
+        GameObject.Find("GameUI").transform.Find("BackToMenuPanel").gameObject.SetActive(true);
+    }
+
     void FixedUpdate()
     {
         if (otherPlayer != null) {

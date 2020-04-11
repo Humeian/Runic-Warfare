@@ -395,7 +395,7 @@ public class AIBehaviour : CharacterBehaviour
         while (true)
         {
             Debug.Log("CastRandom");
-            if (!tutorialMode && AIAttacks && health > 0)
+            if (AIAttacks && health > 0)
             {
                 switch (Random.Range(0, 7))
                 {
@@ -438,7 +438,10 @@ public class AIBehaviour : CharacterBehaviour
 
                 }
             }
-            yield return new WaitForSeconds(5);
+            if (!tutorialMode)
+                yield return new WaitForSeconds(5);
+            else
+                yield return new WaitForSeconds(10);
         }
     }
 }

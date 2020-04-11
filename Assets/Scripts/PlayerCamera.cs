@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -41,6 +42,8 @@ public class PlayerCamera : MonoBehaviour
     private bool isInIntro = false;
     private bool introCompleted = false;
 
+    public bool isTutorial = false;
+
     public enum CameraState {PreGame, Intro, InGame, MyPlayerDead, OtherPlayerDead, TimeOut};
     public CameraState cameraState;
 
@@ -57,6 +60,17 @@ public class PlayerCamera : MonoBehaviour
         currentMouseOffset = Vector2.zero;
         cameraState = CameraState.PreGame;
         StartCoroutine(Preview());
+    }
+
+    public void ResetScene()
+    {
+        if (cameraState != CameraState.PreGame)
+        {
+            GameObject.Find("NetworkManager").GetComponent<NewNetworkManager>().StopHost();
+            GameObject.Find("NetworkManager").GetComponent<NewNetworkManager>().StopClient();
+            Destroy(GameObject.Find("NetworkManager"));
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     // Update is called once per frame
@@ -198,7 +212,7 @@ public class PlayerCamera : MonoBehaviour
         Vector3 lookTarget = spawnLocation + (Vector3.up * playerHeight * 0.8f);
         while (timer >= 0f) {
             if (timer <= 2f) {
-                if (!roundStartPanel.activeInHierarchy) {
+                if (!roundStartPanel.activeInHierarchy && !isTutorial) {
                     roundStartPanel.SetActive(true);
                     if (manager.round >= 5) {
                         roundStartPanel.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Final Round";
