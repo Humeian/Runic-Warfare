@@ -48,6 +48,7 @@ public abstract class CharacterBehaviour : NetworkBehaviour
         Debug.Log(otherPlayer);
     }
 
+    [TargetRpc]
     public void TargetResetPosition(NetworkConnection connection, Vector3 pos)
     {
         transform.position = pos;
