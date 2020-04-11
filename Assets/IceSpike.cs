@@ -23,9 +23,10 @@ public class IceSpike : NetworkBehaviour
     [ServerCallback]
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Player") {
-            other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
-            other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
-            other.GetComponent<PlayerBehaviour>().TargetThrowPlayerBack(other.GetComponent<NetworkIdentity>().connectionToClient, 0.6f, 0, 40);
+            other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
+            if (other.GetComponent<PlayerBehaviour>() != null)
+                other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            other.GetComponent<CharacterBehaviour>().TargetThrowPlayerBack(other.GetComponent<NetworkIdentity>().connectionToClient, 0.6f, 0, 40);
         }
     }
 }

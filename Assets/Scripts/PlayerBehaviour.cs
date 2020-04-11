@@ -3,44 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PlayerBehaviour : NetworkBehaviour
+public class PlayerBehaviour : CharacterBehaviour
 {
-    [SyncVar]
-    public GameObject otherPlayer;
-
-    [SyncVar]
-    public int health = 3;
 
     public UnityEngine.UI.Image hp1, hp2, hp3;
 
-    [SyncVar]
-    public int lightningCharge = 0;
-
-    //Royal Fire will deal damage if royalBurn reaches 1
-    [SyncVar]
-    public float royalBurn = 0f;
-    
-    //royalBurn decreases by this every second
-    public float royalBurnRecovery = 0.2f;
 
     private int lightningChargesNeeded = 3;
 
     public NetworkAnimator animator;
 
-    public float dashSpeed;
-    public float dashHeight;
     private float playerHeight = 1f;
 
-    public GameObject fireball;
-    public GameObject royalFireball;
-    public GameObject shield;
-    public GameObject windslash;
-    public GameObject lightningChargeObj;
-    public GameObject lightning;
-    public GameObject arcanePulse;
-    public GameObject iceSpikeProjectile;
-    public GameObject fizzle;
-    public RuntimeAnimatorController controller;
     public Timer timer;
 
     public AudioClip[] clips;
@@ -49,9 +23,6 @@ public class PlayerBehaviour : NetworkBehaviour
 
     private Color red;
     private Color white = new Color(1f, 1f, 1f, 1f);
-
-    public List<GameObject> shields;
-    public int maxShields = 2;
 
     int movingRight = 0;
     int movingForward = 0;
@@ -64,6 +35,8 @@ public class PlayerBehaviour : NetworkBehaviour
 
     private bool firstHit = true;
     private int currentRound;
+
+    private bool isAIChar;
 
     // After using Pulse, number of times spells casted in the air will stop air momentum.
     private int stopMomentumCharges = 0;
@@ -97,44 +70,13 @@ public class PlayerBehaviour : NetworkBehaviour
         }
     }
 
-    public float DistanceToCenter(){
-        GameObject centerMark = GameObject.Find("CenterMark");
-        Vector3 playerXZ = new Vector3(transform.position.x, 3.87f, transform.position.z);
-        return Vector3.Distance(playerXZ, centerMark.transform.position);
-    }
-
-    //called by NewNetworkManager
-    public void SetOtherPlayer(GameObject op) {
-        otherPlayer = op;
-        //timer.StartTimer();
-    }
-
     [Command]
     public void CmdResetMatch(){
         gameManager.ResetMatch();
-
-        /*
-        //CmdRestoreHealth(3);
-        //lightningCharge = 0;
-
-        // Disable rematch button
-
-        // Enable glyph input & reboot the color cleaning coroutine
-        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
-        glyphInput.SetActive(true);
-        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
-
-        // Timer reset is done in the onClick() of the rematch button
-
-        // Reset health bubble colour
-        GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
-        GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
-        //firstHit = true;
-        */
     }
 
     [TargetRpc]
-    public void TargetResetPosition(NetworkConnection connection, Vector3 pos) {
+    public new void TargetResetPosition(NetworkConnection connection, Vector3 pos) {
         transform.position = pos;
     }
 
@@ -164,7 +106,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcResetUI() {
+    public override void RpcResetUI() {
         // Disable rematch button
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
 
@@ -203,8 +145,8 @@ public class PlayerBehaviour : NetworkBehaviour
 
     [ClientRpc]
     public void RpcDisableGlyphInput(){
-        GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
-        GameObject.FindWithTag("GlyphRecognition").SetActive(false);
+        GameObject.Find("Canvas").transform.Find("Basic Glyph Input").GetComponent<GlyphRecognition>().ClearAll();
+        GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(false);
     }
 
     [TargetRpc]
@@ -262,6 +204,12 @@ public class PlayerBehaviour : NetworkBehaviour
         currentRound = round;
     }
 
+    [TargetRpc]
+    public void TargetEndTutorial(NetworkConnection connection)
+    {
+        GameObject.Find("GameUI").transform.Find("BackToMenuPanel").gameObject.SetActive(true);
+    }
+
     void FixedUpdate()
     {
         if (otherPlayer != null) {
@@ -284,8 +232,8 @@ public class PlayerBehaviour : NetworkBehaviour
             GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
 
             // Disable glyph input
-            GameObject.FindWithTag("GlyphRecognition").GetComponent<GlyphRecognition>().ClearAll();
-            GameObject.FindWithTag("GlyphRecognition").SetActive(false);
+            //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").GetComponent<GlyphRecognition>().ClearAll();
+            //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(false);
 
             // Stop the timer
             //timer.StopTimer();
@@ -321,6 +269,10 @@ public class PlayerBehaviour : NetworkBehaviour
             royalBurn = 0f;
     }
 
+    public new void RestoreHealth(int h)
+    {
+        CmdRestoreHealth(h);
+    }
     [Command]
     public void CmdRestoreHealth(int h) {
         health = h;
@@ -382,7 +334,7 @@ public class PlayerBehaviour : NetworkBehaviour
     //Server: Only the server executes the function. 
     //(However, because the variable is synced, clients will also see the HP decrease.)
     [Server]
-    public void TakeDamage(int dmg) {
+    public new void TakeDamage(int dmg) {
         health -= (dmg);
     }
 
@@ -435,7 +387,7 @@ public class PlayerBehaviour : NetworkBehaviour
 
     // For outside animation triggers such as WindSlashRecoil.
     [TargetRpc]
-    public void TargetSetAnimTrigger(NetworkConnection target, string s) {
+    public override void TargetSetAnimTrigger(NetworkConnection target, string s) {
         CmdSetAnimTrigger(s);
     }
 
@@ -534,7 +486,7 @@ public class PlayerBehaviour : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
+    public override void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
         movingForward = -duration;
         speedForward = horizontal;
         //speedUp = vertical;
@@ -547,7 +499,7 @@ public class PlayerBehaviour : NetworkBehaviour
     [Command]
     public void CmdCastFireball() {
         GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
-        newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
+        newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newFireball);
         //StartCoroutine(DashRight());
@@ -623,57 +575,6 @@ public class PlayerBehaviour : NetworkBehaviour
         NetworkServer.Spawn(newFizzle);
     }
 
-    IEnumerator DashLeft() {
-        float duration = 0.6f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position -= transform.right * dashSpeed * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator DashRight() {
-        float duration = 0.6f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position += transform.right * dashSpeed * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator DashBack() {
-        float duration = 0.4f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position -= transform.forward * dashSpeed * 0.8f * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight * 0.5f) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
     IEnumerator ThrowBack(float throwHorizontal, float throwVertical, float duration=0.4f) {
         float startTime = Time.time;
         float currentTime = (Time.time - startTime) / duration;
@@ -688,20 +589,5 @@ public class PlayerBehaviour : NetworkBehaviour
 
             yield return new WaitForEndOfFrame();
         }
-    }
-
-    IEnumerator DashForward() {
-        float duration = 0.125f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position += transform.forward * dashSpeed * 4f * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            //print(currentTime);
-
-            yield return new WaitForEndOfFrame();
-        }
-
     }
 }

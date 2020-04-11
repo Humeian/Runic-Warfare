@@ -5,7 +5,7 @@ using Mirror;
 
 public class FireballExplosion : NetworkBehaviour
 {
-    public int damage = 1;
+    public int damage = 0;
 
     
 
@@ -27,8 +27,12 @@ public class FireballExplosion : NetworkBehaviour
     [ServerCallback]
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Player") {
-            other.GetComponent<PlayerBehaviour>().TakeDamage(damage);
-            other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            
+            other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
+            if (other.GetComponent<PlayerBehaviour>() != null)
+            {
+                other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            }
             Destroy(GetComponent<SphereCollider>(), 0);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();

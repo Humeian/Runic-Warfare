@@ -48,8 +48,9 @@ public class Lightning : NetworkBehaviour
                 break;
             }
             else if (rh.collider.tag == "Player") {
-                rh.collider.GetComponent<PlayerBehaviour>().TakeDamage(damage);
-                rh.collider.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(rh.collider.GetComponent<NetworkIdentity>().connectionToClient);
+                rh.collider.GetComponent<CharacterBehaviour>().TakeDamage(damage);
+                if (rh.collider.GetComponent<PlayerBehaviour>() != null)
+                    rh.collider.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(rh.collider.GetComponent<NetworkIdentity>().connectionToClient);
                 endPos = rh.point;
                 //lineRenderer.SetPosition(1, rh.point);
                 break;

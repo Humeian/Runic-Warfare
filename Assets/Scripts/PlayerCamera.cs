@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
 
 public class PlayerCamera : MonoBehaviour
 {
     public GameManager manager;
 
     public GameObject otherPlayer;
+    public CharacterBehaviour otherCharacterBehaviour;
     public GameObject currentPlayer;
     public float playerHeight;
     public GameObject lookAtObject;
@@ -40,6 +42,8 @@ public class PlayerCamera : MonoBehaviour
     private bool isInIntro = false;
     private bool introCompleted = false;
 
+    public bool isTutorial = false;
+
     public enum CameraState {PreGame, Intro, InGame, MyPlayerDead, OtherPlayerDead, TimeOut};
     public CameraState cameraState;
 
@@ -58,6 +62,17 @@ public class PlayerCamera : MonoBehaviour
         StartCoroutine(Preview());
     }
 
+    public void ResetScene()
+    {
+        if (cameraState != CameraState.PreGame)
+        {
+            GameObject.Find("NetworkManager").GetComponent<NewNetworkManager>().StopHost();
+            GameObject.Find("NetworkManager").GetComponent<NewNetworkManager>().StopClient();
+            Destroy(GameObject.Find("NetworkManager"));
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -68,12 +83,13 @@ public class PlayerCamera : MonoBehaviour
         if (cameraState == CameraState.PreGame) {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject p in players) {
-                if (p.GetComponent<PlayerBehaviour>().isLocalPlayer) {
+                if (p.GetComponent<PlayerBehaviour>() != null && p.GetComponent<PlayerBehaviour>().isLocalPlayer) {
                     currentPlayer = p;
                     glyphRecognition.player = p.GetComponent<PlayerBehaviour>();
                 }
                 else {
                     otherPlayer = p;
+                    otherCharacterBehaviour = p.GetComponent<CharacterBehaviour>();
                 }
 
                 if (currentPlayer && otherPlayer) {
@@ -103,7 +119,7 @@ public class PlayerCamera : MonoBehaviour
                 GetComponent<AudioSource>().clip = roundEndClip;
                 GetComponent<AudioSource>().Play();
             }
-            if (otherPlayer.GetComponent<PlayerBehaviour>().health <= 0) {
+            if (otherCharacterBehaviour.health <= 0) {
                 cameraState = CameraState.OtherPlayerDead;
                 GetComponent<AudioSource>().clip = roundEndClip;
                 GetComponent<AudioSource>().Play();
@@ -144,7 +160,7 @@ public class PlayerCamera : MonoBehaviour
             //adjust depth of view focus distance
             dof.focusDistance.value = Vector3.Distance(transform.position, playerHipBone.position);
 
-            if (otherPlayer.GetComponent<PlayerBehaviour>().health > 0) {
+            if (otherCharacterBehaviour.health > 0) {
                 cameraState = CameraState.Intro;
                 StartCoroutine(SpinRoutine());
             }
@@ -196,7 +212,7 @@ public class PlayerCamera : MonoBehaviour
         Vector3 lookTarget = spawnLocation + (Vector3.up * playerHeight * 0.8f);
         while (timer >= 0f) {
             if (timer <= 2f) {
-                if (!roundStartPanel.activeInHierarchy) {
+                if (!roundStartPanel.activeInHierarchy && !isTutorial) {
                     roundStartPanel.SetActive(true);
                     if (manager.round >= 5) {
                         roundStartPanel.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Final Round";
@@ -216,6 +232,8 @@ public class PlayerCamera : MonoBehaviour
             transform.LookAt(lookTarget);
             timer -= Time.deltaTime;
 
+            //Debug.Log(dof);
+            //Debug.Log(lookTarget);
             dof.focusDistance.value = Vector3.Distance(transform.position, lookTarget);
             yield return new WaitForEndOfFrame();
         }

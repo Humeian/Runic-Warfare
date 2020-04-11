@@ -23,6 +23,8 @@ public class GlyphRecognition : MonoBehaviour {
 
 	public PlayerBehaviour player;
 
+	public GlyphMatch lastCast;
+
 	private enum CastDirection {Right, Left, Forward};
 
 	private CastDirection currentCast;
@@ -67,7 +69,7 @@ public class GlyphRecognition : MonoBehaviour {
 		}
 	}
 
-	GlyphMatch Match(Stroke[] strokes) {
+	public GlyphMatch Match(Stroke[] strokes) {
 		Glyph drawnGlyph = Glyph.CreateGlyph(strokes, glyphInput.sampleDistance);
         if (glyphInput.Method != null && glyphInput.targetGlyphSet != null)
         {
@@ -114,6 +116,9 @@ public class GlyphRecognition : MonoBehaviour {
 
 
 	void OnGlyphCast(int index, GlyphMatch match){
+
+		lastCast = match;
+		
 		// Reset casted glyph transparency
 		targetGlyphGraphic.color = new Color(1f, 1f, 1f, 1f);
 
@@ -126,9 +131,6 @@ public class GlyphRecognition : MonoBehaviour {
 			Clear(castedGlyphGraphic);
 			return;
 		}
-
-		// Debug.Log(match.target.ToString());
-		// Debug.Log(match.Cost);
 		
 		// Make sure glyph recognition finishes and clears the stroke list
 		// through any possible errors.

@@ -10,11 +10,21 @@ using Mirror;
 public class NewNetworkManager : NetworkManager
 {
     public GameObject player1, player2;
+    public GameObject AI;
+    public GameObject AISpawn;
     public bool bothPlayersConnected = false;
 
     public void setNetworkAddress(UnityEngine.UI.Text textComponent){
         this.networkAddress = textComponent.text;
     }
+
+    //public void ReturnToMenu()
+    //{
+    //    StopHost();
+    //    //GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().Reset();
+        
+
+    //}
 
     #region Unity Callbacks
 
@@ -71,6 +81,40 @@ public class NewNetworkManager : NetworkManager
     public override void StartHost()
     {
         base.StartHost();
+    }
+
+    public void StartPractice()
+    {
+        base.StartHost();
+        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position, AISpawn.transform.rotation);
+        player2 = AIPlayer;
+        NetworkServer.Spawn(AIPlayer);
+        //AIPlayer.GetComponent<AIBehaviour>().activateAI();
+        if (player1 != null)
+        {
+     
+            player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
+        }
+    }
+
+    public void StartTutorial()
+    {
+        base.StartHost();
+        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position, AISpawn.transform.rotation);
+        player2 = AIPlayer;
+        NetworkServer.Spawn(AIPlayer);
+        AIPlayer.GetComponent<AIBehaviour>().AIAttacks = false;
+        AIPlayer.GetComponent<AIBehaviour>().tutorialMode = true;
+        if (player1 != null)
+        {
+
+            player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
+        }
+        StartCoroutine(GameObject.Find("GameManager").GetComponent<GameManager>().Tutorial());
+        GameObject.Find("PlayerCamera").GetComponent<PlayerCamera>().isTutorial = true;
+        GameObject.Find("GameManager").GetComponent<GameManager>().isTutorial = true;
     }
 
     /// <summary>
@@ -137,12 +181,20 @@ public class NewNetworkManager : NetworkManager
         base.OnServerAddPlayer(conn);
         if (player1 == null) {
             player1 = conn.identity.gameObject;
+            if (player2 != null)
+            {
+                Debug.Log("Here2");
+                Debug.Log(player1);
+                Debug.Log(player2);
+                player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+                player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
+            }
         }
         else {
             player2 = conn.identity.gameObject;
 
-            player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-            player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+            player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
         }
 
         if (player1 && player2) {
@@ -194,12 +246,12 @@ public class NewNetworkManager : NetworkManager
     {
         base.OnClientConnect(conn);
 
-        if (player1.GetComponent<PlayerBehaviour>().isLocalPlayer) {
-            player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
-        }
-        else {
-            player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
-        }
+        //if (player1.GetComponent<PlayerBehaviour>().isLocalPlayer) {
+        //    player1.GetComponent<PlayerBehaviour>().SetOtherPlayer(player2);
+        //}
+        //else {
+        //    player2.GetComponent<PlayerBehaviour>().SetOtherPlayer(player1);
+        //}
         
     }
 
@@ -288,7 +340,9 @@ public class NewNetworkManager : NetworkManager
     /// <summary>
     /// This is called when a host is stopped.
     /// </summary>
-    public override void OnStopHost() { }
+    public override void OnStopHost() {
+        base.OnStartHost();
+    }
 
     #endregion
 }

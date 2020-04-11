@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using AdVd.GlyphRecognition;
 
 public class GameManager : NetworkBehaviour
 {
     public NewNetworkManager networkManager;
+    public GlyphRecognition glyphRecognizer;
     public PlayerCamera cam;
 
-    private PlayerBehaviour p1, p2;
+    private CharacterBehaviour p1, p2;
 
     [SyncVar]
     public float timer;
@@ -29,6 +31,22 @@ public class GameManager : NetworkBehaviour
     public GameObject spawn1, spawn2;
     public GameObject menu;
     public GameObject topPanel, bottomPanel;
+
+    public Glyph fireball;
+    public Glyph shield;
+
+    public GameObject introduction;
+    public GameObject shootFireball;
+    public GameObject blockFireball;
+    public GameObject storeSpell;
+    public GameObject retrieveSpell;
+    public GameObject UIGameRules;
+    public GameObject tracingPanel;
+    public GameObject conclusion;
+
+    public GameObject tutorialPanel;
+
+    public bool isTutorial = false;
 
     // Start is called before the first frame update
     public override void OnStartServer()
@@ -60,8 +78,8 @@ public class GameManager : NetworkBehaviour
             roundStarted = true;
 
             // These gets will be called once per round, this is harmless
-            p1 = networkManager.player1.GetComponent<PlayerBehaviour>();
-            p2 = networkManager.player2.GetComponent<PlayerBehaviour>();
+            p1 = networkManager.player1.GetComponent<CharacterBehaviour>();
+            p2 = networkManager.player2.GetComponent<CharacterBehaviour>();
         }
 
         if (roundStarted && menu != null && menu.activeSelf){
@@ -109,8 +127,14 @@ public class GameManager : NetworkBehaviour
             NetworkServer.Destroy(r);
         }
 
-        p1.TargetResetPosition(p1.GetComponent<NetworkIdentity>().connectionToClient, spawn1.transform.position);
-        p2.TargetResetPosition(p2.GetComponent<NetworkIdentity>().connectionToClient, spawn2.transform.position);
+        p1.TargetResetPosition(p1.connectionToClient, spawn1.transform.position);
+        if (p2.GetComponent<AIBehaviour>() != null)
+            p2.GetComponent<AIBehaviour>().ResetPosition(spawn2.transform.position);
+        else
+        {
+            p2.TargetResetPosition(p2.connectionToClient, spawn2.transform.position);
+        }
+        
 
         p1.RpcResetUI();
         p2.RpcResetUI();
@@ -130,8 +154,11 @@ public class GameManager : NetworkBehaviour
     //                         reason of 1 means a timeout has occured
     [Server]
     public void EndRound(int reason) {
-        p1.RpcDisableGlyphInput();
-        p2.RpcDisableGlyphInput();
+        PlayerBehaviour p1PlayerBehaviour = networkManager.player1.GetComponent<PlayerBehaviour>();
+        PlayerBehaviour p2PlayerBehaviour = networkManager.player2.GetComponent<PlayerBehaviour>();
+        p1PlayerBehaviour.RpcDisableGlyphInput();
+        if(p2PlayerBehaviour != null)
+            p2PlayerBehaviour.RpcDisableGlyphInput();
 
         bool p1win;
 
@@ -145,27 +172,171 @@ public class GameManager : NetworkBehaviour
         }
         
         //If either p1 or p2 win three rounds, reset round number to 1.
-        if (p1win){
-            p1Wins += 1;
-            if (p1Wins >= 3) {
-                round = 1;
-            } else {
-                round++;
+        if (isTutorial)
+        {
+            p1PlayerBehaviour.TargetEndTutorial(p1.GetComponent<NetworkIdentity>().connectionToClient);
+        } else
+        {
+            if (p1win)
+            {
+                p1Wins += 1;
+                if (p1Wins >= 3)
+                {
+                    round = 1;
+                }
+                else
+                {
+                    round++;
+                }
+                p1PlayerBehaviour.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+                if (p2PlayerBehaviour != null)
+                    p2PlayerBehaviour.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
             }
-            p1.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
-            p2.TargetLoseRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
-        } else {
-            p2Wins += 1;
-            if (p2Wins >= 3) {
-                round = 1;
-            } else {
-                round++;
+            else
+            {
+                p2Wins += 1;
+                if (p2Wins >= 3)
+                {
+                    round = 1;
+                }
+                else
+                {
+                    round++;
+                }
+                if (p2PlayerBehaviour != null)
+                    p2PlayerBehaviour.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+                p1PlayerBehaviour.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
             }
-            p2.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
-            p1.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+            print("p1Win " + p1Wins + ", p2Win " + p2Wins);
         }
-        print("p1Win " + p1Wins + ", p2Win " + p2Wins);
+    }
+
+    public IEnumerator Tutorial()
+    {
+        GlyphDisplay glyphDisplay = GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>();
+        yield return new WaitForSecondsRealtime(2);
+
+        Time.timeScale = 0;
+
+        introduction.SetActive(true);
+
+        while(!Input.GetMouseButtonDown(0)) { yield return null; }
+
+        introduction.SetActive(false);
+
+        Time.timeScale = 1;
 
 
+        yield return new WaitForSecondsRealtime(1);
+
+        shootFireball.SetActive(true);
+
+        glyphDisplay.glyph = fireball;
+
+        Time.timeScale = 0;
+
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Fireball4") {
+            glyphDisplay.RebuildGlyph();
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
+
+        Time.timeScale = 1;
+
+        while (networkManager.player2.GetComponent<CharacterBehaviour>().health == 3) { yield return new WaitForSecondsRealtime(0.1f); }
+
+        shootFireball.SetActive(false);
+
+        yield return new WaitForSecondsRealtime(2);
+
+
+        networkManager.player2.GetComponent<AIBehaviour>().CastFireball(0, 0f);
+
+        yield return new WaitForSecondsRealtime(1);
+
+        Time.timeScale = 0;
+
+        blockFireball.SetActive(true);
+
+        glyphDisplay.glyph = shield;
+
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Shield2") {
+            glyphDisplay.RebuildGlyph();
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
+
+        glyphRecognizer.lastCast = null;
+
+        Time.timeScale = 1;
+
+        yield return new WaitForSecondsRealtime(3);
+
+        blockFireball.SetActive(false);
+
+
+        storeSpell.SetActive(true);
+
+        glyphDisplay.glyph = shield;
+
+        Time.timeScale = 0;
+
+        while (glyphRecognizer.storedGlyph.Length <= 1 || (glyphRecognizer.Match(glyphRecognizer.storedGlyph) != null && glyphRecognizer.Match(glyphRecognizer.storedGlyph).target.ToString() != "Shield2")) {
+            glyphDisplay.RebuildGlyph();
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
+
+        GameObject.Find("Glyph Display").GetComponent<GlyphDisplay>().glyph = null;
+
+        Time.timeScale = 1;
+
+        storeSpell.SetActive(false);
+
+
+        networkManager.player2.GetComponent<AIBehaviour>().CastFireball(0, 0f);
+
+        yield return new WaitForSecondsRealtime(1);
+
+        Time.timeScale = 0;
+
+        retrieveSpell.SetActive(true);
+
+        while (glyphRecognizer.lastCast == null || glyphRecognizer.lastCast.target.ToString() != "Shield2") { yield return new WaitForSecondsRealtime(0.1f); }
+
+        Time.timeScale = 1;
+
+        yield return new WaitForSecondsRealtime(3);
+
+        Time.timeScale = 0;
+
+        retrieveSpell.SetActive(false);
+
+        tracingPanel.SetActive(true);
+
+        tutorialPanel.SetActive(true);
+
+        while (!Input.GetMouseButtonDown(0)) { yield return null; }
+
+        tracingPanel.SetActive(false);
+
+        tutorialPanel.SetActive(false);
+
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        UIGameRules.SetActive(true);
+
+        while (!Input.GetMouseButtonDown(0)) { yield return null; }
+
+        UIGameRules.SetActive(false);
+
+        yield return new WaitForSecondsRealtime(0.2f);
+
+        conclusion.SetActive(true);
+
+        while(!Input.GetMouseButtonDown(0)) { yield return null; }
+
+        conclusion.SetActive(false);
+
+        networkManager.player2.GetComponent<AIBehaviour>().AIAttacks = true;
+
+        Time.timeScale = 1;
     }
 }

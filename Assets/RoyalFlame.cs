@@ -22,13 +22,14 @@ public class RoyalFlame : NetworkBehaviour
 
     [ServerCallback]
     void OnTriggerStay(Collider other) {
-        if (other.tag == "Player" && other.GetComponent<PlayerBehaviour>().health > 0) {
-            other.GetComponent<PlayerBehaviour>().royalBurn += royalBurnRate * Time.deltaTime;
-            if (other.GetComponent<PlayerBehaviour>().royalBurn >= 1f) {
+        if (other.tag == "Player" && other.GetComponent<CharacterBehaviour>().health > 0) {
+            other.GetComponent<CharacterBehaviour>().royalBurn += royalBurnRate * Time.deltaTime;
+            if (other.GetComponent<CharacterBehaviour>().royalBurn >= 1f) {
                 RpcPlaySound();
-                other.GetComponent<PlayerBehaviour>().TakeDamage(1);
-                other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
-                other.GetComponent<PlayerBehaviour>().royalBurn = 0f;
+                other.GetComponent<CharacterBehaviour>().TakeDamage(1);
+                if (other.GetComponent<PlayerBehaviour>() != null)
+                    other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+                other.GetComponent<CharacterBehaviour>().royalBurn = 0f;
             }
         }
     }

@@ -12,7 +12,7 @@ public class Shield : NetworkBehaviour
     private MaterialPropertyBlock mpb;
     private MeshRenderer renderer;
 
-    public PlayerBehaviour owner;
+    public CharacterBehaviour owner;
 
     public AudioClip emergeClip;
     public AudioClip breakClip;

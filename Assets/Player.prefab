@@ -339,6 +339,7 @@ MonoBehaviour:
     type: 3}
   arcanePulse: {fileID: 8005883269175210359, guid: 1de8472b74e374cf396a1b4c452fdac7,
     type: 3}
+  iceSpikeProjectile: {fileID: 0}
   fizzle: {fileID: 6837901161223021719, guid: decf7cafe7dde48f1a14286b8b1a4a2a, type: 3}
   controller: {fileID: 9100000, guid: ca6a1090315c6be47bdea065032083ca, type: 2}
   timer: {fileID: 0}
