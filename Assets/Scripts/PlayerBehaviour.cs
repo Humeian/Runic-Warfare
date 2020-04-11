@@ -374,7 +374,7 @@ public class PlayerBehaviour : CharacterBehaviour
         movingRight = horizontal;
         speedRight = horizSpeed;
         movingForward = 25;
-        speedForward = 0.5f;
+        speedForward = 0.4f;
         if (horizontal > 0f)
             CmdSetAnimTrigger("FireballRight");
         else 
