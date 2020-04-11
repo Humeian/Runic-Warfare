@@ -30,7 +30,7 @@ public class WindSlash : NetworkBehaviour
             owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, green);
 
         int random = Random.Range(0, 5);
-        print(random);
+        //print(random);
         GetComponents<AudioSource>()[random].Play();
     }
 

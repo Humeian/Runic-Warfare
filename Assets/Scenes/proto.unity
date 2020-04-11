@@ -26188,7 +26188,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Tutorial
+  m_Text: ' Tutorial'
 --- !u!222 &1527622638
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -26265,7 +26265,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Practice Mode
+  m_Text: ' Practice Mode'
 --- !u!222 &1532060743
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -32009,7 +32009,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Host Game
+  m_Text: ' Host Game'
 --- !u!222 &1484020105620811634
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -32141,7 +32141,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Connect to Game
+  m_Text: ' Connect to Game'
 --- !u!222 &1484020105903652585
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -74,8 +74,8 @@ public class Fireball : NetworkBehaviour
         // print("owner: " + owner.ToString());
         print("other: " + other.ToString());
         if (other.GetComponent<NetworkIdentity>() == null && other.tag != "BodyPart") {
-            print(other.name);
-            print("explode here1");
+            //print(other.name);
+            //print("explode here1");
             ServerSpawnExplosion();
         }
         else if (other.GetComponent<NetworkIdentity>() != null) {

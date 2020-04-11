@@ -73,31 +73,10 @@ public class PlayerBehaviour : CharacterBehaviour
     [Command]
     public void CmdResetMatch(){
         gameManager.ResetMatch();
-
-        /*
-        //CmdRestoreHealth(3);
-        //lightningCharge = 0;
-
-        // Disable rematch button
-
-        // Enable glyph input & reboot the color cleaning coroutine
-        GameObject glyphInput = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject;
-        glyphInput.SetActive(true);
-        glyphInput.GetComponent<GlyphRecognition>().InitCleanScreen();
-
-        // Timer reset is done in the onClick() of the rematch button
-
-        // Reset health bubble colour
-        GameObject.Find("First").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
-        GameObject.Find("Last").GetComponent<UnityEngine.UI.Image>().color = new Color(245, 245, 245);
-        //firstHit = true;
-        */
     }
 
     [TargetRpc]
     public new void TargetResetPosition(NetworkConnection connection, Vector3 pos) {
-        Debug.Break();
-        Debug.LogWarning("TargetRPC");
         transform.position = pos;
     }
 
@@ -596,57 +575,6 @@ public class PlayerBehaviour : CharacterBehaviour
         NetworkServer.Spawn(newFizzle);
     }
 
-    IEnumerator DashLeft() {
-        float duration = 0.6f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position -= transform.right * dashSpeed * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator DashRight() {
-        float duration = 0.6f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position += transform.right * dashSpeed * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator DashBack() {
-        float duration = 0.4f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position -= transform.forward * dashSpeed * 0.8f * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight * 0.5f) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
     IEnumerator ThrowBack(float throwHorizontal, float throwVertical, float duration=0.4f) {
         float startTime = Time.time;
         float currentTime = (Time.time - startTime) / duration;
@@ -661,20 +589,5 @@ public class PlayerBehaviour : CharacterBehaviour
 
             yield return new WaitForEndOfFrame();
         }
-    }
-
-    IEnumerator DashForward() {
-        float duration = 0.125f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f) {
-            transform.position += transform.forward * dashSpeed * 4f * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            //print(currentTime);
-
-            yield return new WaitForEndOfFrame();
-        }
-
     }
 }

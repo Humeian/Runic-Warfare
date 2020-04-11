@@ -131,9 +131,6 @@ public class GlyphRecognition : MonoBehaviour {
 			Clear(castedGlyphGraphic);
 			return;
 		}
-
-		// Debug.Log(match.target.ToString());
-		// Debug.Log(match.Cost);
 		
 		// Make sure glyph recognition finishes and clears the stroke list
 		// through any possible errors.
