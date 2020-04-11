@@ -22,7 +22,7 @@ public class RoyalFlame : NetworkBehaviour
 
     [ServerCallback]
     void OnTriggerStay(Collider other) {
-        if (other.tag == "Player" && other.GetComponent<PlayerBehaviour>().health > 0) {
+        if (other.tag == "Player" && other.GetComponent<CharacterBehaviour>().health > 0) {
             other.GetComponent<CharacterBehaviour>().royalBurn += royalBurnRate * Time.deltaTime;
             if (other.GetComponent<CharacterBehaviour>().royalBurn >= 1f) {
                 RpcPlaySound();

@@ -145,6 +145,11 @@ public class AIBehaviour : CharacterBehaviour
         }
     }
 
+    public void ResetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
     public void CastFireball(int horizontal, float horizSpeed)
     {
 

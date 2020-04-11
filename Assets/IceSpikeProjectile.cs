@@ -54,7 +54,10 @@ public class IceSpikeProjectile : NetworkBehaviour
 
     [ServerCallback]
     void OnTriggerEnter(Collider other) {
-        if (other.tag == "Player" && other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != owner.ToString()) {
+        if (other.tag == "Player" &&
+            (other.GetComponent<NetworkIdentity>().connectionToClient == null ? null : other.GetComponent<NetworkIdentity>().connectionToClient.ToString())
+            != (owner == null ? null : owner.ToString())
+        ) {
             other.GetComponent<CharacterBehaviour>().TakeDamage(1);
             if (other.GetComponent<PlayerBehaviour>() != null)
                 other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);

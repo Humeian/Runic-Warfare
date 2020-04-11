@@ -14713,7 +14713,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 703088001}
-        m_MethodName: Reset
+        m_MethodName: ResetScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15654,6 +15654,7 @@ MonoBehaviour:
   tracingPanel: {fileID: 596708441}
   conclusion: {fileID: 2071180100}
   tutorialPanel: {fileID: 588129790}
+  isTutorial: 0
 --- !u!114 &1314731718
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -128,7 +128,13 @@ public class GameManager : NetworkBehaviour
         }
 
         p1.TargetResetPosition(p1.connectionToClient, spawn1.transform.position);
-        p2.TargetResetPosition(p2.connectionToClient, spawn2.transform.position);
+        if (p2.GetComponent<AIBehaviour>() != null)
+            p2.GetComponent<AIBehaviour>().ResetPosition(spawn2.transform.position);
+        else
+        {
+            p2.TargetResetPosition(p2.connectionToClient, spawn2.transform.position);
+        }
+        
 
         p1.RpcResetUI();
         p2.RpcResetUI();
