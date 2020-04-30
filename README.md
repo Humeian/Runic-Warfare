@@ -13,4 +13,4 @@ Players must proactively create their own strategy to attack their opponent, and
 A full game will consist of up to 5 rounds. To win the match, a player needs to win 3 out of 5 rounds. Each round will have a short timer (around 30-90 seconds) to reflect the fast pace of the game. If the round timer reaches zero before a player is defeated, the player closest to the center of the arena will win the round.
 
 ### Trailer ###
-Watch the game trailer here:
+Watch the game trailer [HERE!](https://drive.google.com/file/d/1klF-dTSdYPenY6QC5KtA3V824kYMQNOJ/view?usp=sharing)
