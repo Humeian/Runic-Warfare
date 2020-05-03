@@ -80,28 +80,32 @@ public class GameManager : NetworkBehaviour
             // These gets will be called once per round, this is harmless
             p1 = networkManager.player1.GetComponent<CharacterBehaviour>();
             p2 = networkManager.player2.GetComponent<CharacterBehaviour>();
+            
+
+            Debug.Log("__________________________________________-------------------------------------------------------------- HERE");
         }
 
-        if (roundStarted && menu != null && menu.activeSelf){
-            menu.SetActive(false);
-            topPanel.SetActive(true);
-            GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = Color.white;
-            GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = Color.white;
-            GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = Color.white;
-        }
+        // if (roundStarted && menu != null && menu.activeSelf){
+        //     menu.SetActive(false);
+        //     topPanel.SetActive(true);
+        //     GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+        //     GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+        //     GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+        // }
 
-        if (roundStarted && !roundFinished){
-            if (p1.health <= 0 || p2.health <= 0) {
-                roundStarted = false;
-                roundFinished = true;
-                EndRound(0);
-            }
-        }
+        // if (roundStarted && !roundFinished){
+        //     Debug.Log("P1:  "+ p1 + "   P2:  "+p2);
+        //     if (p1.health <= 0 || p2.health <= 0) {
+        //         roundStarted = false;
+        //         roundFinished = true;
+        //         EndRound(0);
+        //     }
+        // }
 
-        if (roundFinished && roundStarted) {
-            EndRound(1);
-            roundStarted = false;
-        }
+        // if (roundFinished && roundStarted) {
+        //     EndRound(1);
+        //     roundStarted = false;
+        // }
     }
 
     [Server]
@@ -127,17 +131,22 @@ public class GameManager : NetworkBehaviour
             NetworkServer.Destroy(r);
         }
 
-        p1.TargetResetPosition(p1.connectionToClient, spawn1.transform.position);
+        //p1.TargetResetPosition(p1.connectionToClient, spawn1.transform.position);
+        if (p1.GetComponent<AIBehaviour>() != null)
+            p1.GetComponent<AIBehaviour>().ResetPosition(spawn1.transform.position);
+        else {
+            p1.TargetResetPosition(p1.connectionToClient, spawn1.transform.position);
+        }
+
         if (p2.GetComponent<AIBehaviour>() != null)
             p2.GetComponent<AIBehaviour>().ResetPosition(spawn2.transform.position);
-        else
-        {
+        else {
             p2.TargetResetPosition(p2.connectionToClient, spawn2.transform.position);
         }
         
 
-        p1.RpcResetUI();
-        p2.RpcResetUI();
+        //p1.RpcResetUI();
+        //p2.RpcResetUI();
 
         timer = 63f;
 
@@ -148,6 +157,11 @@ public class GameManager : NetworkBehaviour
 
         roundStarted = true;
         roundFinished = false;
+    }
+
+    [Server]
+    public void WipeAI () {
+
     }
 
     // Ending the round with a reason of 0 means a player has died

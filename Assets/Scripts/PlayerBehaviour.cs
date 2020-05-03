@@ -212,10 +212,10 @@ public class PlayerBehaviour : CharacterBehaviour
 
     void FixedUpdate()
     {
-        if (otherPlayer != null) {
-            transform.LookAt(otherPlayer.transform);
-            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
-        }
+        // if (otherPlayer != null) {
+        //     transform.LookAt(otherPlayer.transform);
+        //     transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        // }
 
         if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null) {
             GetComponent<Animator>().runtimeAnimatorController = controller;
@@ -244,23 +244,23 @@ public class PlayerBehaviour : CharacterBehaviour
         }
 
         // Needs to be in Update as there appear to be damage timing issues.
-        if (hasAuthority) {
-            if (health < 3) {
-                hp1.color = red;
-            } else {
-                hp1.color = white;
-            }
-            if (health < 2) {
-                hp2.color = red;
-            } else {
-                hp2.color = white;
-            }
-            if (health < 1) {
-                hp3.color = red;
-            } else {
-                hp3.color = white;
-            }
-        }
+        // if (hasAuthority) {
+        //     if (health < 3) {
+        //         hp1.color = red;
+        //     } else {
+        //         hp1.color = white;
+        //     }
+        //     if (health < 2) {
+        //         hp2.color = red;
+        //     } else {
+        //         hp2.color = white;
+        //     }
+        //     if (health < 1) {
+        //         hp3.color = red;
+        //     } else {
+        //         hp3.color = white;
+        //     }
+        // }
 
         if (royalBurn > 0f) {
             royalBurn -= royalBurnRecovery * Time.deltaTime; 

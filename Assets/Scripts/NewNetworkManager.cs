@@ -11,7 +11,7 @@ public class NewNetworkManager : NetworkManager
 {
     public GameObject player1, player2;
     public GameObject AI;
-    public GameObject AISpawn;
+    public GameObject AISpawn, AISpawn2;
     public bool bothPlayersConnected = false;
 
     public void setNetworkAddress(UnityEngine.UI.Text textComponent){
@@ -81,6 +81,24 @@ public class NewNetworkManager : NetworkManager
     public override void StartHost()
     {
         base.StartHost();
+    }
+
+    public void StartAIDuel() {
+        base.StartServer();
+
+        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position, AISpawn.transform.rotation);
+        player1 = AIPlayer;
+        NetworkServer.Spawn(AIPlayer);
+
+
+        GameObject AIPlayer2 = Instantiate(AI, AISpawn2.transform.position, AISpawn2.transform.rotation);
+        player2 = AIPlayer2;
+        NetworkServer.Spawn(AIPlayer2);
+
+        player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+        player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
+
+        bothPlayersConnected = true;
     }
 
     public void StartPractice()
