@@ -43,9 +43,12 @@ GraphicsSettings:
   - {fileID: 20000000, guid: 4d53207507bff464dbdcc2d6e689c001, type: 2}
   - {fileID: 20000000, guid: 52b70861897ac994298884a40ce19ca8, type: 2}
   - {fileID: 20000000, guid: 942b9c8d70145724b80098390c559739, type: 2}
+  - {fileID: 20000000, guid: b50f8723795267c45b55e9391f3f8c65, type: 2}
+  - {fileID: 20000000, guid: ab42b1f6497ab1046b6d6d1b539f2845, type: 2}
   m_SpritesDefaultMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000,
     type: 0}
-  m_CustomRenderPipeline: {fileID: 0}
+  m_CustomRenderPipeline: {fileID: 11400000, guid: 3b7da7cce38d6f540aa424618851294b,
+    type: 2}
   m_TransparencySortMode: 0
   m_TransparencySortAxis: {x: 0, y: 0, z: 1}
   m_DefaultRenderingPath: 1
@@ -64,7 +67,7 @@ GraphicsSettings:
   m_FogKeepExp: 1
   m_FogKeepExp2: 1
   m_AlbedoSwatchInfos: []
-  m_LightsUseLinearIntensity: 0
+  m_LightsUseLinearIntensity: 1
   m_LightsUseColorTemperature: 0
   m_LogWhenShaderIsCompiled: 0
   m_AllowEnlightenSupportForUpgradedProject: 1
