@@ -6,7 +6,7 @@ using Mirror;
 public class PlayerBehaviour : CharacterBehaviour
 {
 
-    public UnityEngine.UI.Image hp1, hp2, hp3;
+    public UnityEngine.UI.Image hp1, hp2, hp3, hp4;
 
 
     private int lightningChargesNeeded = 3;
@@ -21,17 +21,17 @@ public class PlayerBehaviour : CharacterBehaviour
 
     private bool onGround = true;
 
-    private Color red;
+    public Color red = new Color(1f, 0f, 0f, 1f);
     private Color white = new Color(1f, 1f, 1f, 1f);
 
-    int movingRight = 0;
-    int movingForward = 0;
-    int movingUp = 0;
-    float speedRight = 0f;
-    float speedForward = 0f;
-    float speedUp = 0f;
+    public int movingRight = 0;
+    public int movingForward = 0;
+    public int movingUp = 0;
+    public float speedRight = 0f;
+    public float speedForward = 0f;
+    public float speedUp = 0f;
 
-    bool comingDown = false;
+    public bool comingDown = false;
 
     private bool firstHit = true;
     private int currentRound;
@@ -98,29 +98,31 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     public void InitializeUI() {
-        timer = GameObject.Find("Timer").GetComponent<Timer>();
+        //timer = GameObject.Find("Timer").GetComponent<Timer>();
 
         hp1 = GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>();
         hp2 = GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>();
         hp3 = GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>();
+        hp4 = GameObject.Find("HP4").GetComponent<UnityEngine.UI.Image>();
     }
 
     [ClientRpc]
     public override void RpcResetUI() {
         // Disable rematch button
-        GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
+        //GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
 
         // Wait for round to start before enabling input
-        StartCoroutine(WaitForRoundStart());
+        //StartCoroutine(WaitForRoundStart());
 
         // Recolour the health bubbles
         GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
         GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
         GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
+        GameObject.Find("HP4").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
 
         // Disable Win/Loss text
-        GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(false);
-        GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(false);
+        //GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(false);
+        //GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(false);
 
         shields.Clear();
         lightningCharge = 0;
@@ -130,9 +132,9 @@ public class PlayerBehaviour : CharacterBehaviour
         movingRight = 0;
         movingUp = 0;
 
-        if (gameManager.round == 1) {
-            GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = 0 + " - " + 0;
-        }
+        // if (gameManager.round == 1) {
+        //     GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = 0 + " - " + 0;
+        // }
     }
 
     private IEnumerator WaitForRoundStart() {
@@ -212,55 +214,66 @@ public class PlayerBehaviour : CharacterBehaviour
 
     void FixedUpdate()
     {
-        // if (otherPlayer != null) {
-        //     transform.LookAt(otherPlayer.transform);
-        //     transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        NetworkIdentity net = GetComponent<NetworkIdentity>();
+        //Debug.Log(" is local :" + net.isLocalPlayer+"        hasAuthority:  "+net.hasAuthority);
+        if (otherPlayer != null) {
+            transform.LookAt(otherPlayer.transform);
+            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        }
+
+        if (hp1 == null) {
+            InitializeUI();
+        }
+
+        // if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null) {
+        //     GetComponent<Animator>().runtimeAnimatorController = controller;
+        //     //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
         // }
 
-        if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null) {
-            GetComponent<Animator>().runtimeAnimatorController = controller;
-            //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
-        }
+        // else if( health <= 0 && GetComponent<Animator>().runtimeAnimatorController != null){
+        //     // set a global death flag to enter finished screen
+        //     //Debug.Log(this.gameObject.name +" is dead");
+        //     //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
+        //     GetComponent<Animator>().runtimeAnimatorController = null;
 
-        else if( health <= 0 && GetComponent<Animator>().runtimeAnimatorController != null){
-            // set a global death flag to enter finished screen
-            //Debug.Log(this.gameObject.name +" is dead");
-            //GetComponent<CapsuleCollider>().enabled = !GetComponent<CapsuleCollider>().enabled;
-            GetComponent<Animator>().runtimeAnimatorController = null;
+        //     // Enable rematch button
+        //     GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
 
-            // Enable rematch button
-            GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        //     // Disable glyph input
+        //     //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").GetComponent<GlyphRecognition>().ClearAll();
+        //     //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(false);
 
-            // Disable glyph input
-            //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").GetComponent<GlyphRecognition>().ClearAll();
-            //GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.SetActive(false);
+        //     // Stop the timer
+        //     //timer.StopTimer();
+        // }
 
-            // Stop the timer
-            //timer.StopTimer();
-        }
-
-        if (Input.GetKey(KeyCode.H)) {
-            CmdRestoreHealth(3);
-        }
+        // if (Input.GetKey(KeyCode.H)) {
+        //     CmdRestoreHealth(3);
+        // }
 
         // Needs to be in Update as there appear to be damage timing issues.
-        // if (hasAuthority) {
-        //     if (health < 3) {
-        //         hp1.color = red;
-        //     } else {
-        //         hp1.color = white;
-        //     }
-        //     if (health < 2) {
-        //         hp2.color = red;
-        //     } else {
-        //         hp2.color = white;
-        //     }
-        //     if (health < 1) {
-        //         hp3.color = red;
-        //     } else {
-        //         hp3.color = white;
-        //     }
-        // }
+        if (hasAuthority) {
+            if (health < 4) {
+                hp4.color = red;
+            } else {
+                hp4.color = white;
+            }
+            if (health < 3) {
+                hp3.color = red;
+            } else {
+                hp3.color = white;
+            }
+            if (health < 2) {
+                hp2.color = red;
+            } else {
+                hp2.color = white;
+            }
+            if (health < 1) {
+                hp1.color = red;
+            } else {
+                hp1.color = white;
+            }
+        }
 
         if (royalBurn > 0f) {
             royalBurn -= royalBurnRecovery * Time.deltaTime; 
@@ -335,21 +348,22 @@ public class PlayerBehaviour : CharacterBehaviour
     //(However, because the variable is synced, clients will also see the HP decrease.)
     [Server]
     public new void TakeDamage(int dmg) {
+        //Debug.Log("Damage Took:  "+this.name+"        health: "+health);
         health -= (dmg);
     }
 
     //TargetRpc: Effect will only appear on the targeted network client.
     [TargetRpc]
     public void TargetShowDamageEffects(NetworkConnection target) {
-        UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
-        redscreen.color = new Color(1f, 0f, 0f, 0.8f);
+        //UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
+        //redscreen.color = new Color(1f, 0f, 0f, 0.8f);
 
-        Camera.main.GetComponent<PlayerCamera>().Shake(5f);
+        Camera.main.GetComponent<ScreenShakeVR>().Shake(0.7f, 0.5f);
 
-        Color red = new Color(1f, 0f, 0f, 1f);
+        //Color red = new Color(1f, 0f, 0f, 1f);
     }
 
-    public void CastFireball(int horizontal, float horizSpeed) {
+    public virtual void CastFireball(int horizontal, float horizSpeed) {
         StopAirMomentum();
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
@@ -464,7 +478,7 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdCastFizzle();
     }
 
-    private void StopAirMomentum() {
+    public void StopAirMomentum() {
         if (stopMomentumCharges > 0) {
             stopMomentumCharges--;
             if (speedUp < 0) {

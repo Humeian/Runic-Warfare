@@ -31,7 +31,7 @@ public class HandPresence : MonoBehaviour
             spawnedHandModel = Instantiate(handModelPrefab, transform);
             handAnimator = spawnedHandModel.GetComponent<Animator>();
         } else {
-            Debug.Log("No devices found");
+            //Debug.Log("No devices found");
         }
 
     }

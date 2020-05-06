@@ -50,7 +50,7 @@ public class WindSlash : NetworkBehaviour
 
     [ServerCallback]
     void OnTriggerStay(Collider other) {
-        Debug.Log("hit");
+        //Debug.Log("hit");
         if (owner != null && otherPlayer != null) {
             if (other.gameObject == otherPlayer) {
                 //Debug.Log("testing");

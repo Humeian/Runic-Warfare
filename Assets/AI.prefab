@@ -1922,7 +1922,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   otherPlayer: {fileID: 0}
-  health: 3
+  health: 4
   lightningCharge: 0
   royalBurn: 0
   royalBurnRecovery: 0.2

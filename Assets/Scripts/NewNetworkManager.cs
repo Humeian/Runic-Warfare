@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.Interaction.Toolkit;
 using Mirror;
 
 /*
@@ -13,6 +14,9 @@ public class NewNetworkManager : NetworkManager
     public GameObject AI;
     public GameObject AISpawn, AISpawn2;
     public bool bothPlayersConnected = false;
+    public bool VR = true;
+
+    public GameObject VRPlayer;
 
     public void setNetworkAddress(UnityEngine.UI.Text textComponent){
         this.networkAddress = textComponent.text;
@@ -99,6 +103,20 @@ public class NewNetworkManager : NetworkManager
         player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
 
         bothPlayersConnected = true;
+    }
+
+    public void StartVRPractice() {
+        base.StartHost();
+        GameObject AIPlayer = Instantiate(AI, AISpawn.transform.position, AISpawn.transform.rotation);
+        player2 = AIPlayer;
+        NetworkServer.Spawn(AIPlayer);
+        //AIPlayer.GetComponent<AIBehaviour>().activateAI();
+        if (player1 != null)
+        {
+            Debug.Log("PLAYERS SET");
+            player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
+            player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
+        }
     }
 
     public void StartPractice()
@@ -196,6 +214,14 @@ public class NewNetworkManager : NetworkManager
     /// <param name="conn">Connection from client.</param>
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
+        // if (VR) {
+        //     Transform startPos = GetStartPosition();
+        //     //VRPlayer.GetComponent<XRRig>().MoveCameraToWorldLocation(startPos.position);
+        //     NetworkServer.AddPlayerForConnection(conn, VRPlayer);
+        //     VRPlayer.GetComponent<NetworkIdentity>().AssignClientAuthority(conn);
+        // } else {
+        //     base.OnServerAddPlayer(conn);
+        // }
         base.OnServerAddPlayer(conn);
         if (player1 == null) {
             player1 = conn.identity.gameObject;

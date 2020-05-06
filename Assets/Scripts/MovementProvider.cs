@@ -8,10 +8,18 @@ public class MovementProvider : LocomotionProvider
     public List<XRController> controllers;
     private CharacterController characterController;
     private GameObject head;
+    public GameObject drawPanel;
+
+    public GlyphRecognition glyphRecognition;
 
     public float speed = 1.0f;
     public float gravityMultiplier = 1.0f;
 
+    private bool playerFound = false;
+    private bool playerParented = false;
+
+    public GameObject player;
+    public GameObject drawingAnchor;
 
     protected override void Awake()
     {
@@ -28,7 +36,37 @@ public class MovementProvider : LocomotionProvider
     {
         PositionController();
         CheckForInput();
-        ApplyGravity();
+        //ApplyGravity();
+
+        if(!playerFound){
+            try {
+                player = GameObject.Find("TestPlayer(Clone)");
+                if (player != null) {
+                    playerFound = true;
+                    Debug.Log("PLAYER SET:    "+player);
+                }
+            } catch {
+                Debug.Log("Cannot find player to select");
+            }
+        } else {
+            if (!playerParented) {
+                transform.parent = player.transform;
+                //drawPanel.transform.parent = player.transform;
+
+                transform.position = player.transform.position + new Vector3(-4.0f, 3.0f, 0.2f);
+                //drawPanel.transform.position = player.transform.position + new Vector3(1.0f, 0f, 0f);
+                glyphRecognition.player = player.GetComponent<PlayerBehaviour>();
+
+                playerParented = true;
+                Debug.Log("PLAYER PARENTED:  "+player.name);
+            }
+        }
+
+        // if ( Vector3.Distance(drawingAnchor.transform.position, transform.position) > 0.5f ) {
+        //     drawingAnchor.transform.position = Vector3.MoveTowards(drawingAnchor.transform.position, transform.position, 0.1f);
+        // } 
+
+
     }
 
     private void PositionController()
@@ -64,6 +102,15 @@ public class MovementProvider : LocomotionProvider
         if (device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 position)) {
             StartMove(position);
         }
+        device.TryGetFeatureValue(CommonUsages.secondaryButton, out bool goDown);
+        device.TryGetFeatureValue(CommonUsages.primaryButton, out bool goUp);
+
+        if (goDown){
+            characterController.Move(Vector3.down * Time.deltaTime);
+        }
+        if (goUp){
+            characterController.Move(Vector3.up * Time.deltaTime);
+        }
     }
 
     private void StartMove(Vector2 position)
@@ -78,13 +125,17 @@ public class MovementProvider : LocomotionProvider
         // Apply speed and move
         Vector3 movement = direction * speed;
         characterController.Move(movement * Time.deltaTime);
+        
+        // if (drawPanel) {
+        //     drawPanel.transform.position += movement * Time.deltaTime;
+        // }
     }
 
-    private void ApplyGravity()
-    {
-        Vector3 gravity = new Vector3(0, Physics.gravity.y * gravityMultiplier, 0);
-        gravity.y *= Time.deltaTime;
+    // private void ApplyGravity()
+    // {
+    //     Vector3 gravity = new Vector3(0, Physics.gravity.y * gravityMultiplier, 0);
+    //     gravity.y *= Time.deltaTime;
 
-        characterController.Move(gravity * Time.deltaTime);
-    }
+    //     characterController.Move(gravity * Time.deltaTime);
+    // }
 }

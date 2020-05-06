@@ -35,6 +35,7 @@ public class GlyphRecognition : MonoBehaviour {
     private Dictionary<string, Color> glyphColours = new Dictionary<string, Color>();
 
 	void Start () {
+		glyphInput = GetComponent<GlyphDrawInput>();
         glyphInput.OnGlyphCast.AddListener(this.OnGlyphCast);
 
 		if (glyphInput.OnStrokeDraw!=this.OnStrokeDraw) glyphInput.OnStrokeDraw+=this.OnStrokeDraw;
@@ -52,6 +53,16 @@ public class GlyphRecognition : MonoBehaviour {
 		glyphColours.Add("royalFire", new Color(143/255f, 111/255f, 1f));
 		glyphColours.Add("default", new Color(191 / 255f, 110 / 255f, 54 / 255f, 64 / 255f));
 
+	}
+
+	void FixedUpdate() {
+		if (player == null) {
+			try {
+				player = GameObject.Find("TestPlayer(Clone)").GetComponent<PlayerBehaviour>();
+			} catch {
+				//Debug.Log("Cannot find player for Glyph Recognition");
+			}
+		}	
 	}
 
 	public void InitCleanScreen(){
@@ -132,6 +143,8 @@ public class GlyphRecognition : MonoBehaviour {
 			return;
 		}
 		
+		Debug.Log("match:  "+ match.target.ToString());
+		Debug.Log("Player:   "+player.name);
 		// Make sure glyph recognition finishes and clears the stroke list
 		// through any possible errors.
 		try {
@@ -193,7 +206,7 @@ public class GlyphRecognition : MonoBehaviour {
 					}
 					break;
 				default:
-					Debug.Log("Fizzle");
+					//Debug.Log("Fizzle");
 					player.CastFizzle();
 					ClearAll();
 					//Clear(targetGlyphGraphic);
@@ -273,6 +286,12 @@ public class GlyphRecognition : MonoBehaviour {
 		glyphInput.ClearInput();
 	}
 
+	public void Cast(){
+		glyphInput.CommitStrokes();
+		glyphInput.Cast();
+		glyphInput.ClearInput();
+	}
+
 	void getStored() {
 		Set(currentGlyphGraphic, storedGlyph);
 		Clear(storedGlyphGraphic);
@@ -284,6 +303,7 @@ public class GlyphRecognition : MonoBehaviour {
 	void OnStrokeDraw(Stroke[] strokes){
 		Clear(currentStrokeGraphic);
 		if (strokes == null) {
+			Debug.Log("Null Stroke");
 			return;
 		}
 		Stroke[] latestStroke = new Stroke[1];
@@ -338,6 +358,7 @@ public class GlyphRecognition : MonoBehaviour {
 				Cast(previousGlyph, CastDirection.Right);
 			}
 		} else {
+			//Debug.Log("Stroke Drawn");
 			Set(currentGlyphGraphic,strokes);
 		}
 	}

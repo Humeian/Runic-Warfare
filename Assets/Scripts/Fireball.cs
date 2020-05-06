@@ -34,6 +34,14 @@ public class Fireball : NetworkBehaviour
         StartCoroutine(TravelToDestination());
     }
 
+    // public void Start () {
+    //     startPosition = transform.position + Vector3.up;
+    //     startTime = Time.time;
+    //     startHeight = transform.position.y;
+
+    //     StartCoroutine(TravelToDestination());
+    // }
+
     public void SetOwner(NetworkConnection connection, GameObject go) {
 
         Debug.Log(connection);
@@ -121,6 +129,11 @@ public class Fireball : NetworkBehaviour
     public void ServerSpawnExplosion() {
         GameObject newExplosion = Instantiate(fireballExplosion, transform.position, Quaternion.identity);
         NetworkServer.Spawn(newExplosion);
+        Destroy(gameObject);
+    }
+
+    public void OfflineSpawnExplosion() {
+        GameObject newExplosion = Instantiate(fireballExplosion, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 }

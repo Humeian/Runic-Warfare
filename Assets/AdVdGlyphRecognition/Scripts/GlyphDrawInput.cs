@@ -184,6 +184,16 @@ namespace AdVd.GlyphRecognition
 			Method=Method;//Instances method
 		}
 
+		public void CommitStrokes() {
+			if (stroke != null ) {
+				if (strokeList==null) strokeList=new List<Stroke>();
+				Stroke newStroke=new Stroke(stroke.ToArray());
+				strokeList.Add(newStroke);
+				//Debug.Log("StrokeList:   "+ strokeList);
+				stroke=null;
+			}
+		}
+
 		Vector2 prevPos;
 		bool RectEventPoint(Vector2 position, Camera pressEventCamera, out Vector2 localPoint){
 			RectTransform rt =  transform as RectTransform;
@@ -199,10 +209,15 @@ namespace AdVd.GlyphRecognition
 
 		public void OnBeginDrag (PointerEventData eventData)
 		{
-			if (eventData.button!=PointerEventData.InputButton.Left) return;
+			//if (eventData.button!=PointerEventData.InputButton.Left) return;
 			stroke=new List<Vector2>();
 			Vector2 localPoint;
-			if (RectEventPoint(eventData.pressPosition, eventData.pressEventCamera, out localPoint)) stroke.Add (prevPos=localPoint);
+			//Debug.Log("Begin Drag");
+			if (RectEventPoint(eventData.pressPosition, eventData.pressEventCamera, out localPoint)){
+				stroke.Add (prevPos=localPoint);
+				//Debug.Log("stroke added: "+localPoint.ToString());
+			} 
+			//Debug.Log("Stroke: "+stroke[0].ToString());
 		}
 
 		#endregion
@@ -211,7 +226,7 @@ namespace AdVd.GlyphRecognition
 
 		public void OnDrag (PointerEventData eventData)
 		{
-			if (eventData.button!=PointerEventData.InputButton.Left) return;
+			//if (eventData.button!=PointerEventData.InputButton.Left) return;
 			if (stroke!=null){
 				Vector2 currPos;
 				if (RectEventPoint(eventData.position, eventData.pressEventCamera, out currPos)){
@@ -235,6 +250,9 @@ namespace AdVd.GlyphRecognition
 						OnPointDraw(points);
 					}
 				}
+				//Debug.Log("stroke length:   "+ stroke.Count);
+			} else {
+				//Debug.Log("Null Stroke  (OnDrag)");
 			}
 		}
 
@@ -244,8 +262,9 @@ namespace AdVd.GlyphRecognition
 
 		public void OnEndDrag (PointerEventData eventData)
 		{
-			if (eventData.button!=PointerEventData.InputButton.Left) return;
+			//if (eventData.button!=PointerEventData.InputButton.Left) return;
 			if (stroke!=null){
+				//Debug.Log("End Drag");
 				if (stroke.Count<2){
 					stroke=null; 
 					if (OnPointDraw!=null) OnPointDraw(null);
@@ -256,8 +275,11 @@ namespace AdVd.GlyphRecognition
 				if (strokeList==null) strokeList=new List<Stroke>();
 				Stroke newStroke=new Stroke(stroke.ToArray());
 				strokeList.Add(newStroke);
+				//Debug.Log("StrokeList:   "+ strokeList);
 				stroke=null;
 				if (OnStrokeDraw!=null) OnStrokeDraw(strokeList.ToArray());
+			} else {
+				Debug.Log("Null Stroke   (OnEndDrag)");
 			}
 		}
 
@@ -267,8 +289,9 @@ namespace AdVd.GlyphRecognition
 
 		public void OnPointerClick (PointerEventData eventData)
 		{
-			if (eventData.button!=PointerEventData.InputButton.Left) return;
+			//if (eventData.button!=PointerEventData.InputButton.Left) return;
 			if (stroke==null && castOnTap){
+				//Debug.Log("TAPCAST");
 				Cast();
 			}
 		}
@@ -280,6 +303,7 @@ namespace AdVd.GlyphRecognition
 		/// </summary>
 		/// 
 		public bool Cast(){
+			//Debug.Log("Cast");
 			try {
 				if (strokeList!=null){
 					if (strokeList.Count>0){
@@ -304,6 +328,7 @@ namespace AdVd.GlyphRecognition
 		/// </summary>
 		/// <param name="glyph">Glyph.</param>
 		public bool Cast(Glyph glyph){
+			Debug.Log("Cast Glyph:   "+ glyph.ToString());
 			castedGlyph=glyph;
 			if (castedGlyph==null) return false;
 
@@ -331,6 +356,7 @@ namespace AdVd.GlyphRecognition
 		/// Clears the current input.
 		/// </summary>
 		public void ClearInput(){
+			//Debug.Log("Clear Input");
 			stroke=null;
 			if (strokeList!=null) strokeList.Clear();
 		}

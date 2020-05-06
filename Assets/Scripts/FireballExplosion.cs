@@ -16,6 +16,11 @@ public class FireballExplosion : NetworkBehaviour
         Destroy(gameObject, 1f);
     }
 
+    public void Start() {
+        Destroy(GetComponent<SphereCollider>(), 0.05f);
+        Destroy(gameObject, 1f);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -29,8 +34,7 @@ public class FireballExplosion : NetworkBehaviour
         if (other.tag == "Player") {
             
             other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
-            if (other.GetComponent<PlayerBehaviour>() != null)
-            {
+            if (other.GetComponent<PlayerBehaviour>() != null) {
                 other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
             }
             Destroy(GetComponent<SphereCollider>(), 0);

@@ -82,7 +82,7 @@ public class GameManager : NetworkBehaviour
             p2 = networkManager.player2.GetComponent<CharacterBehaviour>();
             
 
-            Debug.Log("__________________________________________-------------------------------------------------------------- HERE");
+            //Debug.Log("__________________________________________-------------------------------------------------------------- HERE");
         }
 
         // if (roundStarted && menu != null && menu.activeSelf){
@@ -110,8 +110,8 @@ public class GameManager : NetworkBehaviour
 
     [Server]
     public void ResetMatch() {
-        p1.health = 3;
-        p2.health = 3;
+        p1.health = 4;
+        p2.health = 4;
         
         p1.lightningCharge = 0;
         p2.lightningCharge = 0;
@@ -145,7 +145,7 @@ public class GameManager : NetworkBehaviour
         }
         
 
-        //p1.RpcResetUI();
+        p1.RpcResetUI();
         //p2.RpcResetUI();
 
         timer = 63f;

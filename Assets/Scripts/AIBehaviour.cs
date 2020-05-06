@@ -75,6 +75,11 @@ public class AIBehaviour : CharacterBehaviour
             // Stop the timer
             //timer.StopTimer();
         }
+
+        if ( otherPlayer == null ) {
+            Debug.Log("Null player");
+            otherPlayer = GameObject.Find("TestPlayer");
+        }
     }
 
     IEnumerator Movement()
@@ -399,7 +404,7 @@ public class AIBehaviour : CharacterBehaviour
         yield return new WaitForSeconds(5);
         while (true)
         {
-            Debug.Log("CastRandom");
+            //Debug.Log("CastRandom");
             if (AIAttacks && health > 0)
             {
                 switch (Random.Range(0, 7))

@@ -245,7 +245,7 @@ CharacterJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: -1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.000000003688904, y: 0.0039291414, z: -6.359526e-10}
+  m_ConnectedAnchor: {x: 0.000000003688904, y: 0.0039291414, z: -6.3595257e-10}
   serializedVersion: 2
   m_SwingAxis: {x: 0, y: 0, z: 1}
   m_TwistLimitSpring:
@@ -2320,19 +2320,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.04
   otherPlayer: {fileID: 0}
-  health: 3
-  hp1: {fileID: 0}
-  hp2: {fileID: 0}
-  hp3: {fileID: 0}
+  health: 4
   lightningCharge: 0
   royalBurn: 0
   royalBurnRecovery: 0.2
-  animator: {fileID: 6755632731593190484}
   dashSpeed: 0
   dashHeight: 0
   fireball: {fileID: 4829775223747024804, guid: cac83329c40f499408a5e417be8d3c31,
-    type: 3}
-  royalFireball: {fileID: 8105898572971341154, guid: e856297c018ba5544acab29e6601fc73,
     type: 3}
   shield: {fileID: 2091421368820422775, guid: c2fc1aa6e76c5f34ab2eed3af16a091c, type: 3}
   windslash: {fileID: 8799331950200331671, guid: ca8f02b92a31a6c4b85ef248d78e0023,
@@ -2346,13 +2340,29 @@ MonoBehaviour:
   iceSpikeProjectile: {fileID: 2964162197209181304, guid: ee71c7971b6bbdb42b485e88405daee2,
     type: 3}
   fizzle: {fileID: 6837901161223021719, guid: decf7cafe7dde48f1a14286b8b1a4a2a, type: 3}
+  royalFireball: {fileID: 8105898572971341154, guid: e856297c018ba5544acab29e6601fc73,
+    type: 3}
   controller: {fileID: 9100000, guid: ca6a1090315c6be47bdea065032083ca, type: 2}
+  shields: []
+  maxShields: 2
+  hp1: {fileID: 0}
+  hp2: {fileID: 0}
+  hp3: {fileID: 0}
+  hp4: {fileID: 0}
+  animator: {fileID: 6755632731593190484}
   timer: {fileID: 0}
   clips:
   - {fileID: 8300000, guid: fc057bef879462a4c83e895b421a32d9, type: 3}
   - {fileID: 8300000, guid: b00878567137f44489309a256b228a37, type: 3}
-  shields: []
-  maxShields: 2
+  red: {r: 0.7735849, g: 0, b: 0, a: 1}
+  movingRight: 0
+  movingForward: 0
+  movingUp: 0
+  speedRight: 0
+  speedForward: 0
+  speedUp: 0
+  comingDown: 0
+  gameManager: {fileID: 0}
 --- !u!114 &6755632731593190443
 MonoBehaviour:
   m_ObjectHideFlags: 0
