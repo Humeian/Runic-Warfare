@@ -328,7 +328,7 @@ namespace AdVd.GlyphRecognition
 		/// </summary>
 		/// <param name="glyph">Glyph.</param>
 		public bool Cast(Glyph glyph){
-			Debug.Log("Cast Glyph:   "+ glyph.ToString());
+			//Debug.Log("Cast Glyph:   "+ glyph.ToString());
 			castedGlyph=glyph;
 			if (castedGlyph==null) return false;
 

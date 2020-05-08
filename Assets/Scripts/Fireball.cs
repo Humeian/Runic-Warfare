@@ -80,7 +80,7 @@ public class Fireball : NetworkBehaviour
         // Should not hit the caster
         // This is pretty messy - reminder to clean up afterwards
         // print("owner: " + owner.ToString());
-        print("other: " + other.ToString());
+        //print("other: " + other.ToString());
         if (other.GetComponent<NetworkIdentity>() == null && other.tag != "BodyPart") {
             //print(other.name);
             //print("explode here1");

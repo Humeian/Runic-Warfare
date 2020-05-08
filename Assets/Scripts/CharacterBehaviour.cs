@@ -41,11 +41,8 @@ public abstract class CharacterBehaviour : NetworkBehaviour
     //called by NewNetworkManager
     public void SetOtherPlayer(GameObject op)
     {
-        Debug.Log("Passed other player");
-        Debug.Log(op);
         otherPlayer = op;
-        Debug.Log("Set other player");
-        Debug.Log(otherPlayer);
+        Debug.Log("Set other player: "+ otherPlayer);
     }
 
     [TargetRpc]

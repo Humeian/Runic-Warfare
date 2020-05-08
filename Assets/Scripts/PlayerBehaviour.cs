@@ -43,6 +43,15 @@ public class PlayerBehaviour : CharacterBehaviour
 
     public GameManager gameManager;
 
+    public string heldSpell;
+    public SkinnedMeshRenderer castingHand;
+    public Material baseMaterial;
+    public Material spellHandGlow;
+    public ParticleSystem fireParticles, lightningParticles, windParticles, royalParticles, iceParticles;
+    public GameObject shieldSphere, arcanoSphere;
+
+    public Dictionary<string, Color> handColours = new Dictionary<string, Color>();
+
     // OnServerStart: called when GameObject is created on the server (not called on client).
     public override void OnStartServer()
     {
@@ -61,6 +70,25 @@ public class PlayerBehaviour : CharacterBehaviour
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         red = new Color(1f, 0f, 0f, 1f);
         shields = new List<GameObject>();
+
+        castingHand = GameObject.Find("hands:Rhand").GetComponent<SkinnedMeshRenderer>();
+        Debug.Log("Casting Hand" + GameObject.Find("hands:Rhand"));
+
+        fireParticles = GameObject.Find("FireParticles").GetComponent<ParticleSystem>();
+        shieldSphere = GameObject.Find("RightHand Controller").transform.Find("ShieldSphere").gameObject;
+        arcanoSphere = GameObject.Find("RightHand Controller").transform.Find("ArcanoSphere").gameObject;
+        lightningParticles = GameObject.Find("LightningParticles").GetComponent<ParticleSystem>();
+        windParticles = GameObject.Find("WindParticles").GetComponent<ParticleSystem>();
+        royalParticles = GameObject.Find("RoyalParticles").GetComponent<ParticleSystem>();
+        iceParticles = GameObject.Find("IceParticles").GetComponent<ParticleSystem>();
+
+        handColours.Add("fireball", new Color(1f, 0, 0));
+		handColours.Add("shield", new Color(113/255f, 199/255f, 1f));
+		handColours.Add("windslash", new Color(26/255f, 1f, 0));
+		handColours.Add("lightning", new Color(1f, 247/255f, 103/255f));
+		handColours.Add("arcanopulse", new Color(214/255f, 135/255f, 1f));
+		handColours.Add("icespikes", new Color(50/255f, 50/255f, 1f));
+		handColours.Add("royalfire", new Color(156/255f, 0f, 1f));
     }
 
     IEnumerator testmove() {
@@ -88,10 +116,10 @@ public class PlayerBehaviour : CharacterBehaviour
             health -= 1;
             
             //This is basically TargetShowDamageEffects, but called client-side
-            UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
-            redscreen.color = new Color(1f, 0f, 0f, 0.8f);
-            Camera.main.GetComponent<PlayerCamera>().Shake(5f);
-            Color red = new Color(1f, 0f, 0f, 1f);
+            //UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
+            //redscreen.color = new Color(1f, 0f, 0f, 0.8f);
+            //Camera.main.GetComponent<ScreenShakeVREffect>().Shake(0.7f, 0.5f);
+            //Color red = new Color(1f, 0f, 0f, 1f);
 
             royalBurn = 0f;
         }
@@ -344,6 +372,37 @@ public class PlayerBehaviour : CharacterBehaviour
         }
     }
 
+    public void ReleaseSpellCast() {
+        if (heldSpell != null) {
+            Debug.Log("Player Cast Held Spell: "+heldSpell);
+            switch (heldSpell) {
+                case "fireball":
+                    CastHeldFireball(25,1f);
+                    break;
+                case "shield":
+                    CastHeldShield();
+                    break;
+                case "lightning":
+                    CastHeldLightning();
+                    break;
+                case "windslash":
+                    CastHeldWindSlash();
+                    break;
+                case "royalfire":
+                    CastHeldRoyalFire(-25,1f);
+                    break;
+                case "icespikes":
+                    CastHeldIceSpikes();
+                    break;
+                case "arcanopulse":
+                    CastHeldArcanoPulse();
+                    break;
+            }
+            heldSpell = null;
+            castingHand.material = baseMaterial;
+        }
+    }
+
     //Server: Only the server executes the function. 
     //(However, because the variable is synced, clients will also see the HP decrease.)
     [Server]
@@ -358,12 +417,31 @@ public class PlayerBehaviour : CharacterBehaviour
         //UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
         //redscreen.color = new Color(1f, 0f, 0f, 0.8f);
 
-        Camera.main.GetComponent<ScreenShakeVR>().Shake(0.7f, 0.5f);
+        //Camera.main.GetComponent<ScreenShakeVREffect>().Shake(0.7f, 0.5f);
 
         //Color red = new Color(1f, 0f, 0f, 1f);
     }
 
+    public void SetHandGlow(string spell){
+        if(castingHand && spellHandGlow){
+            Debug.Log("Setting hand colour to: "+handColours[spell]);
+            spellHandGlow.SetColor("Color_682024A", handColours[spell]);
+            Debug.Log("Set hand material to "+spell);
+            castingHand.material = spellHandGlow;
+        }
+    }
+
     public virtual void CastFireball(int horizontal, float horizSpeed) {
+        heldSpell = "fireball";
+        SetHandGlow(heldSpell);
+        if (fireParticles) {
+            print("fire particles play");
+            fireParticles.Play();
+        }
+        Debug.Log("PLAYERFIRECAST");
+    }
+
+    public void CastHeldFireball(int horizontal, float horizSpeed) {
         StopAirMomentum();
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
@@ -375,7 +453,9 @@ public class PlayerBehaviour : CharacterBehaviour
         else 
             CmdSetAnimTrigger("FireballLeft");
         CmdCastFireball();
+        fireParticles.Stop();
     }
+
     [TargetRpc]
     public void TargetPaintScreen(NetworkConnection target, Color c) {
         UnityEngine.UI.Image screen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
@@ -406,19 +486,41 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     public void CastWindForward() {
+        heldSpell = "windslash";
+        SetHandGlow(heldSpell);
+        if (windParticles) {
+            print("wind particles play");
+            windParticles.Play();
+        }
+        Debug.Log("PLAYERWINDSLASHCAST");
+    }
+
+    public void CastHeldWindSlash(){
         StopAirMomentum();
         movingForward = 20;
         speedForward = 2f;
         CmdSetAnimTrigger("WindSlash");
         CmdCastWindForward();
+        windParticles.Stop();
     }
 
     public void CastShieldBack() {
+        heldSpell = "shield";
+        SetHandGlow(heldSpell);
+        if (shieldSphere) {
+            print("activate shield sphere");
+            shieldSphere.SetActive(true);
+        }
+        Debug.Log("PLAYERSHIELDCAST");
+    }
+
+    public void CastHeldShield() {
         StopAirMomentum();
         movingForward = -30;
         speedForward = 0.4f;
         CmdSetAnimTrigger("ShieldBack");
         CmdCastShieldBack();
+        shieldSphere.SetActive(false);
     }
 
     public void CastLightningNeutral() {
@@ -430,15 +532,36 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdCastLightningCharge();
         lightningCharge++;
         if (lightningCharge == lightningChargesNeeded) {
-            StartCoroutine(WaitForLightning());
-            lightningCharge = 0;
+            heldSpell = "lightning";
+            SetHandGlow("lightning");
+            if (lightningParticles) {
+                lightningParticles.Play();
+                Debug.Log("lightning particles play");
+            }
+            Debug.Log("PLAYERLIGHTNINGCAST");
         }
         else {
             StartCoroutine(WaitForLightningCharge());
         }
     }
 
+    public void CastHeldLightning() {
+        StartCoroutine(WaitForLightning());
+        lightningCharge = 0;
+        lightningParticles.Stop();
+    }
+
     public void CastArcanePulse() {
+        heldSpell = "arcanopulse";
+        SetHandGlow(heldSpell);
+        if (arcanoSphere) {
+            print("activate arcano sphere");
+            arcanoSphere.SetActive(true);
+        }
+        Debug.Log("PLAYERARCANOPULSECAST");
+    }
+
+    public void CastHeldArcanoPulse() {
         CmdPlayClip(1);
         onGround = false;
         speedUp = 0.5f;
@@ -447,9 +570,19 @@ public class PlayerBehaviour : CharacterBehaviour
         animator.ResetTrigger("PulseDown");
         CmdSetAnimTrigger("PulseUp");
         //CmdCastArcanePulse is called during Update, when the player hits the ground.
+        arcanoSphere.SetActive(false);
     }
 
     public void CastIceSpikes() {
+        heldSpell = "icespikes";
+        SetHandGlow(heldSpell);
+        if (iceParticles) {
+            print("ice particles play");
+            iceParticles.Play();
+        }
+    }
+
+    public void CastHeldIceSpikes() {
         onGround = false;
         speedUp = 0.6f;
         movingForward = -80;
@@ -458,9 +591,20 @@ public class PlayerBehaviour : CharacterBehaviour
         stopMomentumCharges = 0;
         CmdSetAnimTrigger("ShieldBack");
         CmdCastIceSpikes();
+        iceParticles.Stop();
     }
 
     public void CastRoyalFire(int horizontal, float horizSpeed) {
+        heldSpell = "royalfire";
+        SetHandGlow(heldSpell);
+        if (royalParticles) {
+            print("royal particles play");
+            royalParticles.Play();
+        }
+        Debug.Log("PLAYERROYALFIRECAST");
+    }
+
+    public void CastHeldRoyalFire(int horizontal, float horizSpeed){
         onGround = false;
         speedUp = 0.4f;
         stopMomentumCharges = 0;
@@ -471,6 +615,7 @@ public class PlayerBehaviour : CharacterBehaviour
         else 
             CmdSetAnimTrigger("FireballLeft");
         CmdCastRoyalFire();
+        royalParticles.Stop();
     }
 
     public void CastFizzle()
@@ -501,6 +646,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [TargetRpc]
     public override void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
+        Debug.Log("throwback");
         movingForward = -duration;
         speedForward = horizontal;
         //speedUp = vertical;

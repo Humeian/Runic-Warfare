@@ -34,9 +34,9 @@ public class FireballExplosion : NetworkBehaviour
         if (other.tag == "Player") {
             
             other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
-            if (other.GetComponent<PlayerBehaviour>() != null) {
-                other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
-            }
+            // if (other.GetComponent<PlayerBehaviour>() != null) {
+            //     other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            // }
             Destroy(GetComponent<SphereCollider>(), 0);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();

@@ -12,7 +12,7 @@ public class LightningCharge : NetworkBehaviour
     void Start()
     {
         transform.position += Vector3.up;
-        StartCoroutine(PaintScreenYellow());
+        //StartCoroutine(PaintScreenYellow());
         Destroy(gameObject, 2f);
     }
 

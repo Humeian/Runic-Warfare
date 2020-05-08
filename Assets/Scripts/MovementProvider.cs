@@ -43,7 +43,7 @@ public class MovementProvider : LocomotionProvider
                 player = GameObject.Find("TestPlayer(Clone)");
                 if (player != null) {
                     playerFound = true;
-                    Debug.Log("PLAYER SET:    "+player);
+                    //Debug.Log("PLAYER SET:    "+player);
                 }
             } catch {
                 Debug.Log("Cannot find player to select");
@@ -58,7 +58,7 @@ public class MovementProvider : LocomotionProvider
                 glyphRecognition.player = player.GetComponent<PlayerBehaviour>();
 
                 playerParented = true;
-                Debug.Log("PLAYER PARENTED:  "+player.name);
+                //Debug.Log("PLAYER PARENTED:  "+player.name);
             }
         }
 

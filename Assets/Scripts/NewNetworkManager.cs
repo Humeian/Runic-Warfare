@@ -113,7 +113,7 @@ public class NewNetworkManager : NetworkManager
         //AIPlayer.GetComponent<AIBehaviour>().activateAI();
         if (player1 != null)
         {
-            Debug.Log("PLAYERS SET");
+            //Debug.Log("PLAYERS SET");
             player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);
             player2.GetComponent<CharacterBehaviour>().SetOtherPlayer(player1);
         }

@@ -32,11 +32,11 @@ public class ArcanePulse : NetworkBehaviour
         if (other.tag == "BodyPart") {
 
         } else if (other.tag == "Player" && (other.GetComponent<NetworkIdentity>().connectionToClient != owner.GetComponent<NetworkIdentity>().connectionToClient)) {
-            print("hit");
-            print(other.GetComponent<NetworkIdentity>().connectionToClient.ToString());
-            print(owner.ToString());
+            //print("hit");
+            //print(other.GetComponent<NetworkIdentity>().connectionToClient.ToString());
+            //print(owner.ToString());
             other.GetComponent<PlayerBehaviour>().TakeDamage(1);
-            other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            // other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
             other.GetComponent<PlayerBehaviour>().TargetThrowPlayerBack(other.GetComponent<NetworkIdentity>().connectionToClient, 0.6f, 0, 40);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();

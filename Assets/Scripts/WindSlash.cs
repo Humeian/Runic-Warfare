@@ -26,8 +26,8 @@ public class WindSlash : NetworkBehaviour
 
     void Start() {
         Color green = new Color(0.5f, 1f, 0.5f, 0.6f);
-        if (owner.GetComponent<PlayerBehaviour>() != null)
-            owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, green);
+        // if (owner.GetComponent<PlayerBehaviour>() != null)
+        //     owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, green);
 
         int random = Random.Range(0, 5);
         //print(random);
@@ -50,13 +50,13 @@ public class WindSlash : NetworkBehaviour
 
     [ServerCallback]
     void OnTriggerStay(Collider other) {
-        //Debug.Log("hit");
         if (owner != null && otherPlayer != null) {
             if (other.gameObject == otherPlayer) {
-                //Debug.Log("testing");
+                //Debug.Log("testing  GO: "+other.gameObject+"     owner: "+owner);
                 other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
-                if (owner.GetComponent<PlayerBehaviour>() != null)
-                    other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+                // if (owner.GetComponent<PlayerBehaviour>() != null)
+                //     Debug.Log("here2:  "+owner.GetComponent<PlayerBehaviour>().movingForward);
+                //     other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
                 owner.GetComponent<CharacterBehaviour>().TargetThrowPlayerBack(owner.GetComponent<NetworkIdentity>().connectionToClient, 0.8f, 2, 40);
                 owner.GetComponent<CharacterBehaviour>().TargetSetAnimTrigger(owner.GetComponent<NetworkIdentity>().connectionToClient, "WindSlashRecoil");
                 ServerSpawnHit();

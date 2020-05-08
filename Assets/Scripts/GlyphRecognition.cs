@@ -143,8 +143,8 @@ public class GlyphRecognition : MonoBehaviour {
 			return;
 		}
 		
-		Debug.Log("match:  "+ match.target.ToString());
-		Debug.Log("Player:   "+player.name);
+		//Debug.Log("match:  "+ match.target.ToString());
+		//Debug.Log("Player:   "+player.name);
 		// Make sure glyph recognition finishes and clears the stroke list
 		// through any possible errors.
 		try {

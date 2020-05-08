@@ -433,15 +433,15 @@ public class AIBehaviour : CharacterBehaviour
                     case 5:
                         CastIceSpikes();
                         break;
-                    case 6:
-                        int dir = Random.Range(0, 3);
-                        if (dir == 0)
-                            CastRoyalFire(50, 0.2f);
-                        else if (dir == 1)
-                            CastRoyalFire(-50, 0.2f);
-                        else
-                            CastRoyalFire(0, 0f);
-                        break;
+                    // case 6:
+                    //     int dir = Random.Range(0, 3);
+                    //     if (dir == 0)
+                    //         CastRoyalFire(50, 0.2f);
+                    //     else if (dir == 1)
+                    //         CastRoyalFire(-50, 0.2f);
+                    //     else
+                    //         CastRoyalFire(0, 0f);
+                    //     break;
                     default:
                         Debug.Log("CastFailed");
                         break;

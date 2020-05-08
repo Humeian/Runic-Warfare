@@ -2363,6 +2363,11 @@ MonoBehaviour:
   speedUp: 0
   comingDown: 0
   gameManager: {fileID: 0}
+  heldSpell: 
+  castingHand: {fileID: 0}
+  baseMaterial: {fileID: 2100000, guid: 4a7027a5123db934388dedc307c1671b, type: 2}
+  spellHandGlow: {fileID: 2100000, guid: f120fa8403559eb41ae9e8944fef13e9, type: 2}
+  fireParticles: {fileID: 0}
 --- !u!114 &6755632731593190443
 MonoBehaviour:
   m_ObjectHideFlags: 0

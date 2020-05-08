@@ -9,12 +9,13 @@ public class RightHandManager : MonoBehaviour
     public XRController controller;
     private InputDevice inputDevice;
     private XRRayInteractor rayInteractor;
-    private LineRenderer lineRenderer;
     private XRInteractorLineVisual lineVisual;
-    public InputHelpers.Button enableRayButton; 
+
+    public bool held = false;
+    public InputHelpers.Button grip; 
     public GlyphRecognition glyphRecognition;
     public float activationThreshold = 0.1f;
-    public VRPlayerBehaviour player;
+    public PlayerBehaviour player;
 
     // Start is called before the first frame update
     void Start()
@@ -22,13 +23,12 @@ public class RightHandManager : MonoBehaviour
         controller = GetComponent<XRController>();
         inputDevice = controller.inputDevice;
         rayInteractor = GetComponent<XRRayInteractor>();
-        lineRenderer = GetComponent<LineRenderer>();
         lineVisual = GetComponent<XRInteractorLineVisual>();
     }
 
     public bool CheckIfActivated(XRController controller){
-        InputHelpers.IsPressed(controller.inputDevice, enableRayButton, out bool isActivated, activationThreshold);
-        return isActivated;
+        InputHelpers.IsPressed(controller.inputDevice, grip, out bool isGripped, activationThreshold);
+        return (isGripped);
     }
 
     public bool CheckIfRayHit(XRController controller){
@@ -38,17 +38,31 @@ public class RightHandManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (player == null)
+            try {
+                player = GameObject.Find("TestPlayer(Clone)").GetComponent<PlayerBehaviour>();
+            } catch {
+                // do nothing
+            }
+			
+
         if (rayInteractor) {
             lineVisual.enabled = CheckIfRayHit(controller);
             //rayInteractor.enabled = CheckIfActivated(controller);
             lineVisual.reticle.SetActive(CheckIfRayHit(controller));
         }   
 
-        if (CheckIfActivated(controller)){
+        if (CheckIfActivated(controller) && !held){
+            held = true;
             glyphRecognition.Cast();
         }
 
-        controller.inputDevice.TryGetFeatureValue(CommonUsages.secondaryButton, out bool pressed);
-        if (pressed) player.CastFireball(0, 0f);
+        if (!CheckIfActivated(controller) && held) {
+            held = false;
+            player.ReleaseSpellCast();
+        }
+
+        //controller.inputDevice.TryGetFeatureValue(CommonUsages.secondaryButton, out bool pressed);
+        //if (pressed) player.CastFireball(0, 0f);
     }
 }

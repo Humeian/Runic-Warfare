@@ -8,15 +8,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Shield
-  m_Shader: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: ec45570f49d41b8449dd7b5916aa1fce,
+    type: 3}
   m_ShaderKeywords: _DISTORTION_ON _EMISSION _FADING_ON _NORMALMAP _RECEIVE_SHADOWS_OFF
     _SOFTPARTICLES_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3050
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses:
   - SHADOWCASTER
   m_SavedProperties:
@@ -63,6 +63,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_3FB1022A: 0.04
+    - Vector1_DD078A09: 0.5
     - _AlphaClip: 0
     - _Blend: 2
     - _BlendOp: 0
@@ -72,9 +74,9 @@ Material:
     - _CameraNearFadeDistance: 1
     - _ColorMode: 0
     - _Cull: 0
-    - _Cutoff: 0.5
+    - _Cutoff: 0.061
     - _DetailNormalMapScale: 1
-    - _DistortionBlend: 0.151
+    - _DistortionBlend: 0
     - _DistortionEnabled: 1
     - _DistortionStrength: 2
     - _DistortionStrengthScaled: 0.2
@@ -101,7 +103,8 @@ Material:
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 0.35493985, g: 0.70987976, b: 2.1296391, a: 0.5019608}
+    - Color_B3F16054: {r: 0, g: 0.507884, b: 16.1888, a: 0}
+    - _BaseColor: {r: 0.1254902, g: 0.2509804, b: 0.7490196, a: 0.3529412}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 0.35493988, g: 0.70987976, b: 2.1296391, a: 0.5019608}
