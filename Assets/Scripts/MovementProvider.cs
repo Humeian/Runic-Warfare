@@ -23,8 +23,8 @@ public class MovementProvider : LocomotionProvider
 
     protected override void Awake()
     {
-        characterController = GetComponent<CharacterController>();
-        head = GetComponent<XRRig>().cameraGameObject;
+        //characterController = GetComponent<CharacterController>();
+        //head = GetComponent<XRRig>().cameraGameObject;
     }
 
     private void Start()
@@ -34,8 +34,8 @@ public class MovementProvider : LocomotionProvider
 
     private void Update()
     {
-        PositionController();
-        CheckForInput();
+        //PositionController();
+        //CheckForInput();
         //ApplyGravity();
 
         if(!playerFound){
@@ -53,7 +53,7 @@ public class MovementProvider : LocomotionProvider
                 transform.parent = player.transform;
                 //drawPanel.transform.parent = player.transform;
 
-                transform.position = player.transform.position + new Vector3(-4.0f, 3.0f, 0.2f);
+                transform.position = player.transform.position + new Vector3(0f, 0f, 0.2f);
                 //drawPanel.transform.position = player.transform.position + new Vector3(1.0f, 0f, 0f);
                 glyphRecognition.player = player.GetComponent<PlayerBehaviour>();
 
@@ -61,6 +61,8 @@ public class MovementProvider : LocomotionProvider
                 //Debug.Log("PLAYER PARENTED:  "+player.name);
             }
         }
+
+        //if (characterController.detectCollisions) characterController.isTrigger = true;
 
         // if ( Vector3.Distance(drawingAnchor.transform.position, transform.position) > 0.5f ) {
         //     drawingAnchor.transform.position = Vector3.MoveTowards(drawingAnchor.transform.position, transform.position, 0.1f);

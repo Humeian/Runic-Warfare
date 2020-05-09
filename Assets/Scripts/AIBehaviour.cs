@@ -78,7 +78,7 @@ public class AIBehaviour : CharacterBehaviour
 
         if ( otherPlayer == null ) {
             Debug.Log("Null player");
-            otherPlayer = GameObject.Find("TestPlayer");
+            otherPlayer = GameObject.Find("TestPlayer(Clone)");
         }
     }
 
@@ -157,7 +157,6 @@ public class AIBehaviour : CharacterBehaviour
 
     public void CastFireball(int horizontal, float horizSpeed)
     {
-
         print("AI Cast Fireball");
         StopAirMomentum();
         //transform.position += transform.TransformDirection(Vector3.right);
@@ -169,6 +168,7 @@ public class AIBehaviour : CharacterBehaviour
             SetAnimTrigger("FireballRight");
         else
             SetAnimTrigger("FireballLeft");
+            
         GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
         newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);

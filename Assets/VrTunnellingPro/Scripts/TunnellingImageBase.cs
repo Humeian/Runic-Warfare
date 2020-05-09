@@ -488,6 +488,15 @@ namespace Sigtrap.VrTunnellingPro {
 		void LateUpdate(){
 			UpdateKeywords();
 
+			if (motionTarget == null) {
+				try {
+					motionTarget = GameObject.Find("TestPlayer(Clone)").transform;
+				} catch {
+					Debug.Log("No motion target");
+				}
+				
+			}
+
 			// Shader properties
 			float motion = CalculateMotion(Time.deltaTime);
 			_matTunnel.SetFloat(_propFxInner, motion);

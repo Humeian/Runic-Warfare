@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 using Mirror;
 
 public class PlayerBehaviour : CharacterBehaviour
@@ -43,13 +45,17 @@ public class PlayerBehaviour : CharacterBehaviour
 
     public GameManager gameManager;
 
+    private Vector3 startGripMove, releaseGripMove;
+    public int dragMoveSpeed = 10;
+
     public string heldSpell;
-    public SkinnedMeshRenderer castingHand;
+    public GameObject castingHand;
+    public GameObject movingHand;
+    public SkinnedMeshRenderer castingHandRenderer;
     public Material baseMaterial;
     public Material spellHandGlow;
     public ParticleSystem fireParticles, lightningParticles, windParticles, royalParticles, iceParticles;
     public GameObject shieldSphere, arcanoSphere;
-
     public Dictionary<string, Color> handColours = new Dictionary<string, Color>();
 
     // OnServerStart: called when GameObject is created on the server (not called on client).
@@ -71,8 +77,13 @@ public class PlayerBehaviour : CharacterBehaviour
         red = new Color(1f, 0f, 0f, 1f);
         shields = new List<GameObject>();
 
-        castingHand = GameObject.Find("hands:Rhand").GetComponent<SkinnedMeshRenderer>();
-        Debug.Log("Casting Hand" + GameObject.Find("hands:Rhand"));
+        castingHand = GameObject.Find("RightHand Controller");
+        Debug.Log("Casting Hand GameObject: "+ castingHand);
+        movingHand = GameObject.Find("LeftHand Controller");
+        Debug.Log("Moving Hand GameObject: "+ movingHand);
+
+        castingHandRenderer = GameObject.Find("hands:Rhand").GetComponent<SkinnedMeshRenderer>();
+        Debug.Log("Casting Hand render: " + GameObject.Find("hands:Rhand"));
 
         fireParticles = GameObject.Find("FireParticles").GetComponent<ParticleSystem>();
         shieldSphere = GameObject.Find("RightHand Controller").transform.Find("ShieldSphere").gameObject;
@@ -240,9 +251,9 @@ public class PlayerBehaviour : CharacterBehaviour
         GameObject.Find("GameUI").transform.Find("BackToMenuPanel").gameObject.SetActive(true);
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        NetworkIdentity net = GetComponent<NetworkIdentity>();
+        //NetworkIdentity net = GetComponent<NetworkIdentity>();
         //Debug.Log(" is local :" + net.isLocalPlayer+"        hasAuthority:  "+net.hasAuthority);
         if (otherPlayer != null) {
             transform.LookAt(otherPlayer.transform);
@@ -252,6 +263,15 @@ public class PlayerBehaviour : CharacterBehaviour
         if (hp1 == null) {
             InitializeUI();
         }
+
+        try {
+            if (movingHand.GetComponent<XRController>().inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 position)) {
+                ControllerMove(position);
+            }
+        } catch {
+            Debug.Log("Cannot move player");
+        }
+        
 
         // if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null) {
         //     GetComponent<Animator>().runtimeAnimatorController = controller;
@@ -372,9 +392,23 @@ public class PlayerBehaviour : CharacterBehaviour
         }
     }
 
+    private void ControllerMove(Vector2 position)
+    {
+        // Apply the touch position to the head's forward Vector
+        Vector3 direction = new Vector3(position.x, 0, position.y);
+        Vector3 headRotation = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
+
+        // Rotate the input direction by the horizontal head rotation
+        direction = Quaternion.Euler(headRotation) * direction;
+
+        // Apply speed and move
+        Vector3 movement = direction * 3;
+        transform.position += movement * Time.deltaTime;
+    }
+
     public void ReleaseSpellCast() {
         if (heldSpell != null) {
-            Debug.Log("Player Cast Held Spell: "+heldSpell);
+            // Debug.Log("Player Cast Held Spell: "+heldSpell);
             switch (heldSpell) {
                 case "fireball":
                     CastHeldFireball(25,1f);
@@ -399,7 +433,7 @@ public class PlayerBehaviour : CharacterBehaviour
                     break;
             }
             heldSpell = null;
-            castingHand.material = baseMaterial;
+            castingHandRenderer.material = baseMaterial;
         }
     }
 
@@ -423,11 +457,11 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     public void SetHandGlow(string spell){
-        if(castingHand && spellHandGlow){
-            Debug.Log("Setting hand colour to: "+handColours[spell]);
+        if(castingHandRenderer && spellHandGlow){
+            // Debug.Log("Setting hand colour to: "+handColours[spell]);
             spellHandGlow.SetColor("Color_682024A", handColours[spell]);
-            Debug.Log("Set hand material to "+spell);
-            castingHand.material = spellHandGlow;
+            // Debug.Log("Set hand material to "+spell);
+            castingHandRenderer.material = spellHandGlow;
         }
     }
 
@@ -438,16 +472,16 @@ public class PlayerBehaviour : CharacterBehaviour
             print("fire particles play");
             fireParticles.Play();
         }
-        Debug.Log("PLAYERFIRECAST");
+        // Debug.Log("PLAYERFIRECAST");
     }
 
     public void CastHeldFireball(int horizontal, float horizSpeed) {
         StopAirMomentum();
         //transform.position += transform.TransformDirection(Vector3.right);
-        movingRight = horizontal;
-        speedRight = horizSpeed;
-        movingForward = 25;
-        speedForward = 0.4f;
+        // movingRight = horizontal;
+        // speedRight = horizSpeed;
+        // movingForward = 25;
+        // speedForward = 0.4f;
         if (horizontal > 0f)
             CmdSetAnimTrigger("FireballRight");
         else 
@@ -492,7 +526,7 @@ public class PlayerBehaviour : CharacterBehaviour
             print("wind particles play");
             windParticles.Play();
         }
-        Debug.Log("PLAYERWINDSLASHCAST");
+        // Debug.Log("PLAYERWINDSLASHCAST");
     }
 
     public void CastHeldWindSlash(){
@@ -511,13 +545,13 @@ public class PlayerBehaviour : CharacterBehaviour
             print("activate shield sphere");
             shieldSphere.SetActive(true);
         }
-        Debug.Log("PLAYERSHIELDCAST");
+        // Debug.Log("PLAYERSHIELDCAST");
     }
 
     public void CastHeldShield() {
-        StopAirMomentum();
-        movingForward = -30;
-        speedForward = 0.4f;
+        // StopAirMomentum();
+        // movingForward = -30;
+        // speedForward = 0.4f;
         CmdSetAnimTrigger("ShieldBack");
         CmdCastShieldBack();
         shieldSphere.SetActive(false);
@@ -536,9 +570,9 @@ public class PlayerBehaviour : CharacterBehaviour
             SetHandGlow("lightning");
             if (lightningParticles) {
                 lightningParticles.Play();
-                Debug.Log("lightning particles play");
+                // Debug.Log("lightning particles play");
             }
-            Debug.Log("PLAYERLIGHTNINGCAST");
+            // Debug.Log("PLAYERLIGHTNINGCAST");
         }
         else {
             StartCoroutine(WaitForLightningCharge());
@@ -558,18 +592,19 @@ public class PlayerBehaviour : CharacterBehaviour
             print("activate arcano sphere");
             arcanoSphere.SetActive(true);
         }
-        Debug.Log("PLAYERARCANOPULSECAST");
+        // Debug.Log("PLAYERARCANOPULSECAST");
     }
 
     public void CastHeldArcanoPulse() {
         CmdPlayClip(1);
-        onGround = false;
-        speedUp = 0.5f;
-        comingDown = false;
-        stopMomentumCharges = 1;
-        animator.ResetTrigger("PulseDown");
-        CmdSetAnimTrigger("PulseUp");
+        // onGround = false;
+        // speedUp = 0.3f;
+        // comingDown = false;
+        // stopMomentumCharges = 1;
+        //animator.ResetTrigger("PulseDown");
+        //CmdSetAnimTrigger("PulseUp");
         //CmdCastArcanePulse is called during Update, when the player hits the ground.
+        CmdCastArcanePulse();
         arcanoSphere.SetActive(false);
     }
 
@@ -583,12 +618,12 @@ public class PlayerBehaviour : CharacterBehaviour
     }
 
     public void CastHeldIceSpikes() {
-        onGround = false;
-        speedUp = 0.6f;
-        movingForward = -80;
+        // onGround = false;
+        // speedUp = 0.6f;
+        movingForward = -40;
         speedForward = 0.1f;
-        //do not fall faster
-        stopMomentumCharges = 0;
+        // //do not fall faster
+        //stopMomentumCharges = 0;
         CmdSetAnimTrigger("ShieldBack");
         CmdCastIceSpikes();
         iceParticles.Stop();
@@ -601,15 +636,15 @@ public class PlayerBehaviour : CharacterBehaviour
             print("royal particles play");
             royalParticles.Play();
         }
-        Debug.Log("PLAYERROYALFIRECAST");
+        // Debug.Log("PLAYERROYALFIRECAST");
     }
 
     public void CastHeldRoyalFire(int horizontal, float horizSpeed){
-        onGround = false;
-        speedUp = 0.4f;
-        stopMomentumCharges = 0;
-        movingRight = horizontal;
-        speedRight = horizSpeed;
+        // onGround = false;
+        // speedUp = 0.4f;
+        // stopMomentumCharges = 0;
+        // movingRight = horizontal;
+        // speedRight = horizSpeed;
         if (horizontal > 0f)
             CmdSetAnimTrigger("FireballRight");
         else 
@@ -646,7 +681,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [TargetRpc]
     public override void TargetThrowPlayerBack(NetworkConnection target, float horizontal, float vertical, int duration){
-        Debug.Log("throwback");
+        // Debug.Log("throwback");
         movingForward = -duration;
         speedForward = horizontal;
         //speedUp = vertical;
@@ -658,20 +693,18 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [Command]
     public void CmdCastFireball() {
-        GameObject newFireball = Instantiate(fireball, transform.position + Vector3.up, transform.rotation);
+        GameObject newFireball = Instantiate(fireball, castingHand.transform.position, transform.rotation);
         newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
         newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newFireball);
-        //StartCoroutine(DashRight());
     }
 
     [Command]
     public void CmdCastRoyalFire() {
-        GameObject newRoyalFireball = Instantiate(royalFireball, transform.position + Vector3.up, transform.rotation);
+        GameObject newRoyalFireball = Instantiate(royalFireball, castingHand.transform.position, transform.rotation);
         newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         newRoyalFireball.GetComponent<Royalfireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newRoyalFireball);
-        //StartCoroutine(DashRight());
     }
 
     [Command]
@@ -685,7 +718,6 @@ public class PlayerBehaviour : CharacterBehaviour
             shields.RemoveAt(0);
             Destroy(oldShield);
         }
-        //StartCoroutine(DashBack());
     }
 
     [Command]
@@ -694,19 +726,18 @@ public class PlayerBehaviour : CharacterBehaviour
         newWindSlash.GetComponent<WindSlash>().SetOwner(gameObject);
         newWindSlash.GetComponent<WindSlash>().SetTarget(otherPlayer);
         NetworkServer.Spawn(newWindSlash);
-        //StartCoroutine(DashForward());
     }
 
     [Command]
     public void CmdCastLightningCharge() {
-        GameObject newChargeEffect = Instantiate(lightningChargeObj, transform.position + Vector3.up, transform.rotation);
+        GameObject newChargeEffect = Instantiate(lightningChargeObj, castingHand.transform.position, transform.rotation);
         newChargeEffect.GetComponent<LightningCharge>().SetOwner(gameObject);
         NetworkServer.Spawn(newChargeEffect);
     }
 
     [Command]
     public void CmdCastLightning() {
-        GameObject newLightning = Instantiate(lightning, transform.position + Vector3.up, transform.rotation);
+        GameObject newLightning = Instantiate(lightning, castingHand.transform.position, transform.rotation);
         newLightning.GetComponent<Lightning>().SetOwner(gameObject);
         newLightning.GetComponent<Lightning>().SetTarget(otherPlayer);
         NetworkServer.Spawn(newLightning);
@@ -722,8 +753,9 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [Command]
     public void CmdCastIceSpikes() {
-        //Arcane Pulse should spawn at the feet
-        GameObject newIceSpikes = Instantiate(iceSpikeProjectile, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
+        //Ice spikes should spawn at the feet
+        Quaternion dir = Quaternion.Euler(0, castingHand.transform.rotation.eulerAngles.y, 0);
+        GameObject newIceSpikes = Instantiate(iceSpikeProjectile, new Vector3(castingHand.transform.position.x, 0f, castingHand.transform.position.z), dir);
         newIceSpikes.GetComponent<IceSpikeProjectile>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         NetworkServer.Spawn(newIceSpikes);
     }
@@ -731,7 +763,7 @@ public class PlayerBehaviour : CharacterBehaviour
     [Command]
     public void CmdCastFizzle()
     {
-        GameObject newFizzle = Instantiate(fizzle, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation);
+        GameObject newFizzle = Instantiate(fizzle, new Vector3(castingHand.transform.position.x, 0f, castingHand.transform.position.z), transform.rotation);
         NetworkServer.Spawn(newFizzle);
     }
 
@@ -749,5 +781,21 @@ public class PlayerBehaviour : CharacterBehaviour
 
             yield return new WaitForEndOfFrame();
         }
+    }
+
+    public void StartGripMove(Vector3 startPos){
+        startGripMove = new Vector3(startPos.x, 0f, startPos.z);
+        Debug.Log("StartGripMove:  "+startGripMove.ToString());
+    }
+
+    public void ReleaseGripMove(Vector3 endPos) {
+        releaseGripMove = new Vector3(endPos.x, 0f, endPos.z);
+
+        Vector3 movement = startGripMove - releaseGripMove;
+        Debug.Log("Movement: "+movement.ToString()+ "   Magnitude: "+movement.magnitude);
+        transform.position += movement * dragMoveSpeed;
+
+        //startGripMove = null;
+        //releaseGripMove = null;
     }
 }
