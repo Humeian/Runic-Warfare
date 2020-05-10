@@ -44,16 +44,16 @@ public class PlayerBehaviour : CharacterBehaviour
     private int stopMomentumCharges = 0;
 
     public GameManager gameManager;
+    public string lastSpellCast;
 
     private Vector3 startGripMove, releaseGripMove;
     public int dragMoveSpeed = 10;
+    private float movementCooldown = 2f;
 
     public string heldSpell;
-    public GameObject castingHand;
-    public GameObject movingHand;
-    public SkinnedMeshRenderer castingHandRenderer;
-    public Material baseMaterial;
-    public Material spellHandGlow;
+    public GameObject castingHand, movingHand;
+    public SkinnedMeshRenderer castingHandRenderer, movementHandRenderer;
+    public Material baseMaterial, spellHandGlow, movementCooldownGlow;
     public ParticleSystem fireParticles, lightningParticles, windParticles, royalParticles, iceParticles;
     public GameObject shieldSphere, arcanoSphere;
     public Dictionary<string, Color> handColours = new Dictionary<string, Color>();
@@ -70,6 +70,7 @@ public class PlayerBehaviour : CharacterBehaviour
     {
         base.OnStartAuthority();
         StartCoroutine(Movement());
+        StartCoroutine(MovementCooldownManager());
     }
 
     public void Start() {
@@ -84,6 +85,9 @@ public class PlayerBehaviour : CharacterBehaviour
 
         castingHandRenderer = GameObject.Find("hands:Rhand").GetComponent<SkinnedMeshRenderer>();
         Debug.Log("Casting Hand render: " + GameObject.Find("hands:Rhand"));
+
+        movementHandRenderer = GameObject.Find("hands:Lhand").GetComponent<SkinnedMeshRenderer>();
+        Debug.Log("Movement Hand render: " + GameObject.Find("hands:Lhand"));
 
         fireParticles = GameObject.Find("FireParticles").GetComponent<ParticleSystem>();
         shieldSphere = GameObject.Find("RightHand Controller").transform.Find("ShieldSphere").gameObject;
@@ -264,13 +268,13 @@ public class PlayerBehaviour : CharacterBehaviour
             InitializeUI();
         }
 
-        try {
-            if (movingHand.GetComponent<XRController>().inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 position)) {
-                ControllerMove(position);
-            }
-        } catch {
-            Debug.Log("Cannot move player");
-        }
+        // try {
+        //     if (movingHand.GetComponent<XRController>().inputDevice.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 position)) {
+        //         ControllerMove(position);
+        //     }
+        // } catch {
+        //     Debug.Log("Cannot move player");
+        // }
         
 
         // if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null) {
@@ -432,8 +436,13 @@ public class PlayerBehaviour : CharacterBehaviour
                     CastHeldArcanoPulse();
                     break;
             }
+            lastSpellCast = heldSpell;
             heldSpell = null;
             castingHandRenderer.material = baseMaterial;
+
+            // Reset movement cooldown when a spell is cast
+            movementCooldown = 0f;
+            movementHandRenderer.material = baseMaterial;
         }
     }
 
@@ -620,8 +629,8 @@ public class PlayerBehaviour : CharacterBehaviour
     public void CastHeldIceSpikes() {
         // onGround = false;
         // speedUp = 0.6f;
-        movingForward = -40;
-        speedForward = 0.1f;
+        // movingForward = -40;
+        // speedForward = 0.1f;
         // //do not fall faster
         //stopMomentumCharges = 0;
         CmdSetAnimTrigger("ShieldBack");
@@ -709,7 +718,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [Command]
     public void CmdCastShieldBack() {
-        GameObject newShield = Instantiate(shield, transform.position + Vector3.up, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
+        GameObject newShield = Instantiate(shield, castingHand.transform.position + (castingHand.transform.forward*2), castingHand.transform.rotation * Quaternion.Euler(90f, 0f, 90f));
         NetworkServer.Spawn(newShield);
 
         shields.Add(newShield);
@@ -755,7 +764,8 @@ public class PlayerBehaviour : CharacterBehaviour
     public void CmdCastIceSpikes() {
         //Ice spikes should spawn at the feet
         Quaternion dir = Quaternion.Euler(0, castingHand.transform.rotation.eulerAngles.y, 0);
-        GameObject newIceSpikes = Instantiate(iceSpikeProjectile, new Vector3(castingHand.transform.position.x, 0f, castingHand.transform.position.z), dir);
+        Vector3 startPos = new Vector3(castingHand.transform.position.x, 0f, castingHand.transform.position.z) + castingHand.transform.forward;
+        GameObject newIceSpikes = Instantiate(iceSpikeProjectile, startPos, dir);
         newIceSpikes.GetComponent<IceSpikeProjectile>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         NetworkServer.Spawn(newIceSpikes);
     }
@@ -783,6 +793,19 @@ public class PlayerBehaviour : CharacterBehaviour
         }
     }
 
+    IEnumerator MovementCooldownManager() {
+        while (true) {
+            if (movementCooldown > 0f) {
+                movementCooldown -= Time.deltaTime;
+            } else {
+                movementCooldown = 0f;
+                movementHandRenderer.material = baseMaterial;
+            }
+            yield return new WaitForFixedUpdate();
+        }
+
+    }
+
     public void StartGripMove(Vector3 startPos){
         startGripMove = new Vector3(startPos.x, 0f, startPos.z);
         Debug.Log("StartGripMove:  "+startGripMove.ToString());
@@ -791,9 +814,22 @@ public class PlayerBehaviour : CharacterBehaviour
     public void ReleaseGripMove(Vector3 endPos) {
         releaseGripMove = new Vector3(endPos.x, 0f, endPos.z);
 
-        Vector3 movement = startGripMove - releaseGripMove;
-        Debug.Log("Movement: "+movement.ToString()+ "   Magnitude: "+movement.magnitude);
-        transform.position += movement * dragMoveSpeed;
+        if (movementCooldown == 0) {
+            Vector3 movement = startGripMove - releaseGripMove;
+            Debug.Log("Movement: "+movement.ToString()+ "   Magnitude: "+movement.magnitude);
+
+            // Move player in direction of pull * speed
+            transform.position += movement * dragMoveSpeed;
+
+            // Set hand cooldown material
+            movementHandRenderer.material = movementCooldownGlow;
+
+            // Set movement Cooldown
+            movementCooldown = 2.5f;
+        } else {
+            Debug.Log("Movement on cooldown");
+        }
+        
 
         //startGripMove = null;
         //releaseGripMove = null;

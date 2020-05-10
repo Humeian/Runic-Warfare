@@ -20,7 +20,7 @@ QualitySettings:
     shadowmaskMode: 0
     skinWeights: 1
     textureQuality: 1
-    anisotropicTextures: 0
+    anisotropicTextures: 1
     antiAliasing: 0
     softParticles: 0
     softVegetation: 0
@@ -40,7 +40,8 @@ QualitySettings:
     asyncUploadBufferSize: 16
     asyncUploadPersistentBuffer: 1
     resolutionScalingFixedDPIFactor: 1
-    customRenderPipeline: {fileID: 0}
+    customRenderPipeline: {fileID: 11400000, guid: 3b7da7cce38d6f540aa424618851294b,
+      type: 2}
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Low

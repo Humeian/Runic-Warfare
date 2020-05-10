@@ -70,6 +70,15 @@ public class GameManager : NetworkBehaviour
 
     }
 
+    public void toggleAIDifficulty () {
+        try {
+            AIBehaviour ai = GameObject.Find("AI(Clone)").GetComponent<AIBehaviour>();
+            ai.ToggleDifficulty();
+        } catch {
+            Debug.Log("No AI found");
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
