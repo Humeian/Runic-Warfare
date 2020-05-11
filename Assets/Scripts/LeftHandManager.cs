@@ -40,14 +40,14 @@ public class LeftHandManager : MonoBehaviour
                 // do nothing
             }
 
-        if (CheckIfActivated(controller) && !held){
+        if (player != null && CheckIfActivated(controller) && !held){
             held = true;
             if (interactor.selectTarget == null) {
                 player.StartGripMove(transform.position);
             }
         }
 
-        if (!CheckIfActivated(controller) && held) {
+        if (player != null && !CheckIfActivated(controller) && held) {
             held = false;
             if (interactor.selectTarget == null) {
                 player.ReleaseGripMove(transform.position);

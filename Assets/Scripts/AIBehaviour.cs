@@ -36,7 +36,7 @@ public class AIBehaviour : CharacterBehaviour
     private float counterSpell;
 
     // Start with hard AI
-    public bool difficult = true;
+    public string difficulty = "Hard";
 
     // Percentage chance that the AI will counter the last spell cast
     public float chanceToCounter = 0.66f;
@@ -413,24 +413,33 @@ public class AIBehaviour : CharacterBehaviour
 
     }
 
-    public void ToggleDifficulty() {
-        difficult = !difficult;
+    public void ToggleDifficulty(string newDifficulty) {
+        difficulty = newDifficulty;
 
-        if (difficult) {
+        if (difficulty == "Hard") {
             chanceToCounter = 0.66f; // 2 in 3  chance to counter 
             minCastTime = 2;
             maxCastTime = 7;
-        } else {
+        } else if (difficulty == "Medium") {
+            chanceToCounter = 0.50f; // 1 in 3 chance to counter
+            minCastTime = 4;
+            maxCastTime = 6;
+        } else if (difficulty == "Easy") {
             chanceToCounter = 0.33f; // 1 in 3 chance to counter
             minCastTime = 6;
             maxCastTime = 8;
+        } else {
+            // Expert Difficulty
+            chanceToCounter = 0.80f; // 80% chance to counter
+            minCastTime = 2;
+            maxCastTime = 4;
         }
 
-        Debug.Log("AI Difficulty changed -> counter %: "+chanceToCounter+"    minCastTime: "+minCastTime+"   maxCastTime: "+maxCastTime);
+        Debug.Log("AI Difficulty changed to "+difficulty+" -> counter %: "+chanceToCounter+"    minCastTime: "+minCastTime+"   maxCastTime: "+maxCastTime);
     }
 
     void CastRandomFireball(){
-        int direction = Random.Range(0, 3);
+        int direction = Random.Range(0, 2);
         if (direction == 0)
             CastFireball(25, 1f);
         else if (direction == 1)
@@ -440,7 +449,7 @@ public class AIBehaviour : CharacterBehaviour
     }
 
     void CastRandomRoyalFire(){
-        int dir = Random.Range(0, 3);
+        int dir = Random.Range(0, 2);
         if (dir == 0)
             CastRoyalFire(50, 0.2f);
         else if (dir == 1)

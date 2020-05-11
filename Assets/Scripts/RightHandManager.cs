@@ -52,12 +52,12 @@ public class RightHandManager : MonoBehaviour
             lineVisual.reticle.SetActive(CheckIfRayHit(controller));
         }   
 
-        if (CheckIfActivated(controller) && !held){
+        if (player != null && CheckIfActivated(controller) && !held){
             held = true;
             glyphRecognition.Cast();
         }
 
-        if (!CheckIfActivated(controller) && held) {
+        if (player != null && !CheckIfActivated(controller) && held) {
             held = false;
             player.ReleaseSpellCast();
         }

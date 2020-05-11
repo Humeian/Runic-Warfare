@@ -152,7 +152,7 @@ public class PlayerBehaviour : CharacterBehaviour
     [ClientRpc]
     public override void RpcResetUI() {
         // Disable rematch button
-        //GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
+        // GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(false);
 
         // Wait for round to start before enabling input
         //StartCoroutine(WaitForRoundStart());
@@ -199,23 +199,23 @@ public class PlayerBehaviour : CharacterBehaviour
         // Display Win text
         GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(true);
 
-        if (p1Score >= 3) {
-            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
-        }
-        else if (p2Score >= 3) {
-            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
-        }
-        else {
-            GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
-        }
+        // if (p1Score >= 3) {
+        //     GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
+        // }
+        // else if (p2Score >= 3) {
+        //     GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
+        // }
+        // else {
+        //     GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        // }
         
         // Display Rematch button
-        GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
+        GameObject.Find("Drawing Plane").transform.Find("Rematch").gameObject.SetActive(true);
         if (p1Score >= 3 || p2Score >= 3) {
-            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
+            GameObject.Find("Drawing Plane").transform.Find("Rematch").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
         }
         else {
-            GameObject.Find("GameUI").transform.Find("ReadyPanel").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
+            GameObject.Find("Drawing Plane").transform.Find("Rematch").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
         }
 
         //Update # of wins and round number
@@ -226,15 +226,15 @@ public class PlayerBehaviour : CharacterBehaviour
     public void TargetLoseRound(NetworkConnection connection, int p1Score, int p2Score, int round) {
         GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(true);
         
-        if (p1Score >= 3) {
-            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
-        }
-        else if (p2Score >= 3) {
-            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
-        }
-        else {
-            GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
-        }
+        // if (p1Score >= 3) {
+        //     GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
+        // }
+        // else if (p2Score >= 3) {
+        //     GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
+        // }
+        // else {
+        //     GameObject.Find("GameUI").transform.Find("LossPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
+        // }
 
         GameObject.Find("GameUI").transform.Find("ReadyPanel").gameObject.SetActive(true);
         if (p1Score >= 3 || p2Score >= 3) {

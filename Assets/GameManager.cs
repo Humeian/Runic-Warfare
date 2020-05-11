@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Mirror;
 using AdVd.GlyphRecognition;
 
@@ -35,6 +36,8 @@ public class GameManager : NetworkBehaviour
     public Glyph fireball;
     public Glyph shield;
 
+    public GameObject rematchButton;
+
     public GameObject introduction;
     public GameObject shootFireball;
     public GameObject blockFireball;
@@ -47,6 +50,9 @@ public class GameManager : NetworkBehaviour
     public GameObject tutorialPanel;
 
     public bool isTutorial = false;
+
+    public string difficulty = "Hard";
+    public Text difficultyText;
 
     // Start is called before the first frame update
     public override void OnStartServer()
@@ -71,9 +77,25 @@ public class GameManager : NetworkBehaviour
     }
 
     public void toggleAIDifficulty () {
+        switch (difficulty) {
+            case "Hard":
+                difficulty = "Medium";
+                break;
+            case "Medium":
+                difficulty = "Easy";
+                break;
+            case "Easy":
+                difficulty = "Expert";
+                break;
+            case "Expert":
+                difficulty = "Hard";
+                break;
+        }
+        difficultyText.text = difficulty;
+
         try {
             AIBehaviour ai = GameObject.Find("AI(Clone)").GetComponent<AIBehaviour>();
-            ai.ToggleDifficulty();
+            ai.ToggleDifficulty(difficulty);
         } catch {
             Debug.Log("No AI found");
         }
@@ -94,27 +116,31 @@ public class GameManager : NetworkBehaviour
             //Debug.Log("__________________________________________-------------------------------------------------------------- HERE");
         }
 
-        // if (roundStarted && menu != null && menu.activeSelf){
-        //     menu.SetActive(false);
-        //     topPanel.SetActive(true);
-        //     GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = Color.white;
-        //     GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = Color.white;
-        //     GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = Color.white;
-        // }
+        if (roundStarted && rematchButton != null && rematchButton.activeInHierarchy) {
+            rematchButton.SetActive(false);
+        }
 
-        // if (roundStarted && !roundFinished){
-        //     Debug.Log("P1:  "+ p1 + "   P2:  "+p2);
-        //     if (p1.health <= 0 || p2.health <= 0) {
-        //         roundStarted = false;
-        //         roundFinished = true;
-        //         EndRound(0);
-        //     }
-        // }
+        if (roundStarted && menu != null && menu.activeInHierarchy){
+            menu.SetActive(false);
+            // topPanel.SetActive(true);
+            // GameObject.Find("HP1").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+            // GameObject.Find("HP2").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+            // GameObject.Find("HP3").GetComponent<UnityEngine.UI.Image>().color = Color.white;
+        }
 
-        // if (roundFinished && roundStarted) {
-        //     EndRound(1);
-        //     roundStarted = false;
-        // }
+        if (roundStarted && !roundFinished){
+            Debug.Log("P1:  "+ p1 + "   P2:  "+p2);
+            if (p1.health <= 0 || p2.health <= 0) {
+                roundStarted = false;
+                roundFinished = true;
+                EndRound(0);
+            }
+        }
+
+        if (roundFinished && roundStarted) {
+            EndRound(1);
+            roundStarted = false;
+        }
     }
 
     [Server]
@@ -178,10 +204,16 @@ public class GameManager : NetworkBehaviour
     [Server]
     public void EndRound(int reason) {
         PlayerBehaviour p1PlayerBehaviour = networkManager.player1.GetComponent<PlayerBehaviour>();
-        PlayerBehaviour p2PlayerBehaviour = networkManager.player2.GetComponent<PlayerBehaviour>();
-        p1PlayerBehaviour.RpcDisableGlyphInput();
-        if(p2PlayerBehaviour != null)
-            p2PlayerBehaviour.RpcDisableGlyphInput();
+        PlayerBehaviour p2PlayerBehaviour = null;
+        try {
+            p2PlayerBehaviour = networkManager.player2.GetComponent<PlayerBehaviour>();
+        } catch {
+            Debug.Log("Round end against AI / No Player2 Found");
+        }
+        
+        // p1PlayerBehaviour.RpcDisableGlyphInput();
+        // if(p2PlayerBehaviour != null)
+        //     p2PlayerBehaviour.RpcDisableGlyphInput();
 
         bool p1win;
 
@@ -228,7 +260,7 @@ public class GameManager : NetworkBehaviour
                 }
                 if (p2PlayerBehaviour != null)
                     p2PlayerBehaviour.TargetWinRound(p2.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
-                p1PlayerBehaviour.TargetLoseRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
+                p1PlayerBehaviour.TargetWinRound(p1.GetComponent<NetworkIdentity>().connectionToClient, p1Wins, p2Wins, round);
             }
             print("p1Win " + p1Wins + ", p2Win " + p2Wins);
         }
