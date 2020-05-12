@@ -24,16 +24,23 @@ public class AIBehaviour : CharacterBehaviour
     private bool firstHit = true;
 
     bool comingDown = false;
+     // After using Pulse, number of times spells casted in the air will stop air momentum.
+    private int stopMomentumCharges = 0;
+
+    public Material damageMaterial, baseMaterial;
+    public SkinnedMeshRenderer showDamageRenderer;
+    public ParticleSystem damageParticles;
 
     public bool tutorialMode = false;
     public bool AIAttacks = true;
 
-    // After using Pulse, number of times spells casted in the air will stop air momentum.
-    private int stopMomentumCharges = 0;
+    private PlayerBehaviour playerBehaviour;
 
-    private string lastPlayerSpell;
-    private float counterChance;
-    private float counterSpell;
+    public bool standingInRoyalFire;
+    public float playerDistance, shieldDistance, iceSpikesDistance;
+    private string lastPlayerSpell, playerHeldSpell;
+    private int playerLightningCharges; // TODO, low priority
+    private float counterChance, counterSpell;
 
     // Start with hard AI
     public string difficulty = "Hard";
@@ -56,6 +63,8 @@ public class AIBehaviour : CharacterBehaviour
     public override void RpcResetUI()
     {
         shields.Clear();
+        lightningCharge = 0;
+        AIAttacks = true;
 
         //reset momentum
         movingForward = 0;
@@ -63,14 +72,44 @@ public class AIBehaviour : CharacterBehaviour
         movingUp = 0;
     }
 
+    public void disableAttacking() {
+        AIAttacks = false;
+    }
+
     void FixedUpdate()
     {
-        if (otherPlayer != null)
-        {
+        if (playerBehaviour == null) {
+            playerBehaviour = otherPlayer.GetComponent<PlayerBehaviour>();
+        }
+
+        if (otherPlayer != null) {
             transform.LookAt(otherPlayer.transform);
             transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
 
-            lastPlayerSpell = otherPlayer.GetComponent<PlayerBehaviour>().lastSpellCast;
+            lastPlayerSpell = playerBehaviour.lastSpellCast;
+            playerHeldSpell = playerBehaviour.heldSpell;
+
+            // RaycastHit hit;
+            // if (Physics.Raycast(transform.position, transform.forward, out hit, 100.0f)) {
+            //     Debug.DrawRay(transform.position, transform.forward * hit.distance, Color.yellow);
+            //     Debug.Log("Hit Object: "+hit.collider.name+"  Tag: "+hit.collider.tag);
+
+            //     switch (hit.collider.tag) {
+            //         case "Player":
+            //             playerDistance = hit.distance;
+            //             iceSpikesDistance = 0f;
+            //             shieldDistance = 0f;
+            //             break;
+            //         case "IceSpikes":
+            //             iceSpikesDistance = hit.distance;
+            //             shieldDistance = 0f;
+            //             break;
+            //         case "Shield":
+            //             shieldDistance = hit.distance;
+            //             iceSpikesDistance = 0f;
+            //             break;
+            //     }
+            // }
         }
 
         if (health > 0 && GetComponent<Animator>().runtimeAnimatorController == null)
@@ -102,7 +141,7 @@ public class AIBehaviour : CharacterBehaviour
         {
             float distanceFromCenter = DistanceToCenter();
 
-            if (distanceFromCenter < 24)
+            if (distanceFromCenter < 34)
             {
                 if (movingRight != 0)
                 {
@@ -162,6 +201,17 @@ public class AIBehaviour : CharacterBehaviour
 
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    public override void TargetShowDamageEffects(NetworkConnection target) {
+        showDamageRenderer.material = damageMaterial;
+        damageParticles.Play();
+        StartCoroutine(ResetDamageMaterial());
+    }
+
+    IEnumerator ResetDamageMaterial() {
+        yield return new WaitForSeconds(2);
+        showDamageRenderer.material = baseMaterial;
     }
 
     public void ResetPosition(Vector3 pos)
@@ -276,7 +326,7 @@ public class AIBehaviour : CharacterBehaviour
         else
             SetAnimTrigger("FireballLeft");
         GameObject newRoyalFireball = Instantiate(royalFireball, transform.position + Vector3.up, transform.rotation);
-        newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
+        newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
         newRoyalFireball.GetComponent<Royalfireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newRoyalFireball);
     }

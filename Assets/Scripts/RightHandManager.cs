@@ -46,7 +46,7 @@ public class RightHandManager : MonoBehaviour
             }
 			
 
-        if (rayInteractor) {
+        if (rayInteractor && !held) {
             lineVisual.enabled = CheckIfRayHit(controller);
             //rayInteractor.enabled = CheckIfActivated(controller);
             lineVisual.reticle.SetActive(CheckIfRayHit(controller));
@@ -55,6 +55,7 @@ public class RightHandManager : MonoBehaviour
         if (player != null && CheckIfActivated(controller) && !held){
             held = true;
             glyphRecognition.Cast();
+            lineVisual.enabled = true;
         }
 
         if (player != null && !CheckIfActivated(controller) && held) {

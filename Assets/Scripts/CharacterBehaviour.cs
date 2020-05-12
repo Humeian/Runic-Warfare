@@ -74,4 +74,6 @@ public abstract class CharacterBehaviour : NetworkBehaviour
 
     public abstract void TargetSetAnimTrigger(NetworkConnection target, string s);
 
+    public abstract void TargetShowDamageEffects(NetworkConnection target);
+
 }

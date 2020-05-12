@@ -20,6 +20,7 @@ public class Fireball : NetworkBehaviour
     public NetworkConnection owner;
     public GameObject ownerGO;
     private bool wasReflected = false;
+    public bool playerThrown; // TODO
 
     private float verticalSpeed;
     private float vertical;
@@ -79,14 +80,14 @@ public class Fireball : NetworkBehaviour
     void OnTriggerEnter(Collider other) {
         // Should not hit the caster
         // This is pretty messy - reminder to clean up afterwards
-        // print("owner: " + owner.ToString());
+        //print("ownerGO: " + ownerGO.ToString());
         //print("other: " + other.ToString());
         if (other.GetComponent<NetworkIdentity>() == null && other.tag != "BodyPart") {
             //print(other.name);
             //print("explode here1");
             ServerSpawnExplosion();
         }
-        else if (other.GetComponent<NetworkIdentity>() != null) {
+        else if (other.GetComponent<NetworkIdentity>() != null && other.tag != "RoyalFire") {
             if (other.tag == "ArcanePulse") {
                 //doesn't reflect more than once... kind of a cop out
                 if (wasReflected == true) {
@@ -114,6 +115,7 @@ public class Fireball : NetworkBehaviour
             }
             //if other object has an identity and wasn't the owner, explode
             else if ((other.GetComponent<NetworkIdentity>().connectionToClient.ToString() != (owner == null ? null : owner.ToString()))) {
+                //Debug.Log("HERE");
                 ServerSpawnExplosion();
             }
             //if fireball was reflected and identity is the owner, explode
@@ -128,6 +130,7 @@ public class Fireball : NetworkBehaviour
     [Server]
     public void ServerSpawnExplosion() {
         GameObject newExplosion = Instantiate(fireballExplosion, transform.position, Quaternion.identity);
+        newExplosion.GetComponent<FireballExplosion>().SetOwner(ownerGO);
         NetworkServer.Spawn(newExplosion);
         Destroy(gameObject);
     }

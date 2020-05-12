@@ -27,8 +27,7 @@ public class RoyalFlame : NetworkBehaviour
             if (other.GetComponent<CharacterBehaviour>().royalBurn >= 1f) {
                 RpcPlaySound();
                 other.GetComponent<CharacterBehaviour>().TakeDamage(1);
-                // if (other.GetComponent<PlayerBehaviour>() != null)
-                //     other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+                other.GetComponent<CharacterBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
                 other.GetComponent<CharacterBehaviour>().royalBurn = 0f;
             }
         }

@@ -18,6 +18,7 @@ public class Royalfireball : NetworkBehaviour
     public GameObject royalFire;
 
     public NetworkConnection owner;
+    public GameObject ownerGO;
     private bool wasReflected = false;
 
     private float verticalSpeed;
@@ -33,8 +34,11 @@ public class Royalfireball : NetworkBehaviour
         StartCoroutine(TravelToDestination());
     }
 
-    public void SetOwner(NetworkConnection connection) {
+    public void SetOwner(NetworkConnection connection, GameObject go) {
+
+        //Debug.Log(connection);
         owner = connection;
+        ownerGO = go;
     }
 
     public void SetTarget(Vector3 p) {
@@ -72,14 +76,21 @@ public class Royalfireball : NetworkBehaviour
             other.GetComponent<Shield>().Break();
             Destroy(gameObject);
         } else if (other.tag == "ArcanePulse") {
-            if (wasReflected) {
+            //doesn't reflect more than once... kind of a cop out
+            if (wasReflected == true) {
                 Destroy(gameObject);
             }
+
             startPosition = transform.position;
             startTime = Time.time;
             //startHeight = transform.position.y;
             verticalSpeed = maxHeight;
-            endPosition = owner.identity.transform.position;
+
+            if (owner != null)
+                endPosition = owner.identity.transform.position;
+            else
+                endPosition = ownerGO.transform.position;
+            SetOwner(other.GetComponent<ArcanePulse>().owner.GetComponent<NetworkIdentity>().connectionToClient, other.gameObject);
             wasReflected = true;
         }
     }

@@ -54,9 +54,7 @@ public class WindSlash : NetworkBehaviour
             if (other.gameObject == otherPlayer) {
                 //Debug.Log("testing  GO: "+other.gameObject+"     owner: "+owner);
                 other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
-                // if (owner.GetComponent<PlayerBehaviour>() != null)
-                //     Debug.Log("here2:  "+owner.GetComponent<PlayerBehaviour>().movingForward);
-                //     other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+                other.GetComponent<CharacterBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
                 owner.GetComponent<CharacterBehaviour>().TargetThrowPlayerBack(owner.GetComponent<NetworkIdentity>().connectionToClient, 0.8f, 2, 40);
                 owner.GetComponent<CharacterBehaviour>().TargetSetAnimTrigger(owner.GetComponent<NetworkIdentity>().connectionToClient, "WindSlashRecoil");
                 ServerSpawnHit();

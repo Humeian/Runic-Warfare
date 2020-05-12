@@ -6,6 +6,7 @@ using Mirror;
 public class FireballExplosion : NetworkBehaviour
 {
     public int damage = 0;
+    public GameObject ownerGO;
 
     
 
@@ -21,6 +22,9 @@ public class FireballExplosion : NetworkBehaviour
         Destroy(gameObject, 1f);
     }
 
+    public void SetOwner(GameObject go) {
+        ownerGO = go;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -31,12 +35,9 @@ public class FireballExplosion : NetworkBehaviour
     //ServerCallback is similar to Server but doesn't generate a warning when called on client.
     [ServerCallback]
     void OnTriggerEnter(Collider other) {
-        if (other.tag == "Player") {
-            
+        if (other.tag == "Player" && other.gameObject != ownerGO) {
             other.GetComponent<CharacterBehaviour>().TakeDamage(damage);
-            // if (other.GetComponent<PlayerBehaviour>() != null) {
-            //     other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
-            // }
+            other.GetComponent<CharacterBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
             Destroy(GetComponent<SphereCollider>(), 0);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();

@@ -4893,6 +4893,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   damage: 1
+  ownerGO: {fileID: 0}
 --- !u!114 &6148260965015535202
 MonoBehaviour:
   m_ObjectHideFlags: 0

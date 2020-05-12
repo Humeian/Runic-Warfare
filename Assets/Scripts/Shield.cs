@@ -61,7 +61,7 @@ public class Shield : NetworkBehaviour
     }
 
     IEnumerator FadeOut() {
-        Destroy(GetComponent<BoxCollider>());
+        Destroy(GetComponent<MeshCollider>());
         GetComponent<AudioSource>().Play();
         float duration = 0.3f;
         float currentTime = 0f;
@@ -75,9 +75,9 @@ public class Shield : NetworkBehaviour
             currentTime += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
-        Destroy(transform.GetChild(2).gameObject);
-        Destroy(transform.GetChild(1).gameObject);
-        Destroy(transform.GetChild(0).gameObject);
+        // Destroy(transform.GetChild(2).gameObject);
+        // Destroy(transform.GetChild(1).gameObject);
+        // Destroy(transform.GetChild(0).gameObject);
         Destroy(GetComponent<MeshRenderer>());
         Destroy(gameObject, 2f);
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -21,6 +22,8 @@ public class MovementProvider : LocomotionProvider
     public GameObject player;
     public GameObject drawingAnchor;
 
+    private bool isHeadSetOnLastFrame;
+
     protected override void Awake()
     {
         //characterController = GetComponent<CharacterController>();
@@ -37,6 +40,18 @@ public class MovementProvider : LocomotionProvider
         //PositionController();
         //CheckForInput();
         //ApplyGravity();
+
+        // Pause and Start Game is Head set removed/replaced
+        bool isHeadSetOn = XRDevice.userPresence == UserPresenceState.Present;
+        if (isHeadSetOnLastFrame && !isHeadSetOn) {
+            Debug.Log("User Removed Headset");
+            Pause();
+        } else if (!isHeadSetOnLastFrame && isHeadSetOn) {
+            Debug.Log("User Put Headset On");
+            StartCoroutine(Play());
+        }
+        isHeadSetOnLastFrame = isHeadSetOn;
+
 
         if(!playerFound){
             try {
@@ -69,6 +84,15 @@ public class MovementProvider : LocomotionProvider
         // } 
 
 
+    }
+
+    IEnumerator Play() {
+        yield return new WaitForSecondsRealtime(2);
+        Time.timeScale = 1;
+    }
+
+    void Pause() {
+        Time.timeScale = 0;
     }
 
     private void PositionController()

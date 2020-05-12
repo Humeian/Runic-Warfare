@@ -50,11 +50,14 @@ public class PlayerBehaviour : CharacterBehaviour
     public int dragMoveSpeed = 10;
     private float movementCooldown = 2f;
 
+    public float spellVelocity = 20;
     public string heldSpell;
-    public GameObject castingHand, movingHand;
+    public GameObject castingHand, movingHand, spellReticle, baseReticle;
+    public XRRayInteractor castingRay;
+    public XRInteractorLineVisual castingLineRenderer;
     public SkinnedMeshRenderer castingHandRenderer, movementHandRenderer;
     public Material baseMaterial, spellHandGlow, movementCooldownGlow;
-    public ParticleSystem fireParticles, lightningParticles, windParticles, royalParticles, iceParticles;
+    public ParticleSystem fireParticles, lightningParticles, windParticles, royalParticles, iceParticles, damageParticles;
     public GameObject shieldSphere, arcanoSphere;
     public Dictionary<string, Color> handColours = new Dictionary<string, Color>();
 
@@ -78,8 +81,27 @@ public class PlayerBehaviour : CharacterBehaviour
         red = new Color(1f, 0f, 0f, 1f);
         shields = new List<GameObject>();
 
+        handColours.Add("fireball", new Color(1f, 0, 0));
+		handColours.Add("shield", new Color(113/255f, 199/255f, 1f));
+		handColours.Add("windslash", new Color(26/255f, 1f, 0));
+		handColours.Add("lightning", new Color(1f, 247/255f, 103/255f));
+		handColours.Add("arcanopulse", new Color(214/255f, 135/255f, 1f));
+		handColours.Add("icespikes", new Color(50/255f, 50/255f, 1f));
+		handColours.Add("royalfire", new Color(156/255f, 0f, 1f));
+
         castingHand = GameObject.Find("RightHand Controller");
         Debug.Log("Casting Hand GameObject: "+ castingHand);
+
+        try {
+            castingRay = castingHand.GetComponent<XRRayInteractor>();
+            castingLineRenderer = castingHand.GetComponent<XRInteractorLineVisual>();
+        } catch {
+            Debug.Log("Could not get: casting ray and/or casting line renderer");
+        }
+        
+        spellReticle = GameObject.Find("TargetingReticle");
+        baseReticle = GameObject.Find("Reticle");
+
         movingHand = GameObject.Find("LeftHand Controller");
         Debug.Log("Moving Hand GameObject: "+ movingHand);
 
@@ -96,14 +118,8 @@ public class PlayerBehaviour : CharacterBehaviour
         windParticles = GameObject.Find("WindParticles").GetComponent<ParticleSystem>();
         royalParticles = GameObject.Find("RoyalParticles").GetComponent<ParticleSystem>();
         iceParticles = GameObject.Find("IceParticles").GetComponent<ParticleSystem>();
+        damageParticles = GameObject.Find("AnchorDamageParticles").GetComponent<ParticleSystem>();
 
-        handColours.Add("fireball", new Color(1f, 0, 0));
-		handColours.Add("shield", new Color(113/255f, 199/255f, 1f));
-		handColours.Add("windslash", new Color(26/255f, 1f, 0));
-		handColours.Add("lightning", new Color(1f, 247/255f, 103/255f));
-		handColours.Add("arcanopulse", new Color(214/255f, 135/255f, 1f));
-		handColours.Add("icespikes", new Color(50/255f, 50/255f, 1f));
-		handColours.Add("royalfire", new Color(156/255f, 0f, 1f));
     }
 
     IEnumerator testmove() {
@@ -164,7 +180,12 @@ public class PlayerBehaviour : CharacterBehaviour
         GameObject.Find("HP4").GetComponent<UnityEngine.UI.Image>().color = new Color(1f, 1f, 1f);
 
         // Disable Win/Loss text
-        //GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(false);
+        try {
+            GameObject.Find("RoundWinText").SetActive(false);
+        } catch {
+            Debug.Log("Could not disable round win text / already disabled");
+        }
+        //GameObject.Find("Drawing Plane").transform.Find("RoundWinText").gameObject.SetActive(false);
         //GameObject.Find("GameUI").transform.Find("LossPanel").gameObject.SetActive(false);
 
         shields.Clear();
@@ -175,9 +196,9 @@ public class PlayerBehaviour : CharacterBehaviour
         movingRight = 0;
         movingUp = 0;
 
-        // if (gameManager.round == 1) {
-        //     GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = 0 + " - " + 0;
-        // }
+        if (gameManager.round == 1) {
+            GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = 0 + " - " + 0;
+        }
     }
 
     private IEnumerator WaitForRoundStart() {
@@ -197,30 +218,41 @@ public class PlayerBehaviour : CharacterBehaviour
     [TargetRpc]
     public void TargetWinRound(NetworkConnection connection, int p1Score, int p2Score, int round) {
         // Display Win text
-        GameObject.Find("GameUI").transform.Find("WinPanel").gameObject.SetActive(true);
-
-        // if (p1Score >= 3) {
-        //     GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 1 Wins!";
-        // }
-        // else if (p2Score >= 3) {
-        //     GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = "Player 2 Wins!";
-        // }
-        // else {
-        //     GameObject.Find("GameUI").transform.Find("WinPanel").transform.GetChild(1).GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
-        // }
+        try {
+            GameObject winTextGO = GameObject.Find("Drawing Plane").transform.Find("RoundWinText").gameObject;
+            winTextGO.SetActive(true);
+            UnityEngine.UI.Text winText = winTextGO.GetComponent<UnityEngine.UI.Text>();
+            if (p1Score >= 3) {
+                winText.text = "You Win!";
+            }
+            else if (p2Score >= 3) {
+                winText.text = "You have lost.";
+            }
+            else {
+                winText.text = p1Score + " - " + p2Score;
+            }
+        } catch {
+            Debug.Log("Error displaying Round Win Text");
+        }
+        
         
         // Display Rematch button
-        GameObject.Find("Drawing Plane").transform.Find("Rematch").gameObject.SetActive(true);
-        if (p1Score >= 3 || p2Score >= 3) {
-            GameObject.Find("Drawing Plane").transform.Find("Rematch").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
+        try {
+            GameObject.Find("Drawing Plane").transform.Find("Rematch").gameObject.SetActive(true);
+            if (p1Score >= 3 || p2Score >= 3) {
+                GameObject.Find("Drawing Plane").transform.Find("Rematch").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Rematch?";
+            }
+            else {
+                GameObject.Find("Drawing Plane").transform.Find("Rematch").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
+            }
+        } catch {
+            Debug.Log("Error displaying Rematch button");
         }
-        else {
-            GameObject.Find("Drawing Plane").transform.Find("Rematch").transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "Next Round";
-        }
+        
+        currentRound = round;
 
         //Update # of wins and round number
         GameObject.Find("WinsText").GetComponent<UnityEngine.UI.Text>().text = p1Score + " - " + p2Score;
-        currentRound = round;
     }
     [TargetRpc]
     public void TargetLoseRound(NetworkConnection connection, int p1Score, int p2Score, int round) {
@@ -347,7 +379,7 @@ public class PlayerBehaviour : CharacterBehaviour
         while (true) {
             float distanceFromCenter = DistanceToCenter();
 
-            if (distanceFromCenter < 24){
+            if (distanceFromCenter < 34){
                 if (movingRight != 0) {
                     transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
 
@@ -456,11 +488,11 @@ public class PlayerBehaviour : CharacterBehaviour
 
     //TargetRpc: Effect will only appear on the targeted network client.
     [TargetRpc]
-    public void TargetShowDamageEffects(NetworkConnection target) {
+    public override void TargetShowDamageEffects(NetworkConnection target) {
         //UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
         //redscreen.color = new Color(1f, 0f, 0f, 0.8f);
-
-        //Camera.main.GetComponent<ScreenShakeVREffect>().Shake(0.7f, 0.5f);
+        Debug.Log("Player HIT");
+        damageParticles.Play();
 
         //Color red = new Color(1f, 0f, 0f, 1f);
     }
@@ -474,9 +506,32 @@ public class PlayerBehaviour : CharacterBehaviour
         }
     }
 
+    public void EnableProjectileLine(float maxHeight, float sVelocity) {
+        castingRay.lineType = XRRayInteractor.LineType.ProjectileCurve;
+        castingRay.controlPointHeight = maxHeight;
+        castingRay.enableUIInteraction = false;
+        castingRay.Velocity = sVelocity != 0 ? sVelocity : spellVelocity;
+
+        // Swap to spell reticle and enable it.
+        castingLineRenderer.reticle = spellReticle;
+        castingLineRenderer.reticle.SetActive(true);
+    }
+
+    public void DisableProjectileLine() {
+        castingRay.lineType = XRRayInteractor.LineType.StraightLine;
+        castingRay.enableUIInteraction = true;
+
+        // Disable the spell reticle so that it doesnt persist
+        castingLineRenderer.reticle.SetActive(false);
+        
+        // Swap back to small sphere reticle
+        castingLineRenderer.reticle = baseReticle;
+    }
+
     public virtual void CastFireball(int horizontal, float horizSpeed) {
         heldSpell = "fireball";
         SetHandGlow(heldSpell);
+        EnableProjectileLine(7f, 25f);
         if (fireParticles) {
             print("fire particles play");
             fireParticles.Play();
@@ -497,6 +552,7 @@ public class PlayerBehaviour : CharacterBehaviour
             CmdSetAnimTrigger("FireballLeft");
         CmdCastFireball();
         fireParticles.Stop();
+        DisableProjectileLine();
     }
 
     [TargetRpc]
@@ -641,6 +697,7 @@ public class PlayerBehaviour : CharacterBehaviour
     public void CastRoyalFire(int horizontal, float horizSpeed) {
         heldSpell = "royalfire";
         SetHandGlow(heldSpell);
+        EnableProjectileLine(6f, 16f);
         if (royalParticles) {
             print("royal particles play");
             royalParticles.Play();
@@ -660,6 +717,7 @@ public class PlayerBehaviour : CharacterBehaviour
             CmdSetAnimTrigger("FireballLeft");
         CmdCastRoyalFire();
         royalParticles.Stop();
+        DisableProjectileLine();
     }
 
     public void CastFizzle()
@@ -693,6 +751,7 @@ public class PlayerBehaviour : CharacterBehaviour
         // Debug.Log("throwback");
         movingForward = -duration;
         speedForward = horizontal;
+        movementCooldown = 1.0f;
         //speedUp = vertical;
         //StartCoroutine(ThrowBack(horizontal, vertical, duration));
     }
@@ -704,15 +763,31 @@ public class PlayerBehaviour : CharacterBehaviour
     public void CmdCastFireball() {
         GameObject newFireball = Instantiate(fireball, castingHand.transform.position, transform.rotation);
         newFireball.GetComponent<Fireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
-        newFireball.GetComponent<Fireball>().SetTarget(otherPlayer.transform.position);
+
+        // Get position of the casting projectile ray target hit
+        RaycastHit rayHit;
+        Vector3 target = otherPlayer.transform.position;
+        if (castingRay.GetCurrentRaycastHit(out rayHit)) {
+            target = rayHit.point;
+        }
+
+        newFireball.GetComponent<Fireball>().SetTarget(target);
         NetworkServer.Spawn(newFireball);
     }
 
     [Command]
     public void CmdCastRoyalFire() {
         GameObject newRoyalFireball = Instantiate(royalFireball, castingHand.transform.position, transform.rotation);
-        newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
-        newRoyalFireball.GetComponent<Royalfireball>().SetTarget(otherPlayer.transform.position);
+        newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
+
+        // Get position of the casting projectile ray target hit
+        RaycastHit rayHit;
+        Vector3 target = otherPlayer.transform.position;
+        if (castingRay.GetCurrentRaycastHit(out rayHit)) {
+            target = rayHit.point;
+        }
+
+        newRoyalFireball.GetComponent<Royalfireball>().SetTarget(target);
         NetworkServer.Spawn(newRoyalFireball);
     }
 

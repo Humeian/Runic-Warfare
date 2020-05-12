@@ -59,8 +59,7 @@ public class IceSpikeProjectile : NetworkBehaviour
             != (owner == null ? null : owner.ToString())
         ) {
             other.GetComponent<CharacterBehaviour>().TakeDamage(1);
-            // if (other.GetComponent<PlayerBehaviour>() != null)
-            //     other.GetComponent<PlayerBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
+            other.GetComponent<CharacterBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
             other.GetComponent<CharacterBehaviour>().TargetThrowPlayerBack(other.GetComponent<NetworkIdentity>().connectionToClient, 0.6f, 0, 40);
             Destroy(gameObject);
         }

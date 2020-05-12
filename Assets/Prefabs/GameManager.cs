@@ -129,7 +129,7 @@ public class GameManager : NetworkBehaviour
         }
 
         if (roundStarted && !roundFinished){
-            Debug.Log("P1:  "+ p1 + "   P2:  "+p2);
+            //Debug.Log("P1:  "+ p1 + "   P2:  "+p2);
             if (p1.health <= 0 || p2.health <= 0) {
                 roundStarted = false;
                 roundFinished = true;
@@ -141,6 +141,11 @@ public class GameManager : NetworkBehaviour
             EndRound(1);
             roundStarted = false;
         }
+    }
+
+    public void SetPlayerSpellVelocity(float velocity) {
+        GameObject.Find("TestPlayer(Clone)").GetComponent<PlayerBehaviour>().spellVelocity = velocity;
+        Debug.Log("Spell Velocity: "+velocity);
     }
 
     [Server]
@@ -181,7 +186,7 @@ public class GameManager : NetworkBehaviour
         
 
         p1.RpcResetUI();
-        //p2.RpcResetUI();
+        p2.RpcResetUI();
 
         timer = 63f;
 
@@ -210,6 +215,9 @@ public class GameManager : NetworkBehaviour
         } catch {
             Debug.Log("Round end against AI / No Player2 Found");
         }
+
+        if (p2.GetComponent<AIBehaviour>() != null)
+            p2.GetComponent<AIBehaviour>().disableAttacking();
         
         // p1PlayerBehaviour.RpcDisableGlyphInput();
         // if(p2PlayerBehaviour != null)

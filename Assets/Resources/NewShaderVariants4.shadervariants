@@ -594,6 +594,10 @@ ShaderVariantCollection:
         passType: 13
       - keywords: _GLOSSINESS_FROM_BASE_ALPHA
         passType: 13
+      - keywords: _GLOSSINESS_FROM_BASE_ALPHA _MAIN_LIGHT_SHADOWS _SPECULAR_COLOR
+        passType: 13
+      - keywords: _EMISSION _GLOSSINESS_FROM_BASE_ALPHA _MAIN_LIGHT_SHADOWS _SPECULAR_COLOR
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _GLOSSINESS_FROM_BASE_ALPHA _SPECULAR_COLOR
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _EMISSION _GLOSSINESS_FROM_BASE_ALPHA _SPECULAR_COLOR
@@ -714,6 +718,8 @@ ShaderVariantCollection:
         passType: 13
       - keywords: _MAIN_LIGHT_SHADOWS
         passType: 13
+      - keywords: _EMISSION _MAIN_LIGHT_SHADOWS
+        passType: 13
       - keywords: _NORMALMAP
         passType: 13
       - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP
@@ -748,6 +754,8 @@ ShaderVariantCollection:
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _EMISSION _METALLICSPECGLOSSMAP _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _OCCLUSIONMAP
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _NORMALMAP _OCCLUSIONMAP
         passType: 13
       - keywords: _MAIN_LIGHT_SHADOWS _METALLICSPECGLOSSMAP _OCCLUSIONMAP
@@ -768,7 +776,11 @@ ShaderVariantCollection:
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ALPHAPREMULTIPLY_ON _EMISSION _NORMALMAP _SPECULARHIGHLIGHTS_OFF
         passType: 13
+      - keywords: _EMISSION _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _EMISSION _ENVIRONMENTREFLECTIONS_OFF
+        passType: 13
+      - keywords: _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _SPECULARHIGHLIGHTS_OFF
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ENVIRONMENTREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
         passType: 13
@@ -776,6 +788,8 @@ ShaderVariantCollection:
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ALPHAPREMULTIPLY_ON _ENVIRONMENTREFLECTIONS_OFF
           _SPECULARHIGHLIGHTS_OFF
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _SPECULAR_SETUP
         passType: 13
       - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _SPECULAR_SETUP
         passType: 13
@@ -811,6 +825,9 @@ ShaderVariantCollection:
       - keywords: _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP _SPECULARHIGHLIGHTS_OFF
           _SPECULAR_SETUP
         passType: 13
+      - keywords: FOG_EXP _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP
+          _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP _SPECULARHIGHLIGHTS_OFF
           _SPECULAR_SETUP
         passType: 13
@@ -820,6 +837,9 @@ ShaderVariantCollection:
       - keywords: _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
           _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
         passType: 13
+      - keywords: FOG_EXP _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP
+          _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
           _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
         passType: 13
@@ -827,6 +847,8 @@ ShaderVariantCollection:
     second:
       variants:
       - keywords: 
+        passType: 0
+      - keywords: FOG_EXP
         passType: 0
       - keywords: _EMISSION
         passType: 0

@@ -8,263 +8,6 @@ ShaderVariantCollection:
   m_PrefabAsset: {fileID: 0}
   m_Name: NewShaderVariants
   m_Shaders:
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 8
-      - keywords: 
-        passType: 11
-      - keywords: 
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: _ADDITIONAL_LIGHTS
-        passType: 13
-  - first: {fileID: 0}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
   - first: {fileID: 66, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
@@ -386,8 +129,6 @@ ShaderVariantCollection:
       variants:
       - keywords: DIRECTIONAL LIGHTPROBE_SH
         passType: 4
-      - keywords: SHADOWS_DEPTH
-        passType: 8
   - first: {fileID: 4, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
@@ -646,8 +387,6 @@ ShaderVariantCollection:
         passType: 4
       - keywords: DIRECTIONAL FOG_EXP LIGHTPROBE_SH
         passType: 4
-      - keywords: SHADOWS_DEPTH
-        passType: 8
   - first: {fileID: 4800000, guid: 05b53b473302943b58b8e33c93a38dac, type: 3}
     second:
       variants:
@@ -658,12 +397,6 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 0
-      - keywords: DIRECTIONAL LIGHTPROBE_SH _EMISSION
-        passType: 4
-      - keywords: DIRECTIONAL INSTANCING_ON LIGHTPROBE_SH _EMISSION
-        passType: 4
-      - keywords: DIRECTIONAL FOG_EXP INSTANCING_ON LIGHTPROBE_SH _EMISSION
-        passType: 4
   - first: {fileID: 4800000, guid: 25bc671e448181c4fab3e6f52fb9d4bd, type: 3}
     second:
       variants:
@@ -723,9 +456,19 @@ ShaderVariantCollection:
         passType: 8
       - keywords: _GLOSSINESS_FROM_BASE_ALPHA
         passType: 8
+      - keywords: 
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _SPECULAR_COLOR
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _SPECULAR_COLOR
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _EMISSION _SPECULAR_COLOR
+        passType: 13
+      - keywords: _GLOSSINESS_FROM_BASE_ALPHA
+        passType: 13
+      - keywords: _GLOSSINESS_FROM_BASE_ALPHA _MAIN_LIGHT_SHADOWS _SPECULAR_COLOR
+        passType: 13
+      - keywords: _EMISSION _GLOSSINESS_FROM_BASE_ALPHA _MAIN_LIGHT_SHADOWS _SPECULAR_COLOR
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _GLOSSINESS_FROM_BASE_ALPHA _SPECULAR_COLOR
         passType: 13
@@ -736,6 +479,16 @@ ShaderVariantCollection:
       - keywords: _ADDITIONAL_LIGHTS _EMISSION _GLOSSINESS_FROM_BASE_ALPHA _NORMALMAP
           _SPECULAR_COLOR
         passType: 13
+  - first: {fileID: 4800000, guid: a2e1bd1683794564b8f9036042fc24df, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: d6e484e4a83aaf34ca4f8f8a2dc7c484, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
   - first: {fileID: 4800000, guid: 770d4288435db7c45b6e9dab10d955b2, type: 3}
     second:
       variants:
@@ -791,6 +544,8 @@ ShaderVariantCollection:
         passType: 8
       - keywords: 
         passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS
@@ -827,21 +582,31 @@ ShaderVariantCollection:
         passType: 8
       - keywords: INSTANCING_ON
         passType: 8
-      - keywords: _ALPHATEST_ON
-        passType: 8
       - keywords: _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+        passType: 8
+      - keywords: _ALPHATEST_ON
         passType: 8
       - keywords: 
         passType: 13
-      - keywords: _NORMALMAP
+      - keywords: INSTANCING_ON
         passType: 13
       - keywords: _MAIN_LIGHT_SHADOWS
         passType: 13
+      - keywords: _EMISSION _MAIN_LIGHT_SHADOWS
+        passType: 13
+      - keywords: _NORMALMAP
+        passType: 13
       - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP
+        passType: 13
+      - keywords: _ALPHAPREMULTIPLY_ON
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _EMISSION
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _RECEIVE_SHADOWS_OFF
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _EMISSION _RECEIVE_SHADOWS_OFF
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _NORMALMAP
         passType: 13
@@ -849,21 +614,29 @@ ShaderVariantCollection:
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ALPHAPREMULTIPLY_ON _EMISSION
         passType: 13
-      - keywords: _ADDITIONAL_LIGHTS _RECEIVE_SHADOWS_OFF
+      - keywords: _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         passType: 13
-      - keywords: _ADDITIONAL_LIGHTS _EMISSION _RECEIVE_SHADOWS_OFF
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS _METALLICSPECGLOSSMAP _NORMALMAP
-        passType: 13
-      - keywords: _ADDITIONAL_LIGHTS _EMISSION _METALLICSPECGLOSSMAP _NORMALMAP
+      - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _METALLICSPECGLOSSMAP _NORMALMAP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _EMISSION _METALLICSPECGLOSSMAP _NORMALMAP
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _EMISSION _METALLICSPECGLOSSMAP _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
         passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _OCCLUSIONMAP
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _NORMALMAP _OCCLUSIONMAP
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _METALLICSPECGLOSSMAP _OCCLUSIONMAP
+        passType: 13
+      - keywords: _METALLICSPECGLOSSMAP _NORMALMAP _OCCLUSIONMAP
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _METALLICSPECGLOSSMAP _NORMALMAP _OCCLUSIONMAP
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _METALLICSPECGLOSSMAP _OCCLUSIONMAP
         passType: 13
@@ -879,7 +652,11 @@ ShaderVariantCollection:
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ALPHAPREMULTIPLY_ON _EMISSION _NORMALMAP _SPECULARHIGHLIGHTS_OFF
         passType: 13
+      - keywords: _EMISSION _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _EMISSION _ENVIRONMENTREFLECTIONS_OFF
+        passType: 13
+      - keywords: _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _SPECULARHIGHLIGHTS_OFF
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ENVIRONMENTREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
         passType: 13
@@ -888,12 +665,69 @@ ShaderVariantCollection:
       - keywords: _ADDITIONAL_LIGHTS _ALPHAPREMULTIPLY_ON _ENVIRONMENTREFLECTIONS_OFF
           _SPECULARHIGHLIGHTS_OFF
         passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _SPECULAR_SETUP
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _SPECULAR_SETUP
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _NORMALMAP _SPECULAR_SETUP
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULAR_SETUP
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _NORMALMAP _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: _MAIN_LIGHT_SHADOWS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP _SPECULARHIGHLIGHTS_OFF
+          _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP _SPECULARHIGHLIGHTS_OFF
+          _SPECULAR_SETUP
+        passType: 13
+      - keywords: FOG_EXP _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP
+          _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: FOG_EXP INSTANCING_ON _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS
+          _NORMALMAP _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP _SPECULARHIGHLIGHTS_OFF
+          _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: FOG_EXP _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS _NORMALMAP
+          _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS _ENVIRONMENTREFLECTIONS_OFF _NORMALMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+          _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP
         passType: 13
   - first: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
     second:
       variants:
       - keywords: 
+        passType: 0
+      - keywords: FOG_EXP
         passType: 0
       - keywords: _EMISSION
         passType: 0
@@ -953,11 +787,17 @@ ShaderVariantCollection:
   - first: {fileID: 4800000, guid: 8516d7a69675844a7a0b7095af7c46af, type: 3}
     second:
       variants:
+      - keywords: 
+        passType: 13
+      - keywords: _ALPHAPREMULTIPLY_ON
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS _RECEIVE_SHADOWS_OFF
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _COLORADDSUBDIFF_ON _RECEIVE_SHADOWS_OFF
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _RECEIVE_SHADOWS_OFF _SPECGLOSSMAP
+        passType: 13
+      - keywords: _ALPHATEST_ON
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _ALPHATEST_ON _RECEIVE_SHADOWS_OFF _SPECGLOSSMAP
         passType: 13
@@ -986,11 +826,6 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 0
-  - first: {fileID: 4800000, guid: e6e9a19c3678ded42a3bc431ebef7dbd, type: 3}
-    second:
-      variants:
-      - keywords: 
-        passType: 0
   - first: {fileID: 4800000, guid: 77cfa04f893eb8745b6a454a3d51b43c, type: 3}
     second:
       variants:
@@ -999,6 +834,8 @@ ShaderVariantCollection:
   - first: {fileID: 4800000, guid: b7839dad95683814aa64166edc107ae2, type: 3}
     second:
       variants:
+      - keywords: 
+        passType: 13
       - keywords: _MAIN_LIGHT_SHADOWS _RECEIVE_SHADOWS_OFF
         passType: 13
       - keywords: _ADDITIONAL_LIGHTS _RECEIVE_SHADOWS_OFF
@@ -1040,5 +877,67 @@ ShaderVariantCollection:
       variants:
       - keywords: 
         passType: 8
+      - keywords: 
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: ec45570f49d41b8449dd7b5916aa1fce,
+      type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: 
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: 24968a1f95434714bb2a826354b71154,
+      type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: 
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: 3291ac53cef87384f9b0417c209098bb,
+      type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: 
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS
+        passType: 13
+  - first: {fileID: -6465566751694194690, guid: 52cc3bd9653ff1449bea8c24dd738187,
+      type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 8
+      - keywords: 
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX
+        passType: 13
+      - keywords: _ADDITIONAL_LIGHTS_VERTEX _MAIN_LIGHT_SHADOWS
+        passType: 13
       - keywords: _ADDITIONAL_LIGHTS
         passType: 13
