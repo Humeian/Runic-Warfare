@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5145835247882227261}
   - component: {fileID: 4263416702793032899}
   - component: {fileID: 1873125556074044768}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4823,7 +4823,7 @@ GameObject:
   - component: {fileID: 6703208162388985427}
   - component: {fileID: 3045728327167037673}
   - component: {fileID: 2769583647661772903}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9635,7 +9635,7 @@ GameObject:
   - component: {fileID: 6601376089563967727}
   - component: {fileID: 8393120309137427154}
   - component: {fileID: 7639649769927149978}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14448,7 +14448,7 @@ GameObject:
   - component: {fileID: 1258255659364097843}
   - component: {fileID: 1910313469893023849}
   - component: {fileID: -1276991798419379164}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: LightningCharge
   m_TagString: Untagged
   m_Icon: {fileID: 0}

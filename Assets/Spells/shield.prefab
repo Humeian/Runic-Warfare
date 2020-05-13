@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6397421353840671520}
   - component: {fileID: 4259821833396138710}
   - component: {fileID: 5472008688918555212}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ShieldParticles (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4770,7 +4770,7 @@ GameObject:
   - component: {fileID: -9068410303574370253}
   - component: {fileID: -8034225962845838900}
   - component: {fileID: 1558135841308804889}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: shield
   m_TagString: Shield
   m_Icon: {fileID: 0}
@@ -5014,7 +5014,7 @@ GameObject:
   - component: {fileID: 7882532934585213722}
   - component: {fileID: 3243917709778690034}
   - component: {fileID: 2148392522981045006}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ShieldParticles (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9768,7 +9768,7 @@ GameObject:
   - component: {fileID: 1098216198604021089}
   - component: {fileID: 6858651548146082134}
   - component: {fileID: 8007125321586703065}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ShieldParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}

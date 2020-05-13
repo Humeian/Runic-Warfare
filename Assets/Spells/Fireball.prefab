@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6481481089858113146}
   - component: {fileID: 8448270020204999195}
   - component: {fileID: 6890199300740855317}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GlowParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4765,7 +4765,7 @@ GameObject:
   - component: {fileID: 4960985509446013618}
   - component: {fileID: 4740982913552007201}
   - component: {fileID: 5988974519164314123}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SparkParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9525,7 +9525,7 @@ GameObject:
   - component: {fileID: 4583846965969410720}
   - component: {fileID: 2191327337782821237}
   - component: {fileID: 2080311162796534342}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9643,6 +9643,7 @@ MonoBehaviour:
   fireballExplosion: {fileID: 1685594889111544145, guid: cc45b751bd5a8ae4c95e6ef63e559c1b,
     type: 3}
   ownerGO: {fileID: 0}
+  playerThrown: 0
 --- !u!114 &4583846965969410720
 MonoBehaviour:
   m_ObjectHideFlags: 0

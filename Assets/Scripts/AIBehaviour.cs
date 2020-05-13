@@ -141,7 +141,7 @@ public class AIBehaviour : CharacterBehaviour
         {
             float distanceFromCenter = DistanceToCenter();
 
-            if (distanceFromCenter < 34)
+            if (distanceFromCenter < 29)
             {
                 if (movingRight != 0)
                 {

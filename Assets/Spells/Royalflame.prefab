@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 68290323725977345}
   - component: {fileID: 68290323725977347}
   - component: {fileID: 68290323725977344}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4765,7 +4765,7 @@ GameObject:
   - component: {fileID: 68290324719739413}
   - component: {fileID: 68290324719739415}
   - component: {fileID: 68290324719739412}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9519,7 +9519,7 @@ GameObject:
   - component: {fileID: 68290325083509353}
   - component: {fileID: 68290325083509355}
   - component: {fileID: 68290325083509352}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle1 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14278,7 +14278,7 @@ GameObject:
   - component: {fileID: -9187748574439438256}
   - component: {fileID: 9028115922666963745}
   - component: {fileID: -3618487931740468213}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Royalflame
   m_TagString: RoyalFire
   m_Icon: {fileID: 0}
@@ -14585,7 +14585,7 @@ GameObject:
   - component: {fileID: 7569628851599525428}
   - component: {fileID: 5547240169319459015}
   - component: {fileID: 3232101847656254152}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

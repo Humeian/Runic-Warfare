@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8620970770811727988}
   - component: {fileID: 8264241533249069799}
   - component: {fileID: 6946307285023342797}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SparkParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4765,7 +4765,7 @@ GameObject:
   - component: {fileID: 7676941375837203644}
   - component: {fileID: 5063569795828895965}
   - component: {fileID: 7846896686557058259}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GlowParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9525,7 +9525,7 @@ GameObject:
   - component: {fileID: 929493815410702438}
   - component: {fileID: 3247668927102460851}
   - component: {fileID: 3433324903504644224}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Royalfireball
   m_TagString: RoyalFire
   m_Icon: {fileID: 0}
@@ -9641,6 +9641,7 @@ MonoBehaviour:
   travelTime: 1.2
   maxHeight: 6
   royalFire: {fileID: 68290325394088080, guid: cb308724ab9e4a34e9f135f8f8f11d85, type: 3}
+  ownerGO: {fileID: 0}
 --- !u!114 &929493815410702438
 MonoBehaviour:
   m_ObjectHideFlags: 0

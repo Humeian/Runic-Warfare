@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 5366206059510087235}
   - component: {fileID: 429674872}
   - component: {fileID: 429674871}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: IceSpikeProjectile
   m_TagString: IceSpikes
   m_Icon: {fileID: 0}

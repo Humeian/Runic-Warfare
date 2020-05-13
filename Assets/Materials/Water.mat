@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dissolve
-  m_Shader: {fileID: -6465566751694194690, guid: 6e7e1864f82e136408ca9200f37bdada,
+  m_Name: Water
+  m_Shader: {fileID: -6465566751694194690, guid: 5ae59a75d33aeb440be7badc05e4821b,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -21,7 +21,9 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Floats:
-    - Vector1_2CD14E2D: 30
-    - Vector1_938B540C: 0.04
+    - Vector1_8F8D047D: 7
+    - Vector1_959100F4: 5
+    - Vector1_AFA18EDD: 1
     m_Colors:
-    - Color_948BCB6E: {r: 0, g: 5.145098, b: 16, a: 0}
+    - Color_51A80348: {r: 0.3529412, g: 1.372549, b: 1.905882, a: 0}
+    - Color_99319668: {r: 0.22745097, g: 0.5803921, b: 0.9372549, a: 0}

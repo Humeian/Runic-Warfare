@@ -22,8 +22,9 @@ public class FireballExplosion : NetworkBehaviour
         Destroy(gameObject, 1f);
     }
 
-    public void SetOwner(GameObject go) {
+    public void SetOwner(GameObject go, bool playerOwned) {
         ownerGO = go;
+        if (playerOwned) GetComponent<SphereCollider>().radius += 1f;
     }
     // Update is called once per frame
     void Update()

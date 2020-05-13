@@ -25,10 +25,6 @@ public class WindSlash : NetworkBehaviour
     }
 
     void Start() {
-        Color green = new Color(0.5f, 1f, 0.5f, 0.6f);
-        // if (owner.GetComponent<PlayerBehaviour>() != null)
-        //     owner.GetComponent<PlayerBehaviour>().TargetPaintScreen(owner.GetComponent<NetworkIdentity>().connectionToClient, green);
-
         int random = Random.Range(0, 5);
         //print(random);
         GetComponents<AudioSource>()[random].Play();

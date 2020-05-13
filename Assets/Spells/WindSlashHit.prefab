@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1208374027387855468}
   - component: {fileID: 9146925615327006431}
   - component: {fileID: 4615973182939853000}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4825,7 +4825,7 @@ GameObject:
   - component: {fileID: 893806420110296262}
   - component: {fileID: 7194856930616266909}
   - component: {fileID: 2440254415788499875}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: WindSlashHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9750,7 +9750,7 @@ GameObject:
   - component: {fileID: 2300997970510292979}
   - component: {fileID: 1456565129941163352}
   - component: {fileID: 6021829593043526946}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

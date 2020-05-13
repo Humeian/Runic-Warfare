@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6588932848391252312}
   - component: {fileID: 8232633346124838544}
   - component: {fileID: 3340848053414962848}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ExplosionParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4825,7 +4825,7 @@ GameObject:
   - component: {fileID: 6725657617378068650}
   - component: {fileID: 6148260965015535202}
   - component: {fileID: 1569065998350785516}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: LightningExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4917,7 +4917,7 @@ GameObject:
   - component: {fileID: 1663411369762833463}
   - component: {fileID: 7019887361014190734}
   - component: {fileID: 2256772672982051819}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ExplosionSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}

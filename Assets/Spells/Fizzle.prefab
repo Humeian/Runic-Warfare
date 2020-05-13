@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 463522188449923063}
   - component: {fileID: 4887857282863465203}
   - component: {fileID: 3597102029227726577}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4823,7 +4823,7 @@ GameObject:
   - component: {fileID: 8929650296623541238}
   - component: {fileID: 8395247880406465172}
   - component: {fileID: 4063093783037375525}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9636,7 +9636,7 @@ GameObject:
   - component: {fileID: 3071566930136393030}
   - component: {fileID: 1841436065607578744}
   - component: {fileID: 5622422976428286139}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fizzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

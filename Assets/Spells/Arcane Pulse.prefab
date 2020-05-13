@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 2252626543800577746}
   - component: {fileID: -7338082542962950852}
   - component: {fileID: 8435714966602918512}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Arcane Pulse
   m_TagString: ArcanePulse
   m_Icon: {fileID: 0}

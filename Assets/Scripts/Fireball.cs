@@ -43,11 +43,15 @@ public class Fireball : NetworkBehaviour
     //     StartCoroutine(TravelToDestination());
     // }
 
-    public void SetOwner(NetworkConnection connection, GameObject go) {
+    public void SetOwner(NetworkConnection conn, GameObject go) { SetOwner(conn, go, false); }
+    public void SetOwner(NetworkConnection connection, GameObject go, bool playerOwned) {
 
         Debug.Log(connection);
         owner = connection;
         ownerGO = go;
+        playerThrown = playerOwned;
+        if (playerThrown) travelTime -= 0.85f;
+        Debug.Log("traveltime "+travelTime);
     }
 
     public void SetTarget(Vector3 p) {
@@ -103,7 +107,7 @@ public class Fireball : NetworkBehaviour
                     endPosition = owner.identity.transform.position;
                 else
                     endPosition = ownerGO.transform.position;
-                SetOwner(other.GetComponent<ArcanePulse>().owner.GetComponent<NetworkIdentity>().connectionToClient, other.gameObject);
+                SetOwner(other.GetComponent<ArcanePulse>().owner.GetComponent<NetworkIdentity>().connectionToClient, other.gameObject, !playerThrown);
                 wasReflected = true;
             }
             else if (other.GetComponent<NetworkIdentity>().connectionToClient == null) {
@@ -130,7 +134,7 @@ public class Fireball : NetworkBehaviour
     [Server]
     public void ServerSpawnExplosion() {
         GameObject newExplosion = Instantiate(fireballExplosion, transform.position, Quaternion.identity);
-        newExplosion.GetComponent<FireballExplosion>().SetOwner(ownerGO);
+        newExplosion.GetComponent<FireballExplosion>().SetOwner(ownerGO, playerThrown);
         NetworkServer.Spawn(newExplosion);
         Destroy(gameObject);
     }

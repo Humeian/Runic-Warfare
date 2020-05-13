@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3484686974738788931}
   - component: {fileID: 2414438199681682177}
   - component: {fileID: 5253227911571864518}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4823,7 +4823,7 @@ GameObject:
   - component: {fileID: 7471711193177798853}
   - component: {fileID: 695535534096813402}
   - component: {fileID: 8619004706021879611}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9639,7 +9639,7 @@ GameObject:
   - component: {fileID: 6868700262235933771}
   - component: {fileID: -8587517485500889905}
   - component: {fileID: -5071788112402124467}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: IceSpike
   m_TagString: IceSpikes
   m_Icon: {fileID: 0}
@@ -9850,7 +9850,7 @@ GameObject:
   - component: {fileID: 7579162131363487396}
   - component: {fileID: 1719655370135107706}
   - component: {fileID: 3311132363059629107}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
