@@ -94,7 +94,7 @@ public class GameManager : NetworkBehaviour
         difficultyText.text = difficulty;
 
         try {
-            AIBehaviour ai = GameObject.Find("AI(Clone)").GetComponent<AIBehaviour>();
+            AIBehaviour ai = GameObject.Find("FahrGrimm(Clone)").GetComponent<AIBehaviour>();
             ai.ToggleDifficulty(difficulty);
         } catch {
             Debug.Log("No AI found");
