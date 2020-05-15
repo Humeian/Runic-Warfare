@@ -482,7 +482,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
     public void StartGripMove(Vector3 startPos){
         startGripMove = new Vector3(startPos.x, 0f, startPos.z);
-        Debug.Log("StartGripMove:  "+startGripMove.ToString());
+        //Debug.Log("StartGripMove:  "+startGripMove.ToString());
     }
 
     public void ReleaseGripMove(Vector3 endPos) {
@@ -490,7 +490,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
         if (movementCooldown == 0) {
             Vector3 movement = startGripMove - releaseGripMove;
-            Debug.Log("Movement: "+movement.ToString()+ "   Magnitude: "+movement.magnitude);
+            //Debug.Log("Movement: "+movement.ToString()+ "   Magnitude: "+movement.magnitude);
 
             // Move player in direction of pull * speed
             transform.position += movement * dragMoveSpeed;
@@ -540,7 +540,7 @@ public class PlayerBehaviour : CharacterBehaviour
     public override void TargetShowDamageEffects(NetworkConnection target) {
         //UnityEngine.UI.Image redscreen = GameObject.Find("Canvas").transform.Find("Basic Glyph Input").gameObject.GetComponent<UnityEngine.UI.Image>();
         //redscreen.color = new Color(1f, 0f, 0f, 0.8f);
-        Debug.Log("Player HIT");
+        //Debug.Log("Player HIT");
         damageParticles.Play();
 
         //Color red = new Color(1f, 0f, 0f, 1f);
@@ -579,7 +579,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
     [Command]
     public void CmdSetAnimTrigger(string s) {
-        print("Calling animation for " + s);
+        //print("Calling animation for " + s);
         animator.SetTrigger(s);
     }
 
@@ -671,7 +671,7 @@ public class PlayerBehaviour : CharacterBehaviour
         SetHandGlow(heldSpell);
         EnableProjectileLine(7f, 25f);
         if (fireParticles) {
-            print("fire particles play");
+            //print("fire particles play");
             fireParticles.Play();
         }
         // Debug.Log("PLAYERFIRECAST");
@@ -686,6 +686,12 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdCastFireball();
         fireParticles.Stop();
         DisableProjectileLine();
+
+        try {
+            otherPlayer.GetComponent<AIBehaviour>().ReactionCast("fireball");
+        } catch {
+            Debug.Log("Could not send react event to AI");
+        }
     }
 
     [Command]
@@ -716,7 +722,7 @@ public class PlayerBehaviour : CharacterBehaviour
         heldSpell = "shield";
         SetHandGlow(heldSpell);
         if (shieldSphere) {
-            print("activate shield sphere");
+            //print("activate shield sphere");
             shieldSphere.SetActive(true);
         }
         // Debug.Log("PLAYERSHIELDCAST");
@@ -753,7 +759,7 @@ public class PlayerBehaviour : CharacterBehaviour
         heldSpell = "windslash";
         SetHandGlow(heldSpell);
         if (windParticles) {
-            print("wind particles play");
+            //print("wind particles play");
             windParticles.Play();
         }
         // Debug.Log("PLAYERWINDSLASHCAST");
@@ -852,7 +858,7 @@ public class PlayerBehaviour : CharacterBehaviour
         heldSpell = "arcanopulse";
         SetHandGlow(heldSpell);
         if (arcanoSphere) {
-            print("activate arcano sphere");
+            //print("activate arcano sphere");
             arcanoSphere.SetActive(true);
         }
         // Debug.Log("PLAYERARCANOPULSECAST");
@@ -885,7 +891,7 @@ public class PlayerBehaviour : CharacterBehaviour
         heldSpell = "icespikes";
         SetHandGlow(heldSpell);
         if (iceParticles) {
-            print("ice particles play");
+            //print("ice particles play");
             iceParticles.Play();
         }
     }
@@ -918,7 +924,7 @@ public class PlayerBehaviour : CharacterBehaviour
         SetHandGlow(heldSpell);
         EnableProjectileLine(6f, 16f);
         if (royalParticles) {
-            print("royal particles play");
+            //print("royal particles play");
             royalParticles.Play();
         }
         // Debug.Log("PLAYERROYALFIRECAST");

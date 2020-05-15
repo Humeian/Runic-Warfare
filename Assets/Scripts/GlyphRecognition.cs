@@ -16,7 +16,7 @@ public class GlyphRecognition : MonoBehaviour {
 	float costThreshold = 0.4f;
 	public float CostThreshold {get{ return costThreshold; } set{
 		costThreshold = value;
-		Debug.Log(value);
+		//Debug.Log(value);
 	}}
 
 	public Stroke[] storedGlyph;
@@ -134,9 +134,9 @@ public class GlyphRecognition : MonoBehaviour {
 		targetGlyphGraphic.color = new Color(1f, 1f, 1f, 1f);
 
 		Clear(currentGlyphGraphic);
-		if (match != null) {
-			Debug.Log(match.Cost);
-		}
+		// if (match != null) {
+		// 	Debug.Log(match.Cost);
+		// }
 		if (match == null || match.Cost > costThreshold) {
 			Clear(targetGlyphGraphic);
 			Clear(castedGlyphGraphic);

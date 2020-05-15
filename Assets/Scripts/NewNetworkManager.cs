@@ -227,7 +227,7 @@ public class NewNetworkManager : NetworkManager
             player1 = conn.identity.gameObject;
             if (player2 != null)
             {
-                Debug.Log("Here2");
+                //Debug.Log("Here2");
                 Debug.Log(player1);
                 Debug.Log(player2);
                 player1.GetComponent<CharacterBehaviour>().SetOtherPlayer(player2);

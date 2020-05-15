@@ -35,9 +35,8 @@ public class AIBehaviour : CharacterBehaviour
     public bool AIAttacks = true;
 
     private PlayerBehaviour playerBehaviour;
+    public CharacterSpatializer characterSpatializer;
 
-    public bool standingInRoyalFire;
-    public float playerDistance, shieldDistance, iceSpikesDistance;
     private string lastPlayerSpell, playerHeldSpell;
     private int playerLightningCharges; // TODO, low priority
     private float counterChance, counterSpell;
@@ -47,15 +46,15 @@ public class AIBehaviour : CharacterBehaviour
 
     // Percentage chance that the AI will counter the last spell cast
     public float chanceToCounter = 0.66f;
-    private int minCastTime = 2; // minimum seconds between casts
-    private int maxCastTime = 7; // maximum seconds between casts
+    private int minCastTime = 8; // minimum seconds between casts
+    private int maxCastTime = 10; // maximum seconds between casts
 
     // OnServerAuthority: called when GameObject is created on the client with authority.
     // By default, clients only have authority over their Player object and nothing else. 
     void Start()
     {
         StartCoroutine(Movement());
-        StartCoroutine(CastRandom());
+        //StartCoroutine(CastRandom());
         shields = new List<GameObject>();
         animator = GetComponent<Animator>();
     }
@@ -112,6 +111,16 @@ public class AIBehaviour : CharacterBehaviour
             Debug.Log("Null player");
             otherPlayer = GameObject.Find("TestPlayer(Clone)");
         }
+
+        if (royalBurn > 0f) {
+            royalBurn -= royalBurnRecovery * Time.deltaTime; 
+        }
+        else 
+            royalBurn = 0f;
+    }
+
+    public void ReactionCast(string spell) {
+        characterSpatializer.ReactionCast(spell);
     }
 
     IEnumerator Movement()
@@ -200,7 +209,7 @@ public class AIBehaviour : CharacterBehaviour
 
     public void CastFireball(int horizontal, float horizSpeed)
     {
-        print("AI Cast Fireball");
+        //print("AI Cast Fireball");
         StopAirMomentum();
         //transform.position += transform.TransformDirection(Vector3.right);
         movingRight = horizontal;
@@ -242,7 +251,7 @@ public class AIBehaviour : CharacterBehaviour
         movingForward = -30;
         speedForward = 0.4f;
         SetAnimTrigger("ShieldBack");
-        GameObject newShield = Instantiate(shield, transform.position + Vector3.up, transform.rotation * Quaternion.Euler(90f, 0f, 90f));
+        GameObject newShield = Instantiate(shield, transform.position + (Vector3.up * 1.3f), transform.rotation * Quaternion.Euler(90f, 0f, 90f));
         NetworkServer.Spawn(newShield);
 
         shields.Add(newShield);
@@ -350,63 +359,6 @@ public class AIBehaviour : CharacterBehaviour
         animator.SetTrigger(s);
     }
 
-    IEnumerator DashLeft()
-    {
-        float duration = 0.6f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f)
-        {
-            transform.position -= transform.right * dashSpeed * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator DashRight()
-    {
-        float duration = 0.6f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f)
-        {
-            transform.position += transform.right * dashSpeed * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    IEnumerator DashBack()
-    {
-        float duration = 0.4f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f)
-        {
-            transform.position -= transform.forward * dashSpeed * 0.8f * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            // print(currentTime);
-            float vertical = (Mathf.Sin(currentTime * Mathf.PI) * dashHeight * 0.5f) + playerHeight;
-
-            transform.position = new Vector3(transform.position.x, vertical, transform.position.z);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
     IEnumerator ThrowBack(float throwHorizontal, float throwVertical, float duration = 0.4f)
     {
         float startTime = Time.time;
@@ -423,23 +375,6 @@ public class AIBehaviour : CharacterBehaviour
 
             yield return new WaitForEndOfFrame();
         }
-    }
-
-    IEnumerator DashForward()
-    {
-        float duration = 0.125f;
-        float startTime = Time.time;
-        float currentTime = (Time.time - startTime) / duration;
-        while (currentTime < 1f)
-        {
-            transform.position += transform.forward * dashSpeed * 4f * Time.deltaTime;
-
-            currentTime = (Time.time - startTime) / duration;
-            //print(currentTime);
-
-            yield return new WaitForEndOfFrame();
-        }
-
     }
 
     public void ToggleDifficulty(string newDifficulty) {
@@ -467,7 +402,7 @@ public class AIBehaviour : CharacterBehaviour
         Debug.Log("AI Difficulty changed to "+difficulty+" -> counter %: "+chanceToCounter+"    minCastTime: "+minCastTime+"   maxCastTime: "+maxCastTime);
     }
 
-    void CastRandomFireball(){
+    public void CastRandomFireball(){
         int direction = Random.Range(0, 2);
         if (direction == 0)
             CastFireball(25, 1f);
@@ -477,7 +412,7 @@ public class AIBehaviour : CharacterBehaviour
             CastFireball(0, 0f);
     }
 
-    void CastRandomRoyalFire(){
+    public void CastRandomRoyalFire(){
         int dir = Random.Range(0, 2);
         if (dir == 0)
             CastRoyalFire(50, 0.2f);
@@ -502,7 +437,7 @@ public class AIBehaviour : CharacterBehaviour
             {
                 if (counterChance >= (1f - chanceToCounter) ) {
                     // counter spell a "chanceToCounter" percentage of the time
-                    Debug.Log("CounterSpell");
+                    // Debug.Log("CounterSpell");
                     switch (lastPlayerSpell) {
                         case "fireball":
                             if (counterSpell >= 0.5) {

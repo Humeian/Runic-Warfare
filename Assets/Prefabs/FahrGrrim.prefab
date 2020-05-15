@@ -1501,7 +1501,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3223537279549892565
 Transform:
   m_ObjectHideFlags: 0
@@ -7557,6 +7557,7 @@ GameObject:
   - component: {fileID: 2753927459909707953}
   - component: {fileID: 4852064429117239972}
   - component: {fileID: 984747644788670183}
+  - component: {fileID: 3564626298109835435}
   m_Layer: 0
   m_Name: FahrGrrim
   m_TagString: Player
@@ -7639,7 +7640,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   otherPlayer: {fileID: 0}
-  health: 4
+  health: 20
   lightningCharge: 0
   royalBurn: 0
   royalBurnRecovery: 0.2
@@ -7671,10 +7672,7 @@ MonoBehaviour:
   damageParticles: {fileID: 1103867351563697041}
   tutorialMode: 0
   AIAttacks: 1
-  standingInRoyalFire: 0
-  playerDistance: 0
-  shieldDistance: 0
-  iceSpikesDistance: 0
+  characterSpatializer: {fileID: 3564626298109835435}
   difficulty: Hard
   chanceToCounter: 0.66
 --- !u!114 &2753927459909707953
@@ -7726,6 +7724,26 @@ CapsuleCollider:
   m_Height: 2.3858035
   m_Direction: 1
   m_Center: {x: 0, y: 1.1336813, z: 0}
+--- !u!114 &3564626298109835435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8148977327918473247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d11ba1f7f2d01b140b14eeb70636f576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inRoyalFireDistance: 0.4
+  movementTolerance: 5
+  standingInRoyalFire: 0
+  canMoveLeft: 0
+  canMoveRight: 0
+  canMoveForward: 0
+  canMoveBackward: 0
+  blockingShield: 0
 --- !u!1 &8168725017299068223
 GameObject:
   m_ObjectHideFlags: 0

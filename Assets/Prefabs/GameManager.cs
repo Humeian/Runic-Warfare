@@ -54,11 +54,14 @@ public class GameManager : NetworkBehaviour
     public string difficulty = "Hard";
     public Text difficultyText;
 
+    public Toggle isStandingInRoyalFire, canMoveForward, canMoveLeft, canMoveRight, canMoveBackward;
+    public CharacterSpatializer charSpatlzr;
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
         roundStarted = false;
-        timer = 63f;
+        timer = 240;
         StartCoroutine(KeepTimer());
     }
 
@@ -141,6 +144,16 @@ public class GameManager : NetworkBehaviour
             EndRound(1);
             roundStarted = false;
         }
+
+        if ( charSpatlzr == null ){
+            charSpatlzr = networkManager.player2.GetComponent<CharacterSpatializer>();
+        } else {
+            isStandingInRoyalFire.isOn = charSpatlzr.standingInRoyalFire;
+            canMoveForward.isOn = charSpatlzr.canMoveForward;
+            canMoveLeft.isOn = charSpatlzr.canMoveLeft;
+            canMoveRight.isOn = charSpatlzr.canMoveRight;
+            canMoveBackward.isOn = charSpatlzr.canMoveBackward;
+        }
     }
 
     public void SetPlayerSpellVelocity(float velocity) {
@@ -188,7 +201,7 @@ public class GameManager : NetworkBehaviour
         p1.RpcResetUI();
         p2.RpcResetUI();
 
-        timer = 63f;
+        timer = 240f;
 
         if (round == 1) {
             p1Wins = 0;

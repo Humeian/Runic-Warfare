@@ -46,12 +46,12 @@ public class Fireball : NetworkBehaviour
     public void SetOwner(NetworkConnection conn, GameObject go) { SetOwner(conn, go, false); }
     public void SetOwner(NetworkConnection connection, GameObject go, bool playerOwned) {
 
-        Debug.Log(connection);
+        //Debug.Log(connection);
         owner = connection;
         ownerGO = go;
         playerThrown = playerOwned;
         if (playerThrown) travelTime -= 0.85f;
-        Debug.Log("traveltime "+travelTime);
+        //Debug.Log("traveltime "+travelTime);
     }
 
     public void SetTarget(Vector3 p) {
