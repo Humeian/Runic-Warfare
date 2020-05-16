@@ -772,6 +772,12 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdSetAnimTrigger("WindSlash");
         CmdCastWindForward();
         windParticles.Stop();
+
+        try {
+            otherPlayer.GetComponent<AIBehaviour>().ReactionCast("windslash");
+        } catch {
+            Debug.Log("Could not send react event to AI");
+        }
     }
 
     [Command]
@@ -938,6 +944,12 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdCastRoyalFire();
         royalParticles.Stop();
         DisableProjectileLine();
+
+        try {
+            otherPlayer.GetComponent<AIBehaviour>().ReactionCast("royalfire");
+        } catch {
+            Debug.Log("Could not send react event to AI");
+        }
     }
 
     [TargetRpc]

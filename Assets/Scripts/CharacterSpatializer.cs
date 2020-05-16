@@ -8,7 +8,7 @@ public class CharacterSpatializer : MonoBehaviour
     private AIBehaviour aIBehaviour;
 
     public float inRoyalFireDistance, movementTolerance;
-    public bool standingInRoyalFire, canMoveLeft, canMoveRight, canMoveForward, canMoveBackward, blockingShield;
+    public bool standingInRoyalFire, canMoveLeft, canMoveRight, canMoveForward, canMoveBackward, blockingShield, shieldInFrontOfSelf;
 
     // Front facing variables
     private float playerDistance, shieldDistance, iceSpikesDistance, royalFireDistance = 99f;
@@ -23,6 +23,7 @@ public class CharacterSpatializer : MonoBehaviour
     private float leftShieldDistance, leftIceSpikesDistance, leftRoyalFireDistance = 99f;
 
     private string lastPlayerSpell, playerHeldSpell;
+    private int lightningCharges;
 
     private List<string> safeDirections;
 
@@ -40,12 +41,14 @@ public class CharacterSpatializer : MonoBehaviour
         }
         if (aIBehaviour == null) {
             aIBehaviour = GetComponent<AIBehaviour>();
+        } else {
+            lightningCharges = aIBehaviour.lightningCharge;
         }
 
         ///////////////////// RaycastHit hits;
         // FrontFacing Ray
         RaycastHit hit, rightHit, leftHit, backHit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 100.0f)) {
+        if (Physics.SphereCast(transform.position, 0.5f,  transform.forward, out hit, 100.0f)) {
             //Debug.Log("Hit Object: "+hit.collider.tag+"  Distance: "+hit.distance);
 
             switch (hit.collider.tag) {
@@ -55,12 +58,16 @@ public class CharacterSpatializer : MonoBehaviour
                     if (shieldDistance < 99f) shieldDistance = 99f;
                     if (royalFireDistance < 99f) royalFireDistance = 99f;
                     if (blockingShield) blockingShield = false;
+                    if (shieldInFrontOfSelf) shieldInFrontOfSelf = false;
                     break;
                 case "IceSpikes":
                     iceSpikesDistance = hit.distance;
                     break;
                 case "Shield":
                     shieldDistance = hit.distance;
+                    if (shieldDistance <= 4) {
+                        shieldInFrontOfSelf = true;
+                    }
                     blockingShield = true;
                     break;
                 case "RoyalFire":
@@ -161,7 +168,7 @@ public class CharacterSpatializer : MonoBehaviour
     }
 
 
-    public void ReactionCast(string spell) {
+    public void ReactionCast(string spell, Vector3 endPosition) {
         // 1.2 seconds to react to a royal fireball
         // 1.65 seconds to react to a standard fireball
         // Ice spikes depends on time
@@ -173,7 +180,7 @@ public class CharacterSpatializer : MonoBehaviour
 
         switch (spell) {
             case "fireball":
-                StartCoroutine(CounterFireball());
+                StartCoroutine(CounterProjectile(1.35f));
                 break;
             // case "shield":
             //     if (counterSpell >= 0.66) {
@@ -191,31 +198,15 @@ public class CharacterSpatializer : MonoBehaviour
             //        aIBehaviour.CastShieldBack();
             //     }
             //     break;
-            // case "windslash":
-            //     if (counterSpell >= 0.5) {
-            //         aIBehaviour.CastShieldBack();
-            //     } else if (counterSpell >= 0.25) {
-            //         aIBehaviour.CastIceSpikes();
-            //     } else {
-            //         aIBehaviour.CastWindForward();
-            //     }
-            //     break;
-            // case "royalfire":
-            //     if (counterSpell >= 0.66) {
-            //         aIBehaviour.CastWindForward();
-            //     } else if (counterSpell >= 0.33) {
-            //         aIBehaviour.CastRandomFireball();
-            //     } else {
-            //         aIBehaviour.CastRandomRoyalFire();
-            //     }
-            //     break;
-            // case "icespikes":
-            //     if (counterSpell >= 0.5) {
-            //         aIBehaviour.CastShieldBack();
-            //     } else {
-            //         aIBehaviour.CastRandomFireball();
-            //     }
-            //     break;
+            case "windslash":
+                StartCoroutine(CounterWindslash());
+                break;
+            case "royalfire":
+                StartCoroutine(CounterProjectile(2.8f));
+                break;
+            case "icespikes":
+                StartCoroutine(CounterIceSpikes(endPosition));
+                break;
             // case "arcanopulse":
             //     if (counterSpell >= 0.66) {
             //         aIBehaviour.CastShieldBack();
@@ -231,13 +222,54 @@ public class CharacterSpatializer : MonoBehaviour
         }
     }
 
-    IEnumerator CounterFireball () {
-        // Roll to see which counter spell to cast (Set as range [0,1] so that counter spell probabilities can be uneven)
-        float counterSpell = Random.value;
+    void CastForward(){
+        aIBehaviour.CastWindForward();
+    }
 
+    void CastBackward(float chance) {
+        float counterSpell = Random.value;
+        if (counterSpell > chance) {
+            aIBehaviour.CastShieldBack();
+        } else {
+            aIBehaviour.CastIceSpikes();
+        }
+    }
+
+    void CastRight (float chance) {
+        float counterSpell = Random.value;
+        if (counterSpell > chance) {
+            aIBehaviour.CastFireball(25, 1f);
+        } else {
+            aIBehaviour.CastRoyalFire(50, 0.2f);
+        }
+    }
+
+    void CastLeft(float chance) {
+        float counterSpell = Random.value;
+        if (counterSpell > chance) {
+            aIBehaviour.CastFireball(-25, 1f);
+        } else {
+            aIBehaviour.CastRoyalFire(-50, 0.2f);
+        }
+    }
+
+    void CastStationary(bool inDanger) {
+        if (inDanger) {
+            aIBehaviour.CastArcanePulse();
+        } else {
+            if (lightningCharges < 2 || !shieldInFrontOfSelf) {
+                aIBehaviour.CastLightningNeutral();
+            }
+        }
+    }
+
+    IEnumerator CounterProjectile (float maxReactionTime) {
+        yield return new WaitForSeconds(0.2f);
+
+        // Roll to see which counter spell to cast (Set as range [0,1] so that counter spell probabilities can be uneven)
         string moveDir = null;
         try {
-            moveDir = safeDirections[Random.Range(0, safeDirections.Count-1)];
+            moveDir = safeDirections[Random.Range(0, safeDirections.Count)];
         } catch {
             // no safe directions
         }
@@ -246,40 +278,62 @@ public class CharacterSpatializer : MonoBehaviour
         if (moveDir != null && moveDir != "Stationary") {
             switch (moveDir) {
                 case "Forward":
-                    yield return new WaitForSeconds(Random.value*1.55f);
-                    aIBehaviour.CastWindForward();
+                    yield return new WaitForSeconds(Random.value*maxReactionTime);
+                    CastForward();
                     break;
                 case "Backward":
-                    yield return new WaitForSeconds(Random.value*1.55f);
-                    if (counterSpell > 0.33f) {
-                        aIBehaviour.CastShieldBack();
-                    } else {
-                        aIBehaviour.CastIceSpikes();
-                    }
+                    yield return new WaitForSeconds(Random.value*maxReactionTime);
+                    CastBackward(0.33f);
                     break;
                 case "Right":
-                    yield return new WaitForSeconds(Random.value*1.55f);
-                    if (counterSpell > 0.4f) {
-                        aIBehaviour.CastFireball(25, 1f);
-                    } else {
-                        aIBehaviour.CastRoyalFire(50, 0.2f);
-                    }
+                    yield return new WaitForSeconds(Random.value*maxReactionTime);
+                    CastRight(0.4f);
                     break;
                 case "Left":
-                    yield return new WaitForSeconds(Random.value*1.55f);
-                    if (counterSpell > 0.4f) {
-                        aIBehaviour.CastFireball(-25, 1f);
-                    } else {
-                        aIBehaviour.CastRoyalFire(-50, 0.2f);
-                    }
+                    yield return new WaitForSeconds(Random.value*maxReactionTime);
+                    CastLeft(0.4f);
                     break;
             }
         } else {
             // no safe direction, or stationary is safe
-            yield return new WaitForSeconds(1.2f);
-            aIBehaviour.CastArcanePulse();
+            yield return new WaitForSeconds(1.1f);
+            CastStationary(true);
         }
-        
-        //yield return new WaitForSeconds(0.1f);
+    }
+
+    IEnumerator CounterWindslash() {
+        yield return new WaitForSeconds(0.3f);
+        if (!shieldInFrontOfSelf) {
+            if (canMoveForward && canMoveBackward) {
+                float counterSpell = Random.value;
+                if (counterSpell > 0.5f && playerDistance < 8f) {
+                    CastForward();
+                } else {
+                    CastBackward(0.45f);
+                }
+            } else if (canMoveForward) {
+                CastForward();
+            } else if (canMoveBackward) {
+                CastBackward(0.66f);
+            } else {
+                yield return new WaitForSeconds(Random.Range(0f, 2f));
+                CastStationary(playerDistance <= 2f ? true : false);
+            }
+        } else {
+            if (playerDistance < 8f) {
+                CastBackward(0f);
+            } else {
+                yield return new WaitForSeconds(Random.Range(1f, 1.5f));
+                CastStationary(playerDistance <= 2f ? true : false);
+            }
+        }
+    }
+
+    IEnumerator CounterIceSpikes(Vector3 endPosition) {
+        yield return new WaitForSeconds(1.2f);
+    }
+
+    IEnumerator CounterStationary () {
+        yield return new WaitForSeconds(1.1f);
     }
 }

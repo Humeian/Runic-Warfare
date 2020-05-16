@@ -120,7 +120,11 @@ public class AIBehaviour : CharacterBehaviour
     }
 
     public void ReactionCast(string spell) {
-        characterSpatializer.ReactionCast(spell);
+        characterSpatializer.ReactionCast(spell, Vector3.zero);
+    }
+
+    public void ReactionCast(string spell, Vector3 endPosition) {
+        characterSpatializer.ReactionCast(spell, endPosition);
     }
 
     IEnumerator Movement()

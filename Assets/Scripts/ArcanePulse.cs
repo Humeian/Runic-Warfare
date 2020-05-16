@@ -35,8 +35,6 @@ public class ArcanePulse : NetworkBehaviour
             //print("hit");
             //print(other.GetComponent<NetworkIdentity>().connectionToClient.ToString());
             //print(owner.ToString());
-            other.GetComponent<CharacterBehaviour>().TakeDamage(1);
-            other.GetComponent<CharacterBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
             other.GetComponent<CharacterBehaviour>().TargetThrowPlayerBack(other.GetComponent<NetworkIdentity>().connectionToClient, 0.6f, 0, 40);
         } else if (other.tag == "Shield") {
             other.GetComponent<Shield>().Break();
