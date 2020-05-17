@@ -388,7 +388,7 @@ public class PlayerBehaviour : CharacterBehaviour
         while (true) {
             float distanceFromCenter = DistanceToCenter();
 
-            if (distanceFromCenter < 29){
+            if (distanceFromCenter < 28){
                 if (movingRight != 0) {
                     transform.position += transform.right * Time.deltaTime * (movingRight * speedRight);
 
@@ -732,6 +732,12 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdSetAnimTrigger("ShieldBack");
         CmdCastShieldBack();
         shieldSphere.SetActive(false);
+
+        try {
+            otherPlayer.GetComponent<AIBehaviour>().ReactionCast("shield");
+        } catch {
+            Debug.Log("Could not send react event to AI");
+        }
     }
 
     [Command]
@@ -817,6 +823,13 @@ public class PlayerBehaviour : CharacterBehaviour
         else {
             StartCoroutine(WaitForLightningCharge());
         }
+
+        // AI reaction happens on cast, and not spell release, bc that would be unfair
+        try {
+            otherPlayer.GetComponent<AIBehaviour>().ReactionCast("lightning");
+        } catch {
+            Debug.Log("Could not send react event to AI");
+        }
     }
 
     public void CastHeldLightning() {
@@ -874,6 +887,12 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdPlayClip(1);
         CmdCastArcanePulse();
         arcanoSphere.SetActive(false);
+
+        try {
+            otherPlayer.GetComponent<AIBehaviour>().ReactionCast("arcanopulse");
+        } catch {
+            Debug.Log("Could not send react event to AI");
+        }
     }
 
     [Command]
@@ -892,7 +911,7 @@ public class PlayerBehaviour : CharacterBehaviour
 
 
 
-    //  ------------- ICES PIKES ------------------
+    //  ------------- ICE SPIKES ------------------
     public void CastIceSpikes() {
         heldSpell = "icespikes";
         SetHandGlow(heldSpell);
@@ -906,6 +925,12 @@ public class PlayerBehaviour : CharacterBehaviour
         CmdSetAnimTrigger("ShieldBack");
         CmdCastIceSpikes();
         iceParticles.Stop();
+
+        try {
+            otherPlayer.GetComponent<AIBehaviour>().ReactionCast("icespikes", castingHand.transform.rotation.eulerAngles);
+        } catch {
+            Debug.Log("Could not send react event to AI");
+        }
     }
 
     [Command]

@@ -33,8 +33,8 @@ public class CharacterSpatializer : MonoBehaviour
         safeDirections = new List<string>( );
     }
 
-    // Update is called every 20ms
-    void FixedUpdate()
+    // Update is called when needed
+    void Think()
     {
         if (playerBehaviour == null) {
             playerBehaviour = GetComponent<AIBehaviour>().otherPlayer.GetComponent<PlayerBehaviour>();
@@ -150,9 +150,40 @@ public class CharacterSpatializer : MonoBehaviour
     }
 
     // Works with all knowledge 
-    public string SmartestSpellCast() {
+    public void SmartestSpellCast() {
+        // Basically just the CounterProjectile algorithm
+        Think();
 
-        return "arcanopulse";
+        string moveDir = null;
+        try {
+            moveDir = safeDirections[Random.Range(0, safeDirections.Count)];
+        } catch {
+            // no safe directions
+        }
+        //Debug.Log(" Directions count: " +safeDirections.Count+"   moveDir: "+moveDir);
+
+        if (moveDir != null) {
+            switch (moveDir) {
+                case "Forward":
+                    CastForward();
+                    break;
+                case "Backward":
+                    CastBackward(0.4f);
+                    break;
+                case "Right":
+                    CastRight(0.4f);
+                    break;
+                case "Left":
+                    CastLeft(0.4f);
+                    break;
+                case "Stationary":
+                    CastStationary(false);
+                    break;
+            }
+        } else {
+            // no safe direction and standing in royal fire.
+            CastStationary(true);
+        }
     }
 
     // Considers most factors, but is not reactionary.
@@ -177,27 +208,18 @@ public class CharacterSpatializer : MonoBehaviour
         // Shield has no reaction
         // Lightning reaction depends on how many charges the player has
         Debug.Log("Reacting");
+        Think();
 
         switch (spell) {
             case "fireball":
                 StartCoroutine(CounterProjectile(1.35f));
                 break;
-            // case "shield":
-            //     if (counterSpell >= 0.66) {
-            //         aIBehaviour.CastLightningNeutral();
-            //     } else if (counterSpell >= 0.3) {
-            //         aIBehaviour.CastRandomFireball();
-            //     } else {
-            //         aIBehaviour.CastWindForward();
-            //     }
-            //     break;
-            // case "lightning":
-            //     if (counterSpell >= 0.33) {
-            //         aIBehaviour.CastRandomRoyalFire();
-            //     } else {
-            //        aIBehaviour.CastShieldBack();
-            //     }
-            //     break;
+            case "shield":
+                StartCoroutine(CounterShield());
+                break;
+            case "lightning":
+                StartCoroutine(CounterStationary());
+                break;
             case "windslash":
                 StartCoroutine(CounterWindslash());
                 break;
@@ -207,18 +229,12 @@ public class CharacterSpatializer : MonoBehaviour
             case "icespikes":
                 StartCoroutine(CounterIceSpikes(endPosition));
                 break;
-            // case "arcanopulse":
-            //     if (counterSpell >= 0.66) {
-            //         aIBehaviour.CastShieldBack();
-            //     } else if (counterSpell >= 0.33) {
-            //         aIBehaviour.CastRandomRoyalFire();
-            //     } else {
-            //         aIBehaviour.CastArcanePulse();
-            //     }
-            //     break;
-            // default:
-            //     aIBehaviour.CastRandomFireball();
-            //     break;
+            case "arcanopulse":
+                StartCoroutine(CounterStationary());
+                break;
+            default:
+                aIBehaviour.CastRandomFireball();
+                break;
         }
     }
 
@@ -227,12 +243,17 @@ public class CharacterSpatializer : MonoBehaviour
     }
 
     void CastBackward(float chance) {
-        float counterSpell = Random.value;
-        if (counterSpell > chance) {
+        if (shieldInFrontOfSelf) {
             aIBehaviour.CastShieldBack();
         } else {
-            aIBehaviour.CastIceSpikes();
+            float counterSpell = Random.value;
+            if (counterSpell > chance) {
+                aIBehaviour.CastShieldBack();
+            } else {
+                aIBehaviour.CastIceSpikes();
+            }
         }
+        
     }
 
     void CastRight (float chance) {
@@ -317,23 +338,46 @@ public class CharacterSpatializer : MonoBehaviour
                 CastBackward(0.66f);
             } else {
                 yield return new WaitForSeconds(Random.Range(0f, 2f));
-                CastStationary(playerDistance <= 2f ? true : false);
+                CastStationary(playerDistance <= 2f || standingInRoyalFire ? true : false);
             }
         } else {
             if (playerDistance < 8f) {
                 CastBackward(0f);
             } else {
                 yield return new WaitForSeconds(Random.Range(1f, 1.5f));
-                CastStationary(playerDistance <= 2f ? true : false);
+                CastStationary(playerDistance <= 2f || standingInRoyalFire ? true : false);
             }
         }
     }
 
-    IEnumerator CounterIceSpikes(Vector3 endPosition) {
+    // TODO fix this, its too dumb as it is
+    IEnumerator CounterIceSpikes(Vector3 eulerAngles) {
         yield return new WaitForSeconds(1.2f);
+        if (canMoveBackward) {
+            CastBackward(0f);
+        } else {
+            safeDirections.Remove("Forward");
+            StartCoroutine(CounterProjectile(2f));
+        }
     }
 
-    IEnumerator CounterStationary () {
-        yield return new WaitForSeconds(1.1f);
+    IEnumerator CounterStationary() {
+        yield return new WaitForSeconds(Random.Range(0.1f, 1f));
+        if (canMoveBackward) {
+            CastBackward(0f);
+        } else {
+            StartCoroutine(CounterProjectile(3f));
+        }
+    }
+
+    IEnumerator CounterShield() {
+        yield return new WaitForSeconds(0.6f);
+        float counterSpell = Random.value;
+        if (counterSpell > 0.5f) {
+            CastStationary(standingInRoyalFire ? true : false);
+        } else {
+            // SmartestMove(); TODO
+            StartCoroutine(CounterProjectile(3f));
+        }
     }
 }

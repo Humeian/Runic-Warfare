@@ -30,6 +30,8 @@ public class RoyalFlame : NetworkBehaviour
                 other.GetComponent<CharacterBehaviour>().TargetShowDamageEffects(other.GetComponent<NetworkIdentity>().connectionToClient);
                 other.GetComponent<CharacterBehaviour>().royalBurn = 0f;
             }
+        } else if (other.tag == "ArcanePulse") {
+            Destroy(gameObject, 2f);
         }
     }
 

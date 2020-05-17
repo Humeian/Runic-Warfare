@@ -54,7 +54,7 @@ public class AIBehaviour : CharacterBehaviour
     void Start()
     {
         StartCoroutine(Movement());
-        //StartCoroutine(CastRandom());
+        StartCoroutine(SmartAICasting());
         shields = new List<GameObject>();
         animator = GetComponent<Animator>();
     }
@@ -124,7 +124,8 @@ public class AIBehaviour : CharacterBehaviour
     }
 
     public void ReactionCast(string spell, Vector3 endPosition) {
-        characterSpatializer.ReactionCast(spell, endPosition);
+        float react = Random.value;
+        if (react >= (1-chanceToCounter)) characterSpatializer.ReactionCast(spell, endPosition);
     }
 
     IEnumerator Movement()
@@ -133,7 +134,7 @@ public class AIBehaviour : CharacterBehaviour
         {
             float distanceFromCenter = DistanceToCenter();
 
-            if (distanceFromCenter < 29)
+            if (distanceFromCenter < 28)
             {
                 if (movingRight != 0)
                 {
@@ -389,18 +390,18 @@ public class AIBehaviour : CharacterBehaviour
             minCastTime = 2;
             maxCastTime = 7;
         } else if (difficulty == "Medium") {
-            chanceToCounter = 0.50f; // 1 in 3 chance to counter
+            chanceToCounter = 0.40f;
             minCastTime = 4;
-            maxCastTime = 6;
+            maxCastTime = 7;
         } else if (difficulty == "Easy") {
-            chanceToCounter = 0.33f; // 1 in 3 chance to counter
+            chanceToCounter = 0.10f;
             minCastTime = 6;
-            maxCastTime = 8;
+            maxCastTime = 9;
         } else {
             // Expert Difficulty
-            chanceToCounter = 0.80f; // 80% chance to counter
-            minCastTime = 2;
-            maxCastTime = 4;
+            chanceToCounter = 0.90f;
+            minCastTime = 3;
+            maxCastTime = 5;
         }
 
         Debug.Log("AI Difficulty changed to "+difficulty+" -> counter %: "+chanceToCounter+"    minCastTime: "+minCastTime+"   maxCastTime: "+maxCastTime);
@@ -425,7 +426,18 @@ public class AIBehaviour : CharacterBehaviour
         else
             CastRoyalFire(0, 0f);
     }
-    //public bool isAIPlayer = false;
+
+
+
+    IEnumerator SmartAICasting() {
+        yield return new WaitForSeconds(5);
+        while (true) {
+            characterSpatializer.SmartestSpellCast();
+            yield return new WaitForSeconds(Random.Range(minCastTime,maxCastTime));
+        }
+    }
+
+    // Dumb AI
     IEnumerator CastRandom()
     {
         yield return new WaitForSeconds(5);

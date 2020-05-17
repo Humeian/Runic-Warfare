@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1933,7 +1933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: a611d564d5d1a284b8fc14aa430a9376, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: -6970.0654}
+  m_Color: {r: 1, g: 1, b: 1, a: -7399.106}
   m_RaycastTarget: 1
   relativeWidth: 0.05
   capSize: 0.4
@@ -35909,10 +35909,10 @@ MonoBehaviour:
   - {fileID: 8005883269175210359, guid: 1de8472b74e374cf396a1b4c452fdac7, type: 3}
   - {fileID: 5301957914704815148, guid: 12c9668642a9b49bc90f0931ed772b89, type: 3}
   - {fileID: 2091421368820422775, guid: 4fbad8067d269d54ea3c0ba57f117232, type: 3}
-  - {fileID: 8148977327918473247, guid: 59e129398b65ea947a8adfb59ff9fbc5, type: 3}
+  - {fileID: 3827117231998878061, guid: b3826f04544e98841bce03509df3946e, type: 3}
   player1: {fileID: 0}
   player2: {fileID: 0}
-  AI: {fileID: 8148977327918473247, guid: 59e129398b65ea947a8adfb59ff9fbc5, type: 3}
+  AI: {fileID: 3827117231998878061, guid: b3826f04544e98841bce03509df3946e, type: 3}
   AISpawn: {fileID: 1727393167}
   AISpawn2: {fileID: 1461168982}
   bothPlayersConnected: 0

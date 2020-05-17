@@ -69,6 +69,7 @@ public class MovementProvider : LocomotionProvider
                 //drawPanel.transform.parent = player.transform;
 
                 transform.position = player.transform.position + new Vector3(0f, 0f, 0.2f);
+                transform.rotation = player.transform.rotation;
                 //drawPanel.transform.position = player.transform.position + new Vector3(1.0f, 0f, 0f);
                 glyphRecognition.player = player.GetComponent<PlayerBehaviour>();
 
