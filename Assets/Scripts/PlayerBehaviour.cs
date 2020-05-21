@@ -963,7 +963,7 @@ public class PlayerBehaviour : CharacterBehaviour
     public void CmdCastIceSpikes() {
         //Ice spikes should spawn at the feet
         Quaternion dir = Quaternion.Euler(0, castingHand.transform.rotation.eulerAngles.y, 0);
-        Vector3 startPos = new Vector3(castingHand.transform.position.x, 0f, castingHand.transform.position.z) + castingHand.transform.forward;
+        Vector3 startPos = new Vector3(castingHand.transform.position.x, 0f, castingHand.transform.position.z) + castingHand.transform.forward*2f;
         GameObject newIceSpikes = Instantiate(iceSpikeProjectile, startPos, dir);
         newIceSpikes.GetComponent<IceSpikeProjectile>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient);
         NetworkServer.Spawn(newIceSpikes);

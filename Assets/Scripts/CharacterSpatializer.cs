@@ -139,7 +139,7 @@ public class CharacterSpatializer : MonoBehaviour
         standingInRoyalFire = aIBehaviour.royalBurn > 0;
         canMoveLeft = (standingInRoyalFire || leftRoyalFireDistance > movementTolerance) && (leftIceSpikesDistance > movementTolerance);
         canMoveRight = (standingInRoyalFire || rightRoyalFireDistance > movementTolerance) && (rightIceSpikesDistance > movementTolerance);
-        canMoveForward = (standingInRoyalFire || royalFireDistance > movementTolerance) && iceSpikesDistance > movementTolerance && shieldDistance > movementTolerance;
+        canMoveForward = (standingInRoyalFire || royalFireDistance > movementTolerance) && iceSpikesDistance > movementTolerance+5f && shieldDistance > movementTolerance;
         canMoveBackward = (standingInRoyalFire || backRoyalFireDistance > movementTolerance) && (backIceSpikesDistance > movementTolerance) && aIBehaviour.DistanceToCenter() < 27;
         safeDirections.Clear();
         if (canMoveLeft) safeDirections.Add("Left");

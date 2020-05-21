@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Mirror;
 using AdVd.GlyphRecognition;
 using System;
+using UnityEngine.SceneManagement;
 public class GameManager : NetworkBehaviour
 {
     public NewNetworkManager networkManager;
@@ -98,6 +99,14 @@ public class GameManager : NetworkBehaviour
         } catch (Exception e) {
             Debug.Log("No AI found: "+e.ToString());
         }
+    }
+
+    public void ResetScene()
+    {
+        networkManager.StopHost();
+        networkManager.StopClient();
+        Destroy(GameObject.Find("NetworkManager"));
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     // Update is called once per frame
