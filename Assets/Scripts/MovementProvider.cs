@@ -32,7 +32,8 @@ public class MovementProvider : LocomotionProvider
 
     private void Start()
     {
-        PositionController();
+        OVRManager.fixedFoveatedRenderingLevel = OVRManager.FixedFoveatedRenderingLevel.High; // it's the maximum foveation level
+        OVRManager.useDynamicFixedFoveatedRendering = true;
     }
 
     private void Update()
@@ -40,6 +41,7 @@ public class MovementProvider : LocomotionProvider
         //PositionController();
         //CheckForInput();
         //ApplyGravity();
+        //Debug.Log("Shake factor:  "+ScreenShakeVREffect.Factor);
 
         // Pause and Start Game is Head set removed/replaced
         bool isHeadSetOn = XRDevice.userPresence == UserPresenceState.Present;

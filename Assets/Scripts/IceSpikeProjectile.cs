@@ -10,7 +10,7 @@ public class IceSpikeProjectile : NetworkBehaviour
     public float speed;
     public float spikeDistance;
 
-    public float maxDistanceFromCenter = 25f;
+    public float maxDistanceFromCenter = 28f;
 
     public NetworkConnection owner;
     private Vector3 startPosition;

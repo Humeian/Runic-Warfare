@@ -200,14 +200,7 @@ public class CharacterSpatializer : MonoBehaviour
 
 
     public void ReactionCast(string spell, Vector3 endPosition) {
-        // 1.2 seconds to react to a royal fireball
-        // 1.65 seconds to react to a standard fireball
-        // Ice spikes depends on time
-        // Windslash should not be reacted to
-        // Arcanopulse might be difficult
-        // Shield has no reaction
-        // Lightning reaction depends on how many charges the player has
-        Debug.Log("Reacting");
+        // Debug.Log("Reacting");
         Think();
 
         switch (spell) {
@@ -294,7 +287,7 @@ public class CharacterSpatializer : MonoBehaviour
         } catch {
             // no safe directions
         }
-        Debug.Log(" Directions count: " +safeDirections.Count+"   moveDir: "+moveDir);
+        //Debug.Log(" Directions count: " +safeDirections.Count+"   moveDir: "+moveDir);
 
         if (moveDir != null && moveDir != "Stationary") {
             switch (moveDir) {

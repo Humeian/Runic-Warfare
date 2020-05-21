@@ -58,7 +58,7 @@ private void OnEnable()
 
 public void Shake(float magnitude, float length, float exponent = 2)
 {
-    //print("Shake");
+    print("Shake");
     activeShakes.Add(new ShakeEvent(magnitude, length, exponent));
 }
 

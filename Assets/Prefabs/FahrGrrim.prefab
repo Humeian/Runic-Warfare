@@ -1775,7 +1775,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   clientAuthority: 1
-  animator: {fileID: 0}
+  animator: {fileID: 3827117231998878054}
 --- !u!136 &3827117231998878057
 CapsuleCollider:
   m_ObjectHideFlags: 0

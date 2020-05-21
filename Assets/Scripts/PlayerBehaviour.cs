@@ -51,8 +51,9 @@ public class PlayerBehaviour : CharacterBehaviour
     private float movementCooldown = 2f;
 
     public float spellVelocity = 20;
-    public string heldSpell;
+    public string heldSpell = null;
     public GameObject castingHand, movingHand, spellReticle, baseReticle;
+    public XRController castingHandController, movingHandController;
     public XRRayInteractor castingRay;
     public XRInteractorLineVisual castingLineRenderer;
     public SkinnedMeshRenderer castingHandRenderer, movementHandRenderer;
@@ -275,7 +276,19 @@ public class PlayerBehaviour : CharacterBehaviour
 
 
 
+    void FixedUpdate() {
+        if (castingHandController == null) {
+            castingHandController = castingHand.GetComponent<XRController>();
+        }
 
+        if (movingHandController == null) {
+            movingHandController = movingHand.GetComponent<XRController>();
+        }
+
+        if (heldSpell != null) {
+            castingHandController.inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
+        }
+    }
 
 
     void Update()
@@ -483,6 +496,7 @@ public class PlayerBehaviour : CharacterBehaviour
     public void StartGripMove(Vector3 startPos){
         startGripMove = new Vector3(startPos.x, 0f, startPos.z);
         //Debug.Log("StartGripMove:  "+startGripMove.ToString());
+        movingHandController.inputDevice.SendHapticImpulse(0, 0.5f, 0.3f);
     }
 
     public void ReleaseGripMove(Vector3 endPos) {
@@ -500,6 +514,15 @@ public class PlayerBehaviour : CharacterBehaviour
 
             // Set movement Cooldown
             movementCooldown = 2.5f;
+
+            
+            try {
+                movingHandController.inputDevice.SendHapticImpulse(0, 2f, 0.1f);
+                movingHand.GetComponent<AudioSource>().Play();
+            } catch {
+                Debug.Log("Failure to send haptics or play sound effect");
+            }
+            
         } else {
             Debug.Log("Movement on cooldown");
         }
@@ -542,6 +565,9 @@ public class PlayerBehaviour : CharacterBehaviour
         //redscreen.color = new Color(1f, 0f, 0f, 0.8f);
         //Debug.Log("Player HIT");
         damageParticles.Play();
+
+        castingHandController.inputDevice.SendHapticImpulse(0, 2f, 0.5f);
+        movingHandController.inputDevice.SendHapticImpulse(0, 2f, 0.5f);
 
         //Color red = new Color(1f, 0f, 0f, 1f);
     }

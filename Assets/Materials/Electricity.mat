@@ -12,7 +12,7 @@ Material:
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -20,5 +20,11 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs: []
-    m_Floats: []
-    m_Colors: []
+    m_Floats:
+    - Vector1_C6F82559: 7.47
+    - Vector1_EECA2A46: 1
+    - Vector1_FD5CDF8C: 20
+    m_Colors:
+    - Color_D5717BB8: {r: 1, g: 1, b: 1, a: 1}
+    - Vector2_23FEF732: {r: 0.1, g: -0.5, b: 0, a: 0}
+    - Vector2_58739311: {r: 0, g: 0.5, b: 0, a: 0}

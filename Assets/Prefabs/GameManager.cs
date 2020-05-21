@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 using AdVd.GlyphRecognition;
-
+using System;
 public class GameManager : NetworkBehaviour
 {
     public NewNetworkManager networkManager;
@@ -54,9 +54,6 @@ public class GameManager : NetworkBehaviour
     public string difficulty = "Hard";
     public Text difficultyText;
 
-    public Toggle isStandingInRoyalFire, canMoveForward, canMoveLeft, canMoveRight, canMoveBackward;
-    public CharacterSpatializer charSpatlzr;
-
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -97,10 +94,9 @@ public class GameManager : NetworkBehaviour
         difficultyText.text = difficulty;
 
         try {
-            AIBehaviour ai = GameObject.Find("FahrGrimm(Clone)").GetComponent<AIBehaviour>();
-            ai.ToggleDifficulty(difficulty);
-        } catch {
-            Debug.Log("No AI found");
+            networkManager.player2.GetComponent<AIBehaviour>().ToggleDifficulty(difficulty);
+        } catch (Exception e) {
+            Debug.Log("No AI found: "+e.ToString());
         }
     }
 
@@ -116,7 +112,7 @@ public class GameManager : NetworkBehaviour
             p2 = networkManager.player2.GetComponent<CharacterBehaviour>();
             
 
-            //Debug.Log("__________________________________________-------------------------------------------------------------- HERE");
+            Debug.Log("-------------------------------------------------------------- HERE");
         }
 
         if (roundStarted && rematchButton != null && rematchButton.activeInHierarchy) {
@@ -143,16 +139,6 @@ public class GameManager : NetworkBehaviour
         if (roundFinished && roundStarted) {
             EndRound(1);
             roundStarted = false;
-        }
-
-        if ( charSpatlzr == null ){
-            charSpatlzr = networkManager.player2.GetComponent<CharacterSpatializer>();
-        } else {
-            isStandingInRoyalFire.isOn = charSpatlzr.standingInRoyalFire;
-            canMoveForward.isOn = charSpatlzr.canMoveForward;
-            canMoveLeft.isOn = charSpatlzr.canMoveLeft;
-            canMoveRight.isOn = charSpatlzr.canMoveRight;
-            canMoveBackward.isOn = charSpatlzr.canMoveBackward;
         }
     }
 

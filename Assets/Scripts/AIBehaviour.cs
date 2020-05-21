@@ -57,6 +57,8 @@ public class AIBehaviour : CharacterBehaviour
         StartCoroutine(SmartAICasting());
         shields = new List<GameObject>();
         animator = GetComponent<Animator>();
+
+        ToggleDifficulty(GameObject.Find("GameManager").GetComponent<GameManager>().difficulty);
     }
 
     public override void RpcResetUI()
@@ -120,12 +122,13 @@ public class AIBehaviour : CharacterBehaviour
     }
 
     public void ReactionCast(string spell) {
-        characterSpatializer.ReactionCast(spell, Vector3.zero);
+        ReactionCast(spell, Vector3.zero);
     }
 
     public void ReactionCast(string spell, Vector3 endPosition) {
         float react = Random.value;
-        if (react >= (1-chanceToCounter)) characterSpatializer.ReactionCast(spell, endPosition);
+        // Debug.Log("Chance: "+react+"    Reacting: "+(react >= (1f-chanceToCounter)));
+        if (react >= (1f-chanceToCounter)) characterSpatializer.ReactionCast(spell, endPosition);
     }
 
     IEnumerator Movement()
@@ -318,7 +321,7 @@ public class AIBehaviour : CharacterBehaviour
             SetAnimTrigger("FireballRight");
         else
             SetAnimTrigger("FireballLeft");
-        GameObject newRoyalFireball = Instantiate(royalFireball, transform.position + Vector3.up, transform.rotation);
+        GameObject newRoyalFireball = Instantiate(royalFireball, transform.position + Vector3.up, transform.rotation * Quaternion.Euler(0, 180, 0));
         newRoyalFireball.GetComponent<Royalfireball>().SetOwner(GetComponent<NetworkIdentity>().connectionToClient, gameObject);
         newRoyalFireball.GetComponent<Royalfireball>().SetTarget(otherPlayer.transform.position);
         NetworkServer.Spawn(newRoyalFireball);
@@ -386,11 +389,11 @@ public class AIBehaviour : CharacterBehaviour
         difficulty = newDifficulty;
 
         if (difficulty == "Hard") {
-            chanceToCounter = 0.66f; // 2 in 3  chance to counter 
+            chanceToCounter = 0.75f;
             minCastTime = 2;
             maxCastTime = 7;
         } else if (difficulty == "Medium") {
-            chanceToCounter = 0.40f;
+            chanceToCounter = 0.50f;
             minCastTime = 4;
             maxCastTime = 7;
         } else if (difficulty == "Easy") {
@@ -399,7 +402,7 @@ public class AIBehaviour : CharacterBehaviour
             maxCastTime = 9;
         } else {
             // Expert Difficulty
-            chanceToCounter = 0.90f;
+            chanceToCounter = 1f;
             minCastTime = 3;
             maxCastTime = 5;
         }
@@ -432,7 +435,9 @@ public class AIBehaviour : CharacterBehaviour
     IEnumerator SmartAICasting() {
         yield return new WaitForSeconds(5);
         while (true) {
-            characterSpatializer.SmartestSpellCast();
+            if (AIAttacks && health > 0){
+                characterSpatializer.SmartestSpellCast();
+            }
             yield return new WaitForSeconds(Random.Range(minCastTime,maxCastTime));
         }
     }
