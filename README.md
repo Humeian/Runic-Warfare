@@ -20,4 +20,4 @@ Watch the game trailer [HERE!](https://drive.google.com/file/d/1klF-dTSdYPenY6QC
 ### VR Conversion ###
 Elliot Hume has created a Player vs AI VR version of Runic Warfare for the Oculus Quest. You can find the .apk in the releases tab, and read more about process in a [blog post he wrote](https://elliothume.github.io/RunicWarfare/).
 
-[View a development build of the VR version here!](https://drive.google.com/file/d/1uMh-VzbjQ6_ujYMGR3vqL3E0O-7hHtpv/view?usp=sharing)
+[See a video of the most recent development build of the VR version here!](https://drive.google.com/file/d/1uMh-VzbjQ6_ujYMGR3vqL3E0O-7hHtpv/view?usp=sharing)
