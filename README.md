@@ -14,3 +14,10 @@ A full game will consist of up to 5 rounds. To win the match, a player needs to 
 
 ### Trailer ###
 Watch the game trailer [HERE!](https://drive.google.com/file/d/1klF-dTSdYPenY6QC5KtA3V824kYMQNOJ/view?usp=sharing)
+
+
+
+### VR Conversion ###
+Elliot Hume has created a Player vs AI VR version of Runic Warfare for the Oculus Quest. You can find the .apk in the releases tab, and read more about process in a [blog post he wrote](https://elliothume.github.io/RunicWarfare/).
+
+[View a development build of the VR version here!](https://drive.google.com/file/d/1uMh-VzbjQ6_ujYMGR3vqL3E0O-7hHtpv/view?usp=sharing)
